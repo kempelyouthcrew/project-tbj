@@ -22,6 +22,7 @@ nav.Bar('leftbar', [
     ]),
 ])
 
+# Dashboard
 @app.route('/', methods=['GET'])
 def index():
     return redirect("/dashboard")
@@ -30,11 +31,12 @@ def index():
 def dashboard():
     return render_template("sites/dashboard.html")
 
+# Konsumen
 @app.route('/konsumen', methods=['GET'])
 def konsumen():
-    listData = KonsumenDB.query.all()
-    print(listData)
-    return render_template("sites/konsumen/index.html", data=enumerate(listData,1))
+    listKonsumen = KonsumenDB.query.all()
+    print(listKonsumen)
+    return render_template("sites/konsumen/index.html", data=enumerate(listKonsumen,1))
 
 @app.route('/konsumen/add', methods=['GET'])
 def konsumenAddForm():
@@ -94,10 +96,74 @@ def deleteKonsumen(id):
         print(e)
     return redirect("/konsumen")
 
+# Sparepart
 @app.route('/sparepart', methods=['GET'])
 def sparepart():
-    return render_template("sites/konsumen/index.html")
+    listSparepart = SparepartDB.query.all()
+    print(listSparepart)
+    return render_template("sites/sparepart/index.html", data=enumerate(listSparepart,1))
 
+# Supplier
 @app.route('/supplier', methods=['GET'])
 def supplier():
-    return render_template("sites/konsumen/index.html")
+    listSupplier = SupplierDB.query.all()
+    print(listSupplier)
+    return render_template("sites/supplier/index.html", data=enumerate(listSupplier,1))
+
+@app.route('/supplier/addForm/<int:id>')
+def supplierAddForm(id):
+    supplier = SupplierDB.query.filter_by(id=id).first()
+    return render_template("sites/supplier/addForm.html", data=supplier)
+
+@app.route('/supplier/add', methods=['POST'])
+def supplierAdd():
+    if request.method == 'POST':
+        supplier_name = request.form['supplier_name']
+        supplier_alamat = request.form['supplier_alamat']
+        supplier_phone = request.form['supplier_phone']
+        try:
+            supplier = SupplierDB(supplier_name=supplier_name, 
+                                supplier_alamat=supplier_alamat, 
+                                supplier_phone=supplier_phone)
+            db.session.add(supplier)
+            db.session.commit()
+        except Exception as e:
+            print("Failed to add data.")
+            print(e)
+        return redirect("/supplier/addForm")
+
+
+@app.route('/supplier/editForm/<int:id>')
+def supplierEditForm(id):
+    supplier = SupplierDB.query.filter_by(id=id).first()
+    return render_template("sites/supplier/editForm.html", data=supplier)
+
+@app.route('/supplier/edit', methods=['POST'])
+def supplierEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        konsumen_id = request.form['konsumen_id']
+        supplier_name = request.form['supplier_name']
+        supplier_alamat = request.form['supplier_alamat']
+        supplier_phone = request.form['supplier_phone']
+        try:
+            supplier = SupplierDB.query.filter_by(id=id).first()
+            supplier.supplier_name=supplier_name
+            supplier.supplier_alamat=supplier_alamat 
+            supplier.supplier_phone=supplier_phone
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/supplier/editForm")
+
+@app.route('/supplier/delete/<int:id>')
+def supplierDelete(id):
+    try:
+        konsumen = KonsumenDB.query.filter_by(id=id).first()
+        db.session.delete(konsumen)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/supplier")
