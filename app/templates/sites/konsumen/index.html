@@ -30,17 +30,20 @@
     <table id="example-datatable" class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th class="text-center">#</th>
-                <th>Client</th>
-                <th>Email</th>
-                <th>Subscription</th>
-                <th class="text-center">Actions</th>
+                <th class="text-center">id</th>
+                <th>name</th>
+                <th>address</th>
+                <th>phone</th>
+                <th>action</th>
             </tr>
         </thead>
         <tbody>
             {% for no, x in data %}
                 <tr>
-                    <td>{{ x.id }}</td>
+                    <td>{{ x.konsumen_id }}</td>
+                    <td>{{ x.konsumen_name }}</td>
+                    <td>{{ x.konsumen_address }}</td>
+                    <td>{{ x.konsumen_phone }}</td>
                     <td class="text-center">
                         <div class="btn-group">
                             <a href="javascript:void(0)" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
