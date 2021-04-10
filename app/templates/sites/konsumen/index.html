@@ -22,9 +22,9 @@
 </div>
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
-    <li>Konsumen</li>
+    <li>konsumen</li>
 </ul>
-
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="konsumen/add"><i class="fa fa-arrow-right"></i> Tambah Data</a>
 <!-- Datatables Content -->
 <div class="table-responsive">
     <table id="example-datatable" class="table table-bordered table-hover">
@@ -46,8 +46,8 @@
                     <td>{{ x.konsumen_phone }}</td>
                     <td class="text-center">
                         <div class="btn-group">
-                            <a href="javascript:void(0)" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-                            <a href="javascript:void(0)" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
+                            <a href="konsumen/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+                            <a href="konsumen/delete/{{ x.id }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
                         </div>
                     </td>
                 </tr>
