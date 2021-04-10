@@ -26,13 +26,15 @@
     <li>Tambah Data</li>
 </ul>
 
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="/konsumen"><i class="fa fa-arrow-left"></i> Kembali</a>
+
 <div class="block full">
     <!-- Dropzone Title -->
     <div class="block-title">
         <h2>Form Tambah Data</h2>
     </div>
     <!-- END Dropzone Title -->
-    <form action="add" method="post" enctype="multipart/form-data" class="form-horizontal">
+    <form action="add" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
         <h4 class="sub-header">Text Inputs</h4>
         <div class="form-group">
             <label class="col-md-2 control-label" for="konsumen_id">ID Konsumen</label>
@@ -71,5 +73,32 @@
 {% endblock %}
 
 {% block body_js %}
+
+<script>
+    setInputFilter(document.getElementById("konsumen_id"), function(value) {
+        return /^-?\d*$/.test(value); });
+    function validateForm() {
+        var x = document.forms["form"]["konsumen_id"].value;
+        if (x == "") {
+          alert("Name must be filled out");
+          return false;
+        }
+        var x = document.forms["form"]["konsumen_name"].value;
+        if (x == "") {
+          alert("Name must be filled out");
+          return false;
+        }
+        var x = document.forms["form"]["konsumen_address"].value;
+        if (x == "") {
+          alert("Name must be filled out");
+          return false;
+        }
+        var x = document.forms["form"]["konsumen_phone"].value;
+        if (x == "") {
+          alert("Name must be filled out");
+          return false;
+        }
+      }
+</script>
 
 {% endblock %}
