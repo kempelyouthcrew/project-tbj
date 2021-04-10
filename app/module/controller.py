@@ -103,6 +103,57 @@ def sparepart():
     print(listSparepart)
     return render_template("sites/sparepart/index.html", data=enumerate(listSparepart,1))
 
+@app.route('/sparepart/addForm', methods=['GET'])
+def sparepartAddForm():
+    return render_template("sites/sparepart/addForm.html")
+
+@app.route('/sparepart/add', methods=['POST'])
+def sparepartAdd():
+    if request.method == 'POST':
+        sparepart_name = request.form['sparepart_name']
+        sparepart_number = request.form['sparepart_number']
+        try:
+            sparepart = SparepartDB(sparepart_name=sparepart_name, 
+                                    sparepart_number=sparepart_number)
+            db.session.add(sparepart)
+            db.session.commit()
+        except Exception as e:
+            print("Failed to add data.")
+            print(e)
+        return redirect("/sparepart/addForm")
+
+
+@app.route('/sparepart/editForm/<int:id>')
+def sparepartEditForm(id):
+    return render_template("sites/sparepart/editForm.html")
+
+@app.route('/sparepart/edit', methods=['POST'])
+def sparepartEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        sparepart_name = request.form['sparepart_name']
+        sparepart_number = request.form['sparepart_number']
+        try:
+            supplier = SupplierDB.query.filter_by(id=id).first()
+            sparepart.sparepart_name=sparepart_name
+            sparepart.sparepart_number=sparepart_number
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/sparepart/editForm")
+
+@app.route('/sparepart/delete/<int:id>')
+def sparepartDelete(id):
+    try:
+        sparepart = SparepartDB.query.filter_by(id=id).first()
+        db.session.delete(sparepart)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/sparepart")
+
 # Supplier
 @app.route('/supplier', methods=['GET'])
 def supplier():
@@ -110,10 +161,9 @@ def supplier():
     print(listSupplier)
     return render_template("sites/supplier/index.html", data=enumerate(listSupplier,1))
 
-@app.route('/supplier/addForm/<int:id>')
-def supplierAddForm(id):
-    supplier = SupplierDB.query.filter_by(id=id).first()
-    return render_template("sites/supplier/addForm.html", data=supplier)
+@app.route('/supplier/addForm', methods=['GET'])
+def supplierAddForm():
+    return render_template("sites/supplier/addForm.html")
 
 @app.route('/supplier/add', methods=['POST'])
 def supplierAdd():
