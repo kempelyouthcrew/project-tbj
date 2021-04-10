@@ -1,0 +1,77 @@
+{% extends "layout/layout.html" %}
+
+{% block head_css %}
+
+{% endblock %}
+
+{% block head_js %}
+{% endblock %}
+
+{% block body_content %}
+
+
+<div class="block-header">
+    <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
+    <a href="" class="header-title-link">
+        <h1>
+            <i class="fa fa-cogs animation-expandUp"></i>Konsumen
+            <br>
+            <small>Data Konsumen</small>
+        </h1>
+    </a>
+</div>
+<ul class="breadcrumb breadcrumb-top">
+    <li><i class="fa fa-pencil-square-o"></i></li>
+    <li>Konsumen</li>
+</ul>
+
+<!-- Datatables Content -->
+<div class="table-responsive">
+    <table id="example-datatable" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="text-center">#</th>
+                <th>Client</th>
+                <th>Email</th>
+                <th>Subscription</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for no, x in data %}
+                <tr>
+                    <td>{{ x.id }}</td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <a href="javascript:void(0)" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+                            <a href="javascript:void(0)" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- END Datatables Content -->
+
+
+{% endblock %}
+
+{% block body_js %}
+<script>
+    $(function () {
+        /* Initialize Bootstrap Datatables Integration */
+        webApp.datatables();
+
+        /* Initialize Datatables */
+        $('#example-datatable').dataTable({
+            columnDefs: [{orderable: false, targets: [4]}],
+            pageLength: 15,
+            lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
+        });
+
+        /* Add placeholder attribute to the search form */
+        $('.dataTables_filter input').attr('placeholder', 'Search');
+    });
+</script>
+{% endblock %}
