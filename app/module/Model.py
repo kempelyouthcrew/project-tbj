@@ -1,9 +1,18 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import app
+from sqlalchemy.inspection import inspect
 
 db = SQLAlchemy(app)
 
 # SupplierDB, SparepartDetail, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail
+
+class Serializer(object):
+
+    def serialize(self):
+        return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
+
+    def serialize_list(l):
+        return [m.serialize() for m in l]
 
 class SupplierDB(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
@@ -53,7 +62,7 @@ class QuotationDetail(db.Model):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-class KonsumenDB(db.Model):
+class KonsumenDB(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     konsumen_id = db.Column(db.Integer, nullable=False)
     konsumen_name = db.Column(db.String(255), nullable=False)

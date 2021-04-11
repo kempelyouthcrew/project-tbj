@@ -42,6 +42,11 @@ def konsumen():
 def konsumenAddForm():
     return render_template("sites/konsumen/addForm.html")
 
+@app.route('/master/konsumen', methods=['GET'])
+def konsumenMaster():
+    konsumen = KonsumenDB.query.all()
+    return json.dumps(KonsumenDB.serialize_list(konsumen))
+
 @app.route('/konsumen/add', methods=['POST'])
 def konsumenAdd():
     konsumen_id = request.form['konsumen_id']
@@ -58,7 +63,6 @@ def konsumenAdd():
     except Exception as e:
         print("Failed to add data.")
         print(e)
-
     return render_template("sites/konsumen/addForm.html")
 
 @app.route('/konsumen/edit/<int:id>', methods=['GET'])
@@ -103,7 +107,7 @@ def sparepart():
     print(listSparepart)
     return render_template("sites/sparepart/index.html", data=enumerate(listSparepart,1))
 
-@app.route('/sparepart/addForm', methods=['GET'])
+@app.route('/sparepart/add', methods=['GET'])
 def sparepartAddForm():
     return render_template("sites/sparepart/addForm.html")
 
@@ -120,10 +124,10 @@ def sparepartAdd():
         except Exception as e:
             print("Failed to add data.")
             print(e)
-        return redirect("/sparepart/addForm")
+        return render_template("sites/sparepart/addForm.html")
 
 
-@app.route('/sparepart/editForm/<int:id>')
+@app.route('/sparepart/edit/<int:id>')
 def sparepartEditForm(id):
     return render_template("sites/sparepart/editForm.html")
 
@@ -141,7 +145,7 @@ def sparepartEdit():
         except Exception as e:
             print("Failed to update data")
             print(e)
-        return redirect("/sparepart/editForm")
+        return redirect("/sparepart")
 
 @app.route('/sparepart/delete/<int:id>')
 def sparepartDelete(id):
@@ -161,7 +165,7 @@ def supplier():
     print(listSupplier)
     return render_template("sites/supplier/index.html", data=enumerate(listSupplier,1))
 
-@app.route('/supplier/addForm', methods=['GET'])
+@app.route('/supplier/add', methods=['GET'])
 def supplierAddForm():
     return render_template("sites/supplier/addForm.html")
 
@@ -180,10 +184,10 @@ def supplierAdd():
         except Exception as e:
             print("Failed to add data.")
             print(e)
-        return redirect("/supplier/addForm")
+        return render_template("sites/sparepart/addForm.html")
 
 
-@app.route('/supplier/editForm/<int:id>')
+@app.route('/supplier/edit/<int:id>')
 def supplierEditForm(id):
     supplier = SupplierDB.query.filter_by(id=id).first()
     return render_template("sites/supplier/editForm.html", data=supplier)
@@ -205,7 +209,7 @@ def supplierEdit():
         except Exception as e:
             print("Failed to update data")
             print(e)
-        return redirect("/supplier/editForm")
+        return redirect("/supplier")
 
 @app.route('/supplier/delete/<int:id>')
 def supplierDelete(id):
