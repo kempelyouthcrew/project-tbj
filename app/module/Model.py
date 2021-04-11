@@ -14,7 +14,7 @@ class Serializer(object):
     def serialize_list(l):
         return [m.serialize() for m in l]
 
-class SupplierDB(db.Model):
+class SupplierDB(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     supplier_name = db.Column(db.String(255), nullable=False)
     supplier_alamat = db.Column(db.String(255), nullable=False)
@@ -24,7 +24,7 @@ class SupplierDB(db.Model):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-class SparepartName(db.Model):
+class SparepartName(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     sparepart_name = db.Column(db.String(255), nullable=False)
     created_by = db.Column(db.String(255), nullable=True)

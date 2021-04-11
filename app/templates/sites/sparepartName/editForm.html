@@ -14,7 +14,7 @@
     <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
     <a href="" class="header-title-link">
         <h1>
-            <i class="fa fa-cogs animation-expandUp"></i>Konsumen
+            <i class="fa fa-cogs animation-expandUp"></i>Sparepart Name
             <br>
             <small>Tambah Data</small>
         </h1>
@@ -22,11 +22,11 @@
 </div>
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
-    <li>Konsumen</li>
+    <li>Sparepart Name</li>
     <li>Edit Data</li>
 </ul>
 
-<a class="btn btn-primary" style="margin-bottom: 14px;" href="/konsumen"><i class="fa fa-arrow-left"></i> Kembali</a>
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="/sparepartName"><i class="fa fa-arrow-left"></i> Kembali</a>
 
 <div class="block full">
     <!-- Dropzone Title -->
@@ -34,31 +34,13 @@
         <h2>Form Tambah Data</h2>
     </div>
     <!-- END Dropzone Title -->
-    <form action="/konsumen/edit" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+    <form action="/sparepartName/edit" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
         <input type="text" id="id" name="id" class="form-control" value="{{ data.id }}" style="display:none;" >
         <h4 class="sub-header">Text Inputs</h4>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_id">ID Konsumen</label>
+            <label class="col-md-2 control-label" for="sparepart_name">Nama Sparepart Name</label>
             <div class="col-md-3">
-                <input type="text" id="konsumen_id" name="konsumen_id" class="form-control" value="{{ data.konsumen_id }}" >
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_name">Nama Konsumen</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_name" name="konsumen_name" class="form-control" value="{{ data.konsumen_name }}" >
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_address">Alamat</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_address" name="konsumen_address" class="form-control" value="{{ data.konsumen_address }}" >
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_phone">Telephone</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_phone" name="konsumen_phone" class="form-control" value="{{ data.konsumen_phone }}" >
+                <input type="text" id="sparepart_name" name="sparepart_name" class="form-control" value="{{ data.sparepart_name }}" >
             </div>
         </div>
         <div class="form-group">
@@ -79,24 +61,9 @@
     setInputFilter(document.getElementById("konsumen_id"), function(value) {
         return /^-?\d*$/.test(value); });
     function validateForm() {
-        var x = document.forms["form"]["konsumen_id"].value;
-        if (x == "") {
-          alert("Form id konsumen tidak boleh kosong");
-          return false;
-        }
-        var x = document.forms["form"]["konsumen_name"].value;
+        var x = document.forms["form"]["sparepart_name"].value;
         if (x == "") {
           alert("Form nama konsumen tidak boleh kosong");
-          return false;
-        }
-        var x = document.forms["form"]["konsumen_address"].value;
-        if (x == "") {
-          alert("Form alamat konsumen tidak boleh kosong");
-          return false;
-        }
-        var x = document.forms["form"]["konsumen_phone"].value;
-        if (x == "") {
-          alert("Form telephone tidak boleh kosong");
           return false;
         }
       }

@@ -170,7 +170,7 @@ def supplierAdd():
         except Exception as e:
             print("Failed to add data.")
             print(e)
-        return render_template("sites/sparepart/addForm.html")
+        return render_template("sites/supplier/addForm.html")
 
 
 @app.route('/supplier/edit/<int:id>')
@@ -217,16 +217,21 @@ def sparepart():
 
 @app.route('/sparepart/add', methods=['GET'])
 def sparepartAddForm():
-    return render_template("sites/sparepart/addForm.html")
+    listSparepartName = SparepartName.query.all()
+    listSupplier = SupplierDB.query.all()
+    
+    return render_template("sites/sparepart/addForm.html", listSparepartName=enumerate(listSparepartName), listSupplier=enumerate(listSupplier))
 
 @app.route('/sparepart/add', methods=['POST'])
 def sparepartAdd():
     if request.method == 'POST':
         sparepart_name = request.form['sparepart_name']
+        supplier_id = request.form['supplier_id']
         sparepart_number = request.form['sparepart_number']
         try:
             sparepart = SparepartDB(sparepart_name=sparepart_name, 
-                                    sparepart_number=sparepart_number)
+                                    sparepart_number=sparepart_number,
+                                    supplier_id=supplier_id)
             db.session.add(sparepart)
             db.session.commit()
         except Exception as e:
@@ -270,7 +275,7 @@ def sparepartDelete(id):
 @app.route('/sparepartName', methods=['GET'])
 def sparepartName():
     listSparepartName = SparepartName.query.all()
-    print(listSparepart)
+    print(listSparepartName)
     return render_template("sites/sparepartName/index.html", data=enumerate(listSparepartName,1))
 
 @app.route('/sparepartName/add', methods=['GET'])
@@ -293,7 +298,8 @@ def sparepartNameAdd():
 
 @app.route('/sparepartName/edit/<int:id>')
 def sparepartNameEditForm(id):
-    return render_template("sites/sparepartName/editForm.html")
+    sparepart = SparepartName.query.filter_by(id=id).first()
+    return render_template("sites/sparepartName/editForm.html", data=sparepart)
 
 @app.route('/sparepartName/edit', methods=['POST'])
 def sparepartNameEdit():
@@ -302,7 +308,7 @@ def sparepartNameEdit():
         sparepart_name = request.form['sparepart_name']
         try:
             sparepartName = SparepartName.query.filter_by(id=id).first()
-            sparepartname.sparepart_name=sparepart_name
+            sparepartName.sparepart_name=sparepart_name
             db.session.commit()
         except Exception as e:
             print("Failed to update data")

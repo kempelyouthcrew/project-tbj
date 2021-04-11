@@ -14,40 +14,38 @@
     <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
     <a href="" class="header-title-link">
         <h1>
-            <i class="fa fa-cogs animation-expandUp"></i>Konsumen
+            <i class="fa fa-cogs animation-expandUp"></i>Sparepart
             <br>
-            <small>Data Konsumen</small>
+            <small>Data Sparepart</small>
         </h1>
     </a>
 </div>
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
-    <li>konsumen</li>
+    <li>Sparepart</li>
 </ul>
-<a class="btn btn-primary" style="margin-bottom: 14px;" href="konsumen/add"><i class="fa fa-arrow-right"></i> Tambah Data</a>
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="sparepart/add"><i class="fa fa-arrow-right"></i> Tambah Data</a>
 <!-- Datatables Content -->
 <div class="table-responsive">
     <table id="example-datatable" class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th class="text-center">id</th>
-                <th>name</th>
-                <th>address</th>
-                <th>phone</th>
+                <th>Nama Sparepart</th>
+                <th>Sparepart Number</th>
+                <th>Supplier</th>
                 <th>action</th>
             </tr>
         </thead>
         <tbody>
             {% for no, x in data %}
                 <tr>
-                    <td>{{ x.konsumen_id }}</td>
-                    <td>{{ x.konsumen_name }}</td>
-                    <td>{{ x.konsumen_address }}</td>
-                    <td>{{ x.konsumen_phone }}</td>
+                    <td>{{ x.sparepart_name }}</td>
+                    <td>{{ x.sparepart_number }}</td>
+                    <td>{{ x.supplier_id }}</td>
                     <td class="text-center">
                         <div class="btn-group">
-                            <a href="konsumen/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-                            <a href="konsumen/delete/{{ x.id }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
+                            <a href="sparepart/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+                            <a href="sparepart/delete/{{ x.id }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
                         </div>
                     </td>
                 </tr>
@@ -68,7 +66,7 @@
 
         /* Initialize Datatables */
         $('#example-datatable').dataTable({
-            columnDefs: [{orderable: false, targets: [4]}],
+            columnDefs: [{orderable: false, targets: [3]}],
             pageLength: 15,
             lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
         });
