@@ -14,19 +14,19 @@
     <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
     <a href="" class="header-title-link">
         <h1>
-            <i class="fa fa-cogs animation-expandUp"></i>Sparepart Name
+            <i class="fa fa-cogs animation-expandUp"></i>Sparepart Brand
             <br>
-            <small>Tambah Sparepart Name</small>
+            <small>Tambah Sparepart Brand</small>
         </h1>
     </a>
 </div>
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
-    <li>Sparepart Name</li>
+    <li>Sparepart Brand</li>
     <li>Tambah Data</li>
 </ul>
 
-<a class="btn btn-primary" style="margin-bottom: 14px;" href="/sparepartName"><i class="fa fa-arrow-left"></i> Kembali</a>
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="/sparepartBrand"><i class="fa fa-arrow-left"></i> Kembali</a>
 
 <div class="block full">
     <!-- Dropzone Title -->
@@ -37,9 +37,9 @@
     <form action="add" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
         <h4 class="sub-header">Text Inputs</h4>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="sparepart_name">Sparepart Name</label>
+            <label class="col-md-2 control-label" for="sparepart_brand">Sparepart Brand</label>
             <div class="col-md-3">
-                <input type="text" id="sparepart_name" name="sparepart_name" class="form-control" >
+                <input type="text" id="sparepart_brand" name="sparepart_brand" class="form-control" >
             </div>
         </div>
         <div class="form-group">
@@ -58,7 +58,7 @@
 
 <script>
     function validateForm() {
-        var x = document.forms["form"]["sparepart_name"].value;
+        var x = document.forms["form"]["sparepart_brand"].value;
         if (x == "") {
           alert("Form nama Spare Part tidak boleh kosong");
           return false;

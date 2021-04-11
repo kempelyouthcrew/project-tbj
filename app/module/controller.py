@@ -17,11 +17,15 @@ nav.Bar('leftbar', [
     nav.Item('Welcome', 'welcome', items=[
         nav.Item('Dashboard', 'dashboard'),
     ]),
+    nav.Item('Purchasing', 'data', items=[
+        nav.Item('Quotation', 'quotation'),
+    ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
         nav.Item('Supplier', 'supplier'),
         nav.Item('Sparepart', 'sparepart'),
         nav.Item('Sparepart Name', 'sparepartName'),
+        nav.Item('Sparepart Brand', 'sparepartBrand'),
         nav.Item('User Management', 'usermanagement'),
     ]),
 ])
@@ -219,8 +223,9 @@ def sparepart():
 def sparepartAddForm():
     listSparepartName = SparepartName.query.all()
     listSupplier = SupplierDB.query.all()
+    listSparepartBrand = SparepartBrand.query.all()
     
-    return render_template("sites/sparepart/addForm.html", listSparepartName=enumerate(listSparepartName), listSupplier=enumerate(listSupplier))
+    return render_template("sites/sparepart/addForm.html", listSparepartName=enumerate(listSparepartName), listSupplier=enumerate(listSupplier), listSparepartBrand=enumerate(listSparepartBrand))
 
 @app.route('/sparepart/add', methods=['POST'])
 def sparepartAdd():
@@ -228,9 +233,11 @@ def sparepartAdd():
         sparepart_name = request.form['sparepart_name']
         supplier_id = request.form['supplier_id']
         sparepart_number = request.form['sparepart_number']
+        sparepart_brand = request.form['sparepart_brand']
         try:
             sparepart = SparepartDB(sparepart_name=sparepart_name, 
                                     sparepart_number=sparepart_number,
+                                    sparepart_brand=sparepart_brand,
                                     supplier_id=supplier_id)
             db.session.add(sparepart)
             db.session.commit()
@@ -242,7 +249,11 @@ def sparepartAdd():
 
 @app.route('/sparepart/edit/<int:id>')
 def sparepartEditForm(id):
-    return render_template("sites/sparepart/editForm.html")
+    sparepart = SparepartDB.query.filter_by(id=id).first()
+    listSparepartName = SparepartName.query.all()
+    listSupplier = SupplierDB.query.all()
+    listSparepartBrand = SparepartBrand.query.all()
+    return render_template("sites/sparepart/editForm.html", data=sparepart, listSparepartName=enumerate(listSparepartName), listSupplier=enumerate(listSupplier), listSparepartBrand=enumerate(listSparepartBrand))
 
 @app.route('/sparepart/edit', methods=['POST'])
 def sparepartEdit():
@@ -250,10 +261,12 @@ def sparepartEdit():
         id = request.form['id']
         sparepart_name = request.form['sparepart_name']
         sparepart_number = request.form['sparepart_number']
+        sparepart_brand = request.form['sparepart_brand']
         try:
             sparepart = SparepartDB.query.filter_by(id=id).first()
             sparepart.sparepart_name=sparepart_name
             sparepart.sparepart_number=sparepart_number
+            sparepart.sparepart_brand=sparepart_brand
             db.session.commit()
         except Exception as e:
             print("Failed to update data")
@@ -340,9 +353,9 @@ def sparepartBrandAddForm():
 @app.route('/sparepartBrand/add', methods=['POST'])
 def sparepartBrandAdd():
     if request.method == 'POST':
-        sparepart_name = request.form['sparepart_name']
+        sparepart_brand = request.form['sparepart_brand']
         try:
-            sparepartBrand = SparepartBrand(sparepart_name=sparepart_name)
+            sparepartBrand = SparepartBrand(sparepart_brand=sparepart_brand)
             db.session.add(sparepartBrand)
             db.session.commit()
         except Exception as e:
@@ -360,10 +373,10 @@ def sparepartBrandEditForm(id):
 def sparepartBrandEdit():
     if request.method == 'POST':
         id = request.form['id']
-        sparepart_name = request.form['sparepart_name']
+        sparepart_brand = request.form['sparepart_brand']
         try:
             sparepartBrand = SparepartBrand.query.filter_by(id=id).first()
-            sparepartBrand.sparepart_name=sparepart_name
+            sparepartBrand.sparepart_brand=sparepart_brand
             db.session.commit()
         except Exception as e:
             print("Failed to update data")

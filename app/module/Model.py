@@ -44,6 +44,7 @@ class SparepartDB(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     sparepart_name = db.Column(db.String(255), nullable=False)
     sparepart_number = db.Column(db.String(255), nullable=False)
+    sparepart_brand = db.Column(db.String(255), nullable=False)
     supplier_id = db.Column(db.String(255), nullable=False)
     created_by = db.Column(db.String(255), nullable=True)
     updated_by = db.Column(db.String(255), nullable=True)

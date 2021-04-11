@@ -32,6 +32,7 @@
             <tr>
                 <th>Nama Sparepart</th>
                 <th>Sparepart Number</th>
+                <th>Sparepart Brand</th>
                 <th>Supplier</th>
                 <th>action</th>
             </tr>
@@ -41,6 +42,7 @@
                 <tr>
                     <td>{{ x.sparepart_name }}</td>
                     <td>{{ x.sparepart_number }}</td>
+                    <td>{{ x.sparepart_brand }}</td>
                     <td>{{ x.supplier_id }}</td>
                     <td class="text-center">
                         <div class="btn-group">
@@ -66,7 +68,7 @@
 
         /* Initialize Datatables */
         $('#example-datatable').dataTable({
-            columnDefs: [{orderable: false, targets: [3]}],
+            columnDefs: [{orderable: false, targets: [4]}],
             pageLength: 15,
             lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
         });

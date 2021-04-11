@@ -14,7 +14,7 @@
     <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
     <a href="" class="header-title-link">
         <h1>
-            <i class="fa fa-cogs animation-expandUp"></i>Konsumen
+            <i class="fa fa-cogs animation-expandUp"></i>Sparepart
             <br>
             <small>Tambah Data</small>
         </h1>
@@ -22,11 +22,11 @@
 </div>
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
-    <li>Konsumen</li>
+    <li>Sparepart</li>
     <li>Edit Data</li>
 </ul>
 
-<a class="btn btn-primary" style="margin-bottom: 14px;" href="/konsumen"><i class="fa fa-arrow-left"></i> Kembali</a>
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="/sparepart"><i class="fa fa-arrow-left"></i> Kembali</a>
 
 <div class="block full">
     <!-- Dropzone Title -->
@@ -34,31 +34,61 @@
         <h2>Form Tambah Data</h2>
     </div>
     <!-- END Dropzone Title -->
-    <form action="/konsumen/edit" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+    <form action="add" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
         <input type="text" id="id" name="id" class="form-control" value="{{ data.id }}" style="display:none;" >
         <h4 class="sub-header">Text Inputs</h4>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_id">ID Konsumen</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_id" name="konsumen_id" class="form-control" value="{{ data.konsumen_id }}" >
+            <label class="col-md-2 control-label" for="sparepart_name">Nama Sparepart</label>
+            <div class="col-md-10">
+                <select id="sparepart_name" name="sparepart_name" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
+                    <option></option>
+                    {% for no, x in listSparepartName %}
+                        {% set number = data.sparepart_name | int %}
+                        {% if number == x.id %}
+                            <option selected value="{{ x.id }}">{{ x.sparepart_name }}</option>
+                        {% else %}
+                            <option value="{{ x.id }}">{{ x.sparepart_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_name">Nama Konsumen</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_name" name="konsumen_name" class="form-control" value="{{ data.konsumen_name }}" >
+            <label class="col-md-2 control-label" for="sparepart_brand">Nama Brand</label>
+            <div class="col-md-10">
+                <select id="sparepart_brand" name="sparepart_brand" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
+                    <option></option>
+                    {% for no, x in listSparepartBrand %}
+                        {% set number = data.sparepart_brand | int %}
+                        {% if number == x.id %}
+                            <option selected value="{{ x.id }}">{{ x.sparepart_brand }}</option>
+                        {% else %}
+                            <option value="{{ x.id }}">{{ x.sparepart_brand }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_address">Alamat</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_address" name="konsumen_address" class="form-control" value="{{ data.konsumen_address }}" >
+            <label class="col-md-2 control-label" for="supplier_id">Nama Supplier</label>
+            <div class="col-md-10">
+                <select id="supplier_id" name="supplier_id" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
+                    <option></option>
+                    {% for no, x in listSupplier %}
+                        {% set number = data.supplier_id | int %}
+                        {% if number == x.id %}
+                            <option selected value="{{ x.id }}">{{ x.supplier_name }}</option>
+                        {% else %}
+                            <option value="{{ x.id }}">{{ x.supplier_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_phone">Telephone</label>
+            <label class="col-md-2 control-label" for="sparepart_number">Sparepart Number</label>
             <div class="col-md-3">
-                <input type="text" id="konsumen_phone" name="konsumen_phone" class="form-control" value="{{ data.konsumen_phone }}" >
+                <input type="text" id="sparepart_number" name="sparepart_number" class="form-control" value="{{ data.sparepart_number }}" >
             </div>
         </div>
         <div class="form-group">
@@ -76,25 +106,18 @@
 {% block body_js %}
 
 <script>
-    setInputFilter(document.getElementById("konsumen_id"), function(value) {
-        return /^-?\d*$/.test(value); });
     function validateForm() {
-        var x = document.forms["form"]["konsumen_id"].value;
-        if (x == "") {
-          alert("Form id konsumen tidak boleh kosong");
-          return false;
-        }
-        var x = document.forms["form"]["konsumen_name"].value;
+        var x = document.forms["form"]["sparepart_name"].value;
         if (x == "") {
           alert("Form nama konsumen tidak boleh kosong");
           return false;
         }
-        var x = document.forms["form"]["konsumen_address"].value;
+        var x = document.forms["form"]["supplier_id"].value;
         if (x == "") {
           alert("Form alamat konsumen tidak boleh kosong");
           return false;
         }
-        var x = document.forms["form"]["konsumen_phone"].value;
+        var x = document.forms["form"]["sparepart_number"].value;
         if (x == "") {
           alert("Form telephone tidak boleh kosong");
           return false;

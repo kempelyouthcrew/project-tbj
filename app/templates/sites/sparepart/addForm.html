@@ -48,6 +48,17 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-md-2 control-label" for="sparepart_brand">Nama Brand</label>
+            <div class="col-md-10">
+                <select id="sparepart_brand" name="sparepart_brand" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
+                    <option></option>
+                    {% for no, x in listSparepartBrand %}
+                        <option value="{{ x.id }}">{{ x.sparepart_brand }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-md-2 control-label" for="supplier_id">Nama Supplier</label>
             <div class="col-md-10">
                 <select id="supplier_id" name="supplier_id" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
