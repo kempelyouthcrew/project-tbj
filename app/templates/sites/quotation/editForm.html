@@ -76,8 +76,6 @@
 {% block body_js %}
 
 <script>
-    setInputFilter(document.getElementById("konsumen_id"), function(value) {
-        return /^-?\d*$/.test(value); });
     function validateForm() {
         var x = document.forms["form"]["konsumen_id"].value;
         if (x == "") {

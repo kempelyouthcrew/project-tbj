@@ -2,6 +2,12 @@
 
 {% block head_css %}
 
+<style>
+    .sparepart_row{
+        margin-top: 30px;
+    }
+</style>
+
 {% endblock %}
 
 {% block head_js %}
@@ -14,7 +20,7 @@
     <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
     <a href="" class="header-title-link">
         <h1>
-            <i class="fa fa-cogs animation-expandUp"></i>Konsumen
+            <i class="fa fa-cogs animation-expandUp"></i>Quotation
             <br>
             <small>Tambah Data</small>
         </h1>
@@ -22,11 +28,11 @@
 </div>
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
-    <li>Konsumen</li>
+    <li>Quotation</li>
     <li>Tambah Data</li>
 </ul>
 
-<a class="btn btn-primary" style="margin-bottom: 14px;" href="/konsumen"><i class="fa fa-arrow-left"></i> Kembali</a>
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="/quotation"><i class="fa fa-arrow-left"></i> Kembali</a>
 
 <div class="block full">
     <!-- Dropzone Title -->
@@ -37,27 +43,72 @@
     <form action="add" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
         <h4 class="sub-header">Text Inputs</h4>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_id">ID Konsumen</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_id" name="konsumen_id" class="form-control" >
+            <label class="col-md-2 control-label" for="konsumen_id">Konsumen</label>
+            <div class="col-md-10">
+                <select id="konsumen_id" name="konsumen_id" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
+                    <option></option>
+                    {% for no, x in listKonsumen %}
+                        <option value="{{ x.id }}">{{ x.konsumen_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <!-- <div class="form-group">
+            <label class="col-md-2 control-label" for="sparepart_number">Sparepart Number</label>
+            <div class="col-md-10">
+                <select id="sparepart_number" name="sparepart_number" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
+                    <option></option>
+                    {% for no, x in listSparepart %}
+                        <option value="{{ x.id }}">{{ x.sparepart_number }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div> -->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="sparepart_number">Sparepart</label>
+            <div class="col-md-10">
+                <button type="button" class="btn btn-default add-form-button"><i class="gi gi-circle_plus"></i> Tambah Sparepart</button>
+            </div>
+        </div>
+        <div class="sparepart-form">
+            <div class="form-group">
+                <label class="col-md-2 control-label sparepart_row" for="sparepart_number">-</label>
+                <div class="col-md-10">
+                    <div class="col-sm-3">
+                        <label class="head-dyn" for="sparepart">Nama Sparepart:</label>
+                        <input type="text" id="sparepart[1]" name="sparepart[1]" class="form-control" placeholder="sparepart">
+                    </div>
+                    <div class="col-sm-1">
+                        <label class="head-dyn" for="qty">Quantity:</label>
+                        <input type="text" id="qty[1]" name="qty[1]" class="form-control" placeholder="qty">
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="head-dyn" for="price">price:</label>
+                        <input type="text" id="price[1]" name="price[1]" class="form-control money-format" placeholder="price">
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="head-dyn" for="total_price">Total Price:</label>
+                        <input type="text" id="total_price[1]" name="total_price[1]" class="form-control money-format" placeholder="total price">
+                    </div>
+                    <div class="col-sm-1">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_name">Nama Konsumen</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_name" name="konsumen_name" class="form-control" >
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_address">Alamat</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_address" name="konsumen_address" class="form-control" >
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_phone">Telephone</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_phone" name="konsumen_phone" class="form-control" >
+            <label class="col-md-2 control-label sparepart_row" for="sparepart_number">-</label>
+            <div class="col-md-10">
+                <div class="col-sm-5">
+                   
+                </div>
+                <div class="col-sm-1">
+                    <label class="head-dyn" for="final_price">Final Price:</label>
+                </div>
+                <div class="col-sm-2">
+                    <input type="text" id="final_price" name="final_price" class="form-control money-format" placeholder="final price">
+                </div>
+                <div class="col-sm-1">
+                </div>
             </div>
         </div>
         <div class="form-group">
@@ -75,8 +126,6 @@
 {% block body_js %}
 
 <script>
-    setInputFilter(document.getElementById("konsumen_id"), function(value) {
-        return /^-?\d*$/.test(value); });
     function validateForm() {
         var x = document.forms["form"]["konsumen_id"].value;
         if (x == "") {
@@ -98,7 +147,44 @@
           alert("Form telephone tidak boleh kosong");
           return false;
         }
-      }
+    }
+
+    $( '.money-format' ).mask('000.000.000', {reverse: true});
+
+    var max_fields      = 10; //maximum input boxes allowed
+    
+    var index = 1; //initlal text box count
+    $(".add-form-button").click(function(e){ //on add input button click
+        e.preventDefault();
+        if(index < max_fields){ //max input box allowed
+            index++; //text box increment
+            $(".sparepart-form").append('<div class="form-group">'
+                +'<label class="col-md-2 control-label" for="sparepart_number">-</label><div class="col-md-10">'
+                +'<div class="col-sm-3">'
+                +'    <input type="text" id="sparepart['+ index +']" name="sparepart['+ index +']" class="form-control" placeholder="sparepart">'
+                +'</div>'
+                +'<div class="col-sm-1">'
+                +'    <input type="text" id="qty['+ index +']" name="qty['+ index +']" class="form-control" placeholder="qty">'
+                +'</div>'
+                +'<div class="col-sm-2">'
+                +'    <input type="text" id="price['+ index +']" name="price['+ index +']" class="form-control money-format" placeholder="price">'
+                +'</div>'
+                +'<div class="col-sm-2">'
+                +'    <input type="text" id="total_price['+ index +']" name="total_price['+ index +']" class="form-control money-format" placeholder="total price">'
+                +'</div>'
+                +'<div class="col-sm-1">'
+                +'    <button type="button" class="btn btn-default remove-form-button"><i class="gi gi-circle_remove"></i></button>'
+                +'</div>'
+                +'</div>'
+                +'</div>'
+            ); // add input boxes.
+        }
+    });
+    
+    $(".sparepart-form").on("click",".remove-form-button", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').parent('div').parent('div').remove(); index--;
+    })
+
 </script>
 
 {% endblock %}

@@ -404,7 +404,9 @@ def quotation():
 
 @app.route('/quotation/add', methods=['GET'])
 def quotationAddForm():
-    return render_template("sites/quotation/addForm.html")
+    listSparepart = SparepartDB.query.all()
+    listKonsumen = KonsumenDB.query.all()
+    return render_template("sites/quotation/addForm.html", listSparepart=enumerate(listSparepart), listKonsumen=enumerate(listKonsumen))
 
 @app.route('/quotation/add', methods=['POST'])
 def quotationAdd():
