@@ -1,0 +1,72 @@
+{% extends "layout/layout.html" %}
+
+{% block head_css %}
+
+{% endblock %}
+
+{% block head_js %}
+{% endblock %}
+
+{% block body_content %}
+
+
+<div class="block-header">
+    <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
+    <a href="" class="header-title-link">
+        <h1>
+            <i class="fa fa-cogs animation-expandUp"></i>Sparepart Name
+            <br>
+            <small>Tambah Data</small>
+        </h1>
+    </a>
+</div>
+<ul class="breadcrumb breadcrumb-top">
+    <li><i class="fa fa-pencil-square-o"></i></li>
+    <li>Sparepart Name</li>
+    <li>Edit Data</li>
+</ul>
+
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="/sparepartName"><i class="fa fa-arrow-left"></i> Kembali</a>
+
+<div class="block full">
+    <!-- Dropzone Title -->
+    <div class="block-title">
+        <h2>Form Tambah Data</h2>
+    </div>
+    <!-- END Dropzone Title -->
+    <form action="/sparepartName/edit" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+        <input type="text" id="id" name="id" class="form-control" value="{{ data.id }}" style="display:none;" >
+        <h4 class="sub-header">Text Inputs</h4>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="sparepart_name">Nama Sparepart Name</label>
+            <div class="col-md-3">
+                <input type="text" id="sparepart_name" name="sparepart_name" class="form-control" value="{{ data.sparepart_name }}" >
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-5 col-md-offset-2">
+                <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-arrow-right"></i> Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+{% endblock %}
+
+{% block body_js %}
+
+<script>
+    setInputFilter(document.getElementById("konsumen_id"), function(value) {
+        return /^-?\d*$/.test(value); });
+    function validateForm() {
+        var x = document.forms["form"]["sparepart_name"].value;
+        if (x == "") {
+          alert("Form nama konsumen tidak boleh kosong");
+          return false;
+        }
+      }
+</script>
+
+{% endblock %}

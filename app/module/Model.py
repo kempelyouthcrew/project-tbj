@@ -32,6 +32,14 @@ class SparepartName(db.Model, Serializer):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
+class SparepartBrand(db.Model, Serializer):
+    id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    sparepart_brand = db.Column(db.String(255), nullable=False)
+    created_by = db.Column(db.String(255), nullable=True)
+    updated_by = db.Column(db.String(255), nullable=True)
+    created_add = db.Column(db.DateTime, nullable=True)
+    updated_add = db.Column(db.DateTime, nullable=True)
+
 class SparepartDB(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     sparepart_name = db.Column(db.String(255), nullable=False)

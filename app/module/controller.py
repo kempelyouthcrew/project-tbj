@@ -8,7 +8,7 @@
 from flask import render_template, request, redirect, session, flash
 from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartName, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail, UserManagementDB
+from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail, UserManagementDB
 from flask_navigation import Navigation
 import bcrypt
 
@@ -325,6 +325,61 @@ def sparepartNameDelete(id):
         print("Failed to delete data")
         print(e)
     return redirect("/sparepartName")
+
+# SparepartBrand
+@app.route('/sparepartBrand', methods=['GET'])
+def sparepartBrand():
+    listSparepartBrand = SparepartBrand.query.all()
+    print(listSparepartBrand)
+    return render_template("sites/sparepartBrand/index.html", data=enumerate(listSparepartBrand,1))
+
+@app.route('/sparepartBrand/add', methods=['GET'])
+def sparepartBrandAddForm():
+    return render_template("sites/sparepartBrand/addForm.html")
+
+@app.route('/sparepartBrand/add', methods=['POST'])
+def sparepartBrandAdd():
+    if request.method == 'POST':
+        sparepart_name = request.form['sparepart_name']
+        try:
+            sparepartBrand = SparepartBrand(sparepart_name=sparepart_name)
+            db.session.add(sparepartBrand)
+            db.session.commit()
+        except Exception as e:
+            print("Failed to add data.")
+            print(e)
+        return render_template("sites/sparepartBrand/addForm.html")
+
+
+@app.route('/sparepartBrand/edit/<int:id>')
+def sparepartBrandEditForm(id):
+    sparepart = SparepartBrand.query.filter_by(id=id).first()
+    return render_template("sites/sparepartBrand/editForm.html", data=sparepart)
+
+@app.route('/sparepartBrand/edit', methods=['POST'])
+def sparepartBrandEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        sparepart_name = request.form['sparepart_name']
+        try:
+            sparepartBrand = SparepartBrand.query.filter_by(id=id).first()
+            sparepartBrand.sparepart_name=sparepart_name
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/sparepartBrand")
+
+@app.route('/sparepartBrand/delete/<int:id>')
+def sparepartBrandDelete(id):
+    try:
+        sparepartBrand = SparepartBrand.query.filter_by(id=id).first()
+        db.session.delete(sparepartBrand)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/sparepartBrand")
 
 # User Management
 @app.route('/usermanagement', methods=['GET'])
