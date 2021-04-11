@@ -381,6 +381,88 @@ def sparepartBrandDelete(id):
         print(e)
     return redirect("/sparepartBrand")
 
+# Quotation
+@app.route('/quotation', methods=['GET'])
+def quotation():
+    listQuotation = QuotationDB.query.filter_by(id=id).first()
+    listQuotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
+    print(listQuotation)
+    return render_template("sites/quotation/index.html", data=enumerate(listQuotation,1))
+
+@app.route('/quotation/add', methods=['GET'])
+def quotationAddForm():
+    return render_template("sites/quotation/addForm.html")
+
+@app.route('/quotation/add', methods=['POST'])
+def quotationAdd():
+    quotation_date = request.form['quotation_date']
+    konsumen_id = request.form['konsumen_id']
+    quotation_number = request.form['quotation_number']
+    sparepart_number = request.form['sparepart_number']
+    sparepart_qty = request.form['sparepart_qty']
+    sparepart_price = request.form['sparepart_price']
+    try:
+        quotation = QuotationDB(quotation_date=quotation_date,
+                                konsumen_id=konsumen_id)
+        quotation['detail'] = QuotationDetail(quotation_number=quotation_number,
+                                sparepart_number=sparepart_number,
+                                sparepart_qty=sparepart_qty,
+                                sparepart_price=sparepart_price)
+        db.session.add(quotation)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+    return render_template("sites/quotation/addForm.html")
+
+@app.route('/quotation/edit/<int:id>', methods=['GET'])
+def quotationEditForm(id):
+    quotation = QuotationDB.query.filter_by(id=id).first()
+    quotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
+    return render_template("sites/quotation/editForm.html", data=quotation)
+
+@app.route('/quotation/edit', methods=['POST'])
+def quotationEdit():
+    id = request.form['id']
+    quotation_date = request.form['quotation_date']
+    konsumen_id = request.form['konsumen_id']
+    quotation_number = request.form['quotation_number']
+    sparepart_number = request.form['sparepart_number']
+    sparepart_qty = request.form['sparepart_qty']
+    sparepart_price = request.form['sparepart_price']
+    try:
+        quotation = QuotationDB.query.filter_by(id=id).first()
+        quotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
+        quotation.quotation_date=quotation_date
+        quotation.konsumen_id=konsumen_id 
+        quotation['detail'].quotation_number=quotation_number
+        quotation['detail'].sparepart_number=sparepart_number
+        quotation['detail'].sparepart_qty=sparepart_qty
+        quotation['detail'].sparepart_price=sparepart_price
+        db.session.commit()
+    except Exception as e:
+        print("Failed to update data")
+        print(e)
+    return redirect("/quotation")
+
+@app.route('/quotation/delete/<int:id>')
+def quotationKonsumen(id):
+    try:
+        quotation = QuotationDB.query.filter_by(id=id).first()
+        quotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
+        db.session.delete(quotation)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/quotation")
+
+@app.route('/quotation/info')
+def quotationInfo():
+    quotation = QuotationDB.query.filter_by(id=id).first()
+    quotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
+    return render_template("sites/quotation/info.html")
+
 # User Management
 @app.route('/usermanagement', methods=['GET'])
 def usermanagement():
