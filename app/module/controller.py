@@ -7,9 +7,8 @@
 
 from flask import render_template, request, redirect
 from app import app
-from .Model import db, SupplierDB, SparepartDetail, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail
+from .Model import db, SupplierDB, SparepartName, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail
 from flask_navigation import Navigation
-import json
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
@@ -18,8 +17,9 @@ nav.Bar('leftbar', [
     ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
-        nav.Item('Sparepart', 'sparepart'),
         nav.Item('Supplier', 'supplier'),
+        nav.Item('Sparepart', 'sparepart'),
+        nav.Item('Sparepart Name', 'sparepartName'),
     ]),
 ])
 
@@ -101,64 +101,6 @@ def deleteKonsumen(id):
         print(e)
     return redirect("/konsumen")
 
-# Sparepart
-@app.route('/sparepart', methods=['GET'])
-def sparepart():
-    listSparepart = SparepartDB.query.all()
-    print(listSparepart)
-    return render_template("sites/sparepart/index.html", data=enumerate(listSparepart,1))
-
-@app.route('/sparepart/add', methods=['GET'])
-def sparepartAddForm():
-    return render_template("sites/sparepart/addForm.html")
-
-@app.route('/sparepart/add', methods=['POST'])
-def sparepartAdd():
-    if request.method == 'POST':
-        sparepart_name = request.form['sparepart_name']
-        sparepart_number = request.form['sparepart_number']
-        try:
-            sparepart = SparepartDB(sparepart_name=sparepart_name, 
-                                    sparepart_number=sparepart_number)
-            db.session.add(sparepart)
-            db.session.commit()
-        except Exception as e:
-            print("Failed to add data.")
-            print(e)
-        return render_template("sites/sparepart/addForm.html")
-
-
-@app.route('/sparepart/edit/<int:id>')
-def sparepartEditForm(id):
-    return render_template("sites/sparepart/editForm.html")
-
-@app.route('/sparepart/edit', methods=['POST'])
-def sparepartEdit():
-    if request.method == 'POST':
-        id = request.form['id']
-        sparepart_name = request.form['sparepart_name']
-        sparepart_number = request.form['sparepart_number']
-        try:
-            supplier = SupplierDB.query.filter_by(id=id).first()
-            sparepart.sparepart_name=sparepart_name
-            sparepart.sparepart_number=sparepart_number
-            db.session.commit()
-        except Exception as e:
-            print("Failed to update data")
-            print(e)
-        return redirect("/sparepart")
-
-@app.route('/sparepart/delete/<int:id>')
-def sparepartDelete(id):
-    try:
-        sparepart = SparepartDB.query.filter_by(id=id).first()
-        db.session.delete(sparepart)
-        db.session.commit()
-    except Exception as e:
-        print("Failed to delete data")
-        print(e)
-    return redirect("/sparepart")
-
 # Supplier
 @app.route('/supplier', methods=['GET'])
 def supplier():
@@ -222,3 +164,115 @@ def supplierDelete(id):
         print("Failed to delete data")
         print(e)
     return redirect("/supplier")
+
+# Sparepart
+@app.route('/sparepart', methods=['GET'])
+def sparepart():
+    listSparepart = SparepartDB.query.all()
+    print(listSparepart)
+    return render_template("sites/sparepart/index.html", data=enumerate(listSparepart,1))
+
+@app.route('/sparepart/add', methods=['GET'])
+def sparepartAddForm():
+    return render_template("sites/sparepart/addForm.html")
+
+@app.route('/sparepart/add', methods=['POST'])
+def sparepartAdd():
+    if request.method == 'POST':
+        sparepart_name = request.form['sparepart_name']
+        sparepart_number = request.form['sparepart_number']
+        try:
+            sparepart = SparepartDB(sparepart_name=sparepart_name, 
+                                    sparepart_number=sparepart_number)
+            db.session.add(sparepart)
+            db.session.commit()
+        except Exception as e:
+            print("Failed to add data.")
+            print(e)
+        return render_template("sites/sparepart/addForm.html")
+
+
+@app.route('/sparepart/edit/<int:id>')
+def sparepartEditForm(id):
+    return render_template("sites/sparepart/editForm.html")
+
+@app.route('/sparepart/edit', methods=['POST'])
+def sparepartEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        sparepart_name = request.form['sparepart_name']
+        sparepart_number = request.form['sparepart_number']
+        try:
+            sparepart = SparepartDB.query.filter_by(id=id).first()
+            sparepart.sparepart_name=sparepart_name
+            sparepart.sparepart_number=sparepart_number
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/sparepart")
+
+@app.route('/sparepart/delete/<int:id>')
+def sparepartDelete(id):
+    try:
+        sparepart = SparepartDB.query.filter_by(id=id).first()
+        db.session.delete(sparepart)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/sparepart")
+
+# SparepartName
+@app.route('/sparepartName', methods=['GET'])
+def sparepartName():
+    listSparepartName = SparepartName.query.all()
+    print(listSparepart)
+    return render_template("sites/sparepartName/index.html", data=enumerate(listSparepartName,1))
+
+@app.route('/sparepartName/add', methods=['GET'])
+def sparepartNameAddForm():
+    return render_template("sites/sparepartName/addForm.html")
+
+@app.route('/sparepartName/add', methods=['POST'])
+def sparepartNameAdd():
+    if request.method == 'POST':
+        sparepart_name = request.form['sparepart_name']
+        try:
+            sparepartName = SparepartName(sparepart_name=sparepart_name)
+            db.session.add(sparepartName)
+            db.session.commit()
+        except Exception as e:
+            print("Failed to add data.")
+            print(e)
+        return render_template("sites/sparepartName/addForm.html")
+
+
+@app.route('/sparepartName/edit/<int:id>')
+def sparepartNameEditForm(id):
+    return render_template("sites/sparepartName/editForm.html")
+
+@app.route('/sparepartName/edit', methods=['POST'])
+def sparepartNameEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        sparepart_name = request.form['sparepart_name']
+        try:
+            sparepartName = SparepartName.query.filter_by(id=id).first()
+            sparepartname.sparepart_name=sparepart_name
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/sparepartName")
+
+@app.route('/sparepartName/delete/<int:id>')
+def sparepartNameDelete(id):
+    try:
+        sparepartName = SparepartName.query.filter_by(id=id).first()
+        db.session.delete(sparepartName)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/sparepartName")
