@@ -1,0 +1,63 @@
+{% extends "login/layout.html" %}
+
+{% block head_css %}
+
+{% endblock %}
+
+{% block head_js %}
+{% endblock %}
+
+{% block body_content %}
+
+
+<div id="login-container">
+    <!-- Page Content -->
+    <div id="page-content" class="block remove-margin">
+        <!-- Login Title -->
+        <div class="block-header">
+            <div class="header-section">
+                <h1 class="text-center">TEKNIK BERLIAN JAYA<br><small>Please Login</small></h1>
+            </div>
+        </div>
+        <!-- END Login Title -->
+
+        <!-- Login Form -->
+        <form action="login" method="post" id="form-login" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <input type="text" id="email" name="email" class="form-control input-lg" placeholder="Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <input type="password" id="password" name="password" class="form-control input-lg" placeholder="Password">
+
+                    <!--
+                    Hidden checkbox. Its checked property will be toggled every time the remember me (#btn-remember) button is clicked (js code at the bottom)
+                    You can add the checked property by default (the button will be enabled automatically)
+                    -->
+                    <input type="checkbox" id="login-remember" name="login-remember" hidden>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-8">
+                    <!-- <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-default disabled">Remember me?</button>
+                        <button type="button" class="btn btn-sm btn-default" data-toggle="button" id="btn-remember"><i class="fa fa-check"></i></button>
+                    </div> -->
+                </div>
+                <div class="col-xs-4 text-right">
+                    <button type="submit" class="btn btn-lg btn-primary"><i class="fa fa-angle-right"></i> Login</button>
+                </div>
+            </div>
+        </form>
+        <!-- END Login Form -->
+    </div>
+    <!-- END Page Content -->
+</div>
+
+{% endblock %}
+
+{% block body_js %}
+
+{% endblock %}

@@ -5,11 +5,16 @@
 # dotenv_path = join(dirname(__file__), '.env')
 # load_dotenv(dotenv_path)
 
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, session, flash
+from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartDetail, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail
+from .Model import db, SupplierDB, SparepartDetail, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail, UserManagementDB
 from flask_navigation import Navigation
 import json
+import bcrypt
+
+app.secret_key = '13teknikberlianjaya13'
+# app.permanent_session_lifetime = timedelta(hours=24)
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
@@ -18,17 +23,58 @@ nav.Bar('leftbar', [
     ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
-        nav.Item('Sparepart', 'sparepart'),
         nav.Item('Supplier', 'supplier'),
+        nav.Item('Sparepart', 'sparepart'),
+        nav.Item('User Management', 'usermanagement'),
     ]),
 ])
 
-# Dashboard
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            # flash('You need to login first')
+            return redirect("/login")
+    return wrap
+
+# main
 @app.route('/', methods=['GET'])
+@login_required
 def index():
     return redirect("/dashboard")
 
+# Authentication
+@app.route('/login', methods=['GET'])
+def loginForm():
+    return render_template("login/index.html")
+
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form['email']
+    password = request.form['password'].encode('utf-8')
+    user = UserManagementDB.query.filter_by(user_email=email).first()
+    if user:
+        if bcrypt.hashpw(password, user.user_pass.encode('utf-8')) == user.user_pass.encode('utf-8'):
+            session['name'] = user.user_name
+            session['email'] = user.user_email
+            session['level'] = user.user_level
+            session['logged_in'] = True
+            return redirect("/dashboard")
+        else:
+            return redirect("/login")
+    else:
+        return redirect("/login")
+
+@app.route('/logout', methods=["GET", "POST"])
+def logout():
+    session.clear()
+    return redirect("/login")
+
+# Dashboard
 @app.route('/dashboard', methods=['GET'])
+@login_required
 def dashboard():
     return render_template("sites/dashboard.html")
 
@@ -185,7 +231,7 @@ def supplierAdd():
         except Exception as e:
             print("Failed to add data.")
             print(e)
-        return render_template("sites/sparepart/addForm.html")
+        return redirect("/supplier")
 
 
 @app.route('/supplier/edit/<int:id>')
@@ -197,7 +243,6 @@ def supplierEditForm(id):
 def supplierEdit():
     if request.method == 'POST':
         id = request.form['id']
-        konsumen_id = request.form['konsumen_id']
         supplier_name = request.form['supplier_name']
         supplier_alamat = request.form['supplier_alamat']
         supplier_phone = request.form['supplier_phone']
@@ -222,3 +267,71 @@ def supplierDelete(id):
         print("Failed to delete data")
         print(e)
     return redirect("/supplier")
+
+# User Management
+@app.route('/usermanagement', methods=['GET'])
+def usermanagement():
+    listUserManagement = UserManagementDB.query.all()
+    print(listUserManagement)
+    return render_template("sites/usermanagement/index.html", data=enumerate(listUserManagement,1))
+
+@app.route('/usermanagement/add', methods=['GET'])
+def usermanagementAddForm():
+    return render_template("sites/usermanagement/addForm.html")
+
+@app.route('/usermanagement/add', methods=['POST'])
+def usermanagementAdd():
+    user_name = request.form['user_name']
+    user_email = request.form['user_email']
+    user_pass = request.form['user_pass'].encode('utf-8')
+    user_level = request.form['user_level']
+    # password hash
+    hash_password = bcrypt.hashpw(user_pass, bcrypt.gensalt())
+    try:
+        usermanagement = UserManagementDB(user_name=user_name, 
+                            user_email=user_email, 
+                            user_pass=hash_password, 
+                            user_level=user_level)
+        db.session.add(usermanagement)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+    return render_template("sites/usermanagement/addForm.html")
+
+@app.route('/usermanagement/edit/<int:id>', methods=['GET'])
+def usermanagementEditForm(id):
+    usermanagement = UserManagementDB.query.filter_by(id=id).first()
+    return render_template("sites/usermanagement/editForm.html", data=usermanagement)
+
+@app.route('/usermanagement/edit', methods=['POST'])
+def usermanagementEdit():
+    id = request.form['id']
+    user_name = request.form['user_name']
+    user_email = request.form['user_email']
+    user_pass = request.form['user_pass'].encode('utf-8')
+    user_level = request.form['user_level']
+    # password hash
+    hash_password = bcrypt.hashpw(user_pass, bcrypt.gensalt())
+    try:
+        usermanagement = UserManagementDB.query.filter_by(id=id).first()
+        usermanagement.user_name=user_name
+        usermanagement.user_email=user_email
+        usermanagement.user_pass=hash_password
+        usermanagement.user_level=user_level
+        db.session.commit()
+    except Exception as e:
+        print("Failed to update data")
+        print(e)
+    return redirect("/usermanagement")
+
+@app.route('/usermanagement/delete/<int:id>')
+def deleteusermanagement(id):
+    try:
+        usermanagement = UserManagementDB.query.filter_by(id=id).first()
+        db.session.delete(usermanagement)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/usermanagement")

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+
+        <title>ADMIN - Teknik Berlian Jaya</title>
+
+        <meta name="description" content="FreshUI is a Premium Web App and Admin Template created by pixelcave and published on Themeforest.">
+        <meta name="author" content="pixelcave">
+        <meta name="robots" content="noindex, nofollow">
+
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0">
+        <!-- Icons -->
+        <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon57.png') }}" sizes="57x57">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon72.png') }}" sizes="72x72">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon76.png') }}" sizes="76x76">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon114.png') }}" sizes="114x114">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon120.png') }}" sizes="120x120">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon144.png') }}" sizes="144x144">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon152.png') }}" sizes="152x152">
+        <!-- END Icons -->
+
+        <!-- Stylesheets -->
+        <!-- Bootstrap is included in its original form, unaltered -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+
+        <!-- Related styles of various icon packs and javascript plugins -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins.css') }}">
+
+        <!-- The main stylesheet of this template. All Bootstrap overwrites are defined in here -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+        <!-- Include a specific file here from css/themes/ folder to alter the default theme of the template -->
+
+        <!-- The themes stylesheet of this template (for using specific theme color in individual elements - must included last) -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+        <!-- END Stylesheets -->
+
+        <!-- Modernizr (Browser feature detection library) & Respond.js (Enable responsive CSS code on browsers that don't support it, eg IE8) -->
+        <script src="{{ url_for('static', filename='js/vendor/modernizr-respond.min.js') }}"></script>
+
+        {% block head_css %}{% endblock %}
+        
+        {% block head_js %}{% endblock %}
+    </head>
+    <!-- In the PHP version you can set the following options from the config file -->
+    <!--
+        Add one of the following classes to the body element for the desirable feature:
+        'sidebar-left-pinned'                         for a left pinned sidebar (always visible > 1200px)
+        'sidebar-right-pinned'                        for a right pinned sidebar (always visible > 1200px)
+        'sidebar-left-pinned sidebar-right-pinned'    for both sidebars pinned (always visible > 1200px)
+    -->
+    <body class="header-fixed-top">
+
+        <!-- Header -->
+        <!-- In the PHP version you can set the following options from the config file -->
+        <!-- Add the class .navbar-default or .navbar-inverse for a light or dark header respectively -->
+        <!-- Add the class .navbar-fixed-top or .navbar-fixed-bottom for a fixed header on top or bottom respectively -->
+        <!-- If you add the class .navbar-fixed-top remember to add the class .header-fixed-top to <body> element -->
+        <!-- If you add the class .navbar-fixed-bottom remember to add the class .header-fixed-bottom to <body> element -->
+        <header class="navbar navbar-default navbar-fixed-top">
+            {% include "login/header.html" %}
+        </header>
+
+        <!-- END Header -->
+
+        <!-- FX Container -->
+        <!-- In the PHP version you can set the following options from the config file -->
+        <!--
+            All effects apply in resolutions larger than 1200px width
+            Add one of the following classes to #fx-container for setting an effect to main content when one of the sidebars are opened
+            'fx-none'           remove all effects (better website performance)
+            'fx-opacity'        opacity effect
+            'fx-move'           move effect
+            'fx-push'           push effect
+            'fx-rotate'         rotate effect
+            'fx-push-move'      push-move effect
+            'fx-push-rotate'    push-rotate effect
+        -->
+            <!-- Page content -->
+            
+            {% block body_content %}{% endblock %}  
+            
+            <!-- END Page Content -->
+        <!-- END Page Container -->
+
+        <!-- Scroll to top link, check main.js - scrollToTop() -->
+        <a href="javascript:void(0)" id="to-top"><i class="fa fa-angle-up"></i></a>
+
+        <!-- Include Jquery library from Google's CDN but if something goes wrong get Jquery from local file (Remove 'http:' if you have SSL) -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script>!window.jQuery && document.write(decodeURI('%3Cscript src="http://localhost:5000/static/js/vendor/jquery-1.11.1.min.js"%3E%3C/script%3E'));</script>
+
+        <!-- Bootstrap.js, Jquery plugins and custom Javascript code -->
+        <script src="{{ url_for('static', filename='js/vendor/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/plugins.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+        <!-- Javascript code only for this page -->
+        <script>
+            // Restricts input for the given textbox to the given inputFilter.
+            function setInputFilter(textbox, inputFilter) {
+                ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
+                textbox.addEventListener(event, function() {
+                    if (inputFilter(this.value)) {
+                    this.oldValue = this.value;
+                    this.oldSelectionStart = this.selectionStart;
+                    this.oldSelectionEnd = this.selectionEnd;
+                    } else if (this.hasOwnProperty("oldValue")) {
+                    this.value = this.oldValue;
+                    this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                    } else {
+                    this.value = "";
+                    }
+                });
+                });
+            }
+  
+        </script>
+        {% block body_js %}{% endblock %}
+    </body>
+</html>

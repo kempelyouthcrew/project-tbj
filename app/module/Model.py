@@ -113,3 +113,14 @@ class PODetail(db.Model):
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
+
+class UserManagementDB(db.Model):
+    id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    user_name = db.Column(db.String(255), nullable=False)
+    user_email = db.Column(db.String(255), nullable=False)
+    user_pass = db.Column(db.String(255), nullable=False)
+    user_level = db.Column(db.String(255), nullable=False)
+    created_by = db.Column(db.String(255), nullable=True)
+    updated_by = db.Column(db.String(255), nullable=True)
+    created_add = db.Column(db.DateTime, nullable=True)
+    updated_add = db.Column(db.DateTime, nullable=True)
