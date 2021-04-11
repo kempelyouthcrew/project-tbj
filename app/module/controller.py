@@ -397,10 +397,10 @@ def sparepartBrandDelete(id):
 # Quotation
 @app.route('/quotation', methods=['GET'])
 def quotation():
-    listQuotation = QuotationDB.query.filter_by(id=id).first()
-    listQuotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
+    listQuotation = QuotationDB.query.all()
+    listQuotationDet = QuotationDetail.query.all()
     print(listQuotation)
-    return render_template("sites/quotation/index.html", data=enumerate(listQuotation,1))
+    return render_template("sites/quotation/index.html", listQuotation=enumerate(listQuotation), listQuotationDet=enumerate(listQuotationDet))
 
 @app.route('/quotation/add', methods=['GET'])
 def quotationAddForm():
@@ -417,11 +417,12 @@ def quotationAdd():
     try:
         quotation = QuotationDB(quotation_date=quotation_date,
                                 konsumen_id=konsumen_id)
-        quotation['detail'] = QuotationDetail(quotation_number=quotation_number,
+        quotationDet = QuotationDetail(quotation_number=quotation_number,
                                 sparepart_number=sparepart_number,
                                 sparepart_qty=sparepart_qty,
                                 sparepart_price=sparepart_price)
         db.session.add(quotation)
+        db.session.add(quotationDet)
         db.session.commit()
     except Exception as e:
         print("Failed to add data.")
@@ -431,8 +432,8 @@ def quotationAdd():
 @app.route('/quotation/edit/<int:id>', methods=['GET'])
 def quotationEditForm(id):
     quotation = QuotationDB.query.filter_by(id=id).first()
-    quotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
-    return render_template("sites/quotation/editForm.html", data=quotation)
+    quotationDet= QuotationDetail.query.filter_by(id=id).first()
+    return render_template("sites/quotation/editForm.html", quotation=enumerate(quotation), quotationDet=enumerate(quotationDet))
 
 @app.route('/quotation/edit', methods=['POST'])
 def quotationEdit():
@@ -445,13 +446,13 @@ def quotationEdit():
     sparepart_price = request.form['sparepart_price']
     try:
         quotation = QuotationDB.query.filter_by(id=id).first()
-        quotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
+        quotationDet= QuotationDetail.query.filter_by(id=id).first()
         quotation.quotation_date=quotation_date
         quotation.konsumen_id=konsumen_id 
-        quotation['detail'].quotation_number=quotation_number
-        quotation['detail'].sparepart_number=sparepart_number
-        quotation['detail'].sparepart_qty=sparepart_qty
-        quotation['detail'].sparepart_price=sparepart_price
+        quotationDet.quotation_number=quotation_number
+        quotationDet.sparepart_number=sparepart_number
+        quotationDet.sparepart_qty=sparepart_qty
+        quotationDet.sparepart_price=sparepart_price
         db.session.commit()
     except Exception as e:
         print("Failed to update data")
@@ -462,8 +463,9 @@ def quotationEdit():
 def quotationKonsumen(id):
     try:
         quotation = QuotationDB.query.filter_by(id=id).first()
-        quotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
+        quotationDet = QuotationDetail.query.filter_by(id=id).first()
         db.session.delete(quotation)
+        db.session.delete(quotationDet)
         db.session.commit()
     except Exception as e:
         print("Failed to delete data")
@@ -473,8 +475,8 @@ def quotationKonsumen(id):
 @app.route('/quotation/info')
 def quotationInfo():
     quotation = QuotationDB.query.filter_by(id=id).first()
-    quotation['detail'] = QuotationDetail.query.filter_by(id=id).first()
-    return render_template("sites/quotation/info.html")
+    quotationDet = QuotationDetail.query.filter_by(id=id).first()
+    return render_template("sites/quotation/info.html", quotation=enumerate(quotation), quotationDet=enumerate(quotationDet))
 
 # User Management
 @app.route('/usermanagement', methods=['GET'])
