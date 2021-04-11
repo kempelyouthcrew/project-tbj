@@ -80,8 +80,9 @@
             <!-- Add the class .navbar-fixed-top or .navbar-fixed-bottom for a fixed header on top or bottom respectively -->
             <!-- If you add the class .navbar-fixed-top remember to add the class .header-fixed-top to <body> element -->
             <!-- If you add the class .navbar-fixed-bottom remember to add the class .header-fixed-bottom to <body> element -->
-            
-            {% include "layout/header.html" %}
+            <header class="navbar navbar-default navbar-fixed-top">
+                {% include "layout/header.html" %}
+            </header>
 
             <!-- END Header -->
 
@@ -112,9 +113,7 @@
 
                 <!-- Footer -->
                 <footer class="clearfix">
-                    <div class="pull-left">
-                        <span>2021</span> &copy; <a href="https://1.envato.market/qbN" target="_blank">teknikberlianjaya.com</a>
-                    </div>
+                    {% include "layout/footer.html" %}
                 </footer>
                 <!-- END Footer -->
             </div>
