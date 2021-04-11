@@ -8,13 +8,8 @@
 from flask import render_template, request, redirect, session, flash
 from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartDetail, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail, UserManagementDB
+from .Model import db, SupplierDB, SparepartName, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail, UserManagementDB
 from flask_navigation import Navigation
-import json
-import bcrypt
-
-app.secret_key = '13teknikberlianjaya13'
-# app.permanent_session_lifetime = timedelta(hours=24)
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
@@ -26,6 +21,7 @@ nav.Bar('leftbar', [
         nav.Item('Supplier', 'supplier'),
         nav.Item('Sparepart', 'sparepart'),
         nav.Item('User Management', 'usermanagement'),
+        nav.Item('Sparepart Name', 'sparepartName'),
     ]),
 ])
 
@@ -147,6 +143,70 @@ def deleteKonsumen(id):
         print(e)
     return redirect("/konsumen")
 
+# Supplier
+@app.route('/supplier', methods=['GET'])
+def supplier():
+    listSupplier = SupplierDB.query.all()
+    print(listSupplier)
+    return render_template("sites/supplier/index.html", data=enumerate(listSupplier,1))
+
+@app.route('/supplier/add', methods=['GET'])
+def supplierAddForm():
+    return render_template("sites/supplier/addForm.html")
+
+@app.route('/supplier/add', methods=['POST'])
+def supplierAdd():
+    if request.method == 'POST':
+        supplier_name = request.form['supplier_name']
+        supplier_alamat = request.form['supplier_alamat']
+        supplier_phone = request.form['supplier_phone']
+        try:
+            supplier = SupplierDB(supplier_name=supplier_name, 
+                                supplier_alamat=supplier_alamat, 
+                                supplier_phone=supplier_phone)
+            db.session.add(supplier)
+            db.session.commit()
+        except Exception as e:
+            print("Failed to add data.")
+            print(e)
+        return render_template("sites/sparepart/addForm.html")
+
+
+@app.route('/supplier/edit/<int:id>')
+def supplierEditForm(id):
+    supplier = SupplierDB.query.filter_by(id=id).first()
+    return render_template("sites/supplier/editForm.html", data=supplier)
+
+@app.route('/supplier/edit', methods=['POST'])
+def supplierEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        konsumen_id = request.form['konsumen_id']
+        supplier_name = request.form['supplier_name']
+        supplier_alamat = request.form['supplier_alamat']
+        supplier_phone = request.form['supplier_phone']
+        try:
+            supplier = SupplierDB.query.filter_by(id=id).first()
+            supplier.supplier_name=supplier_name
+            supplier.supplier_alamat=supplier_alamat 
+            supplier.supplier_phone=supplier_phone
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/supplier")
+
+@app.route('/supplier/delete/<int:id>')
+def supplierDelete(id):
+    try:
+        konsumen = KonsumenDB.query.filter_by(id=id).first()
+        db.session.delete(konsumen)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/supplier")
+
 # Sparepart
 @app.route('/sparepart', methods=['GET'])
 def sparepart():
@@ -185,7 +245,7 @@ def sparepartEdit():
         sparepart_name = request.form['sparepart_name']
         sparepart_number = request.form['sparepart_number']
         try:
-            supplier = SupplierDB.query.filter_by(id=id).first()
+            sparepart = SparepartDB.query.filter_by(id=id).first()
             sparepart.sparepart_name=sparepart_name
             sparepart.sparepart_number=sparepart_number
             db.session.commit()
@@ -205,67 +265,69 @@ def sparepartDelete(id):
         print(e)
     return redirect("/sparepart")
 
-# Supplier
-@app.route('/supplier', methods=['GET'])
-def supplier():
-    listSupplier = SupplierDB.query.all()
-    print(listSupplier)
-    return render_template("sites/supplier/index.html", data=enumerate(listSupplier,1))
+# SparepartName
+@app.route('/sparepartName', methods=['GET'])
+def sparepartName():
+    listSparepartName = SparepartName.query.all()
+    print(listSparepart)
+    return render_template("sites/sparepartName/index.html", data=enumerate(listSparepartName,1))
 
-@app.route('/supplier/add', methods=['GET'])
-def supplierAddForm():
-    return render_template("sites/supplier/addForm.html")
+@app.route('/sparepartName/add', methods=['GET'])
+def sparepartNameAddForm():
+    return render_template("sites/sparepartName/addForm.html")
 
-@app.route('/supplier/add', methods=['POST'])
-def supplierAdd():
+@app.route('/sparepartName/add', methods=['POST'])
+def sparepartNameAdd():
     if request.method == 'POST':
-        supplier_name = request.form['supplier_name']
-        supplier_alamat = request.form['supplier_alamat']
-        supplier_phone = request.form['supplier_phone']
+        sparepart_name = request.form['sparepart_name']
         try:
-            supplier = SupplierDB(supplier_name=supplier_name, 
-                                supplier_alamat=supplier_alamat, 
-                                supplier_phone=supplier_phone)
-            db.session.add(supplier)
+            sparepartName = SparepartName(sparepart_name=sparepart_name)
+            db.session.add(sparepartName)
             db.session.commit()
         except Exception as e:
             print("Failed to add data.")
             print(e)
+<<<<<<< HEAD
         return redirect("/supplier")
+=======
+        return render_template("sites/sparepartName/addForm.html")
+>>>>>>> 8d7195bceba95f53de7f7a8aba302f30f7432e28
 
 
-@app.route('/supplier/edit/<int:id>')
-def supplierEditForm(id):
-    supplier = SupplierDB.query.filter_by(id=id).first()
-    return render_template("sites/supplier/editForm.html", data=supplier)
+@app.route('/sparepartName/edit/<int:id>')
+def sparepartNameEditForm(id):
+    return render_template("sites/sparepartName/editForm.html")
 
-@app.route('/supplier/edit', methods=['POST'])
-def supplierEdit():
+@app.route('/sparepartName/edit', methods=['POST'])
+def sparepartNameEdit():
     if request.method == 'POST':
         id = request.form['id']
+<<<<<<< HEAD
         supplier_name = request.form['supplier_name']
         supplier_alamat = request.form['supplier_alamat']
         supplier_phone = request.form['supplier_phone']
+=======
+        sparepart_name = request.form['sparepart_name']
+>>>>>>> 8d7195bceba95f53de7f7a8aba302f30f7432e28
         try:
-            supplier = SupplierDB.query.filter_by(id=id).first()
-            supplier.supplier_name=supplier_name
-            supplier.supplier_alamat=supplier_alamat 
-            supplier.supplier_phone=supplier_phone
+            sparepartName = SparepartName.query.filter_by(id=id).first()
+            sparepartname.sparepart_name=sparepart_name
             db.session.commit()
         except Exception as e:
             print("Failed to update data")
             print(e)
-        return redirect("/supplier")
+        return redirect("/sparepartName")
 
-@app.route('/supplier/delete/<int:id>')
-def supplierDelete(id):
+@app.route('/sparepartName/delete/<int:id>')
+def sparepartNameDelete(id):
     try:
-        konsumen = KonsumenDB.query.filter_by(id=id).first()
-        db.session.delete(konsumen)
+        sparepartName = SparepartName.query.filter_by(id=id).first()
+        db.session.delete(sparepartName)
         db.session.commit()
     except Exception as e:
         print("Failed to delete data")
         print(e)
+<<<<<<< HEAD
     return redirect("/supplier")
 
 # User Management
@@ -335,3 +397,6 @@ def deleteusermanagement(id):
         print("Failed to delete data")
         print(e)
     return redirect("/usermanagement")
+=======
+    return redirect("/sparepartName")
+>>>>>>> 8d7195bceba95f53de7f7a8aba302f30f7432e28
