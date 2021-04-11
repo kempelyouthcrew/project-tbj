@@ -70,14 +70,7 @@
 {% block body_js %}
 
 <script>
-    setInputFilter(document.getElementById("supplier_id"), function(value) {
-        return /^-?\d*$/.test(value); });
     function validateForm() {
-        var x = document.forms["form"]["supplier_id"].value;
-        if (x == "") {
-          alert("Form id supplier tidak boleh kosong");
-          return false;
-        }
         var x = document.forms["form"]["supplier_name"].value;
         if (x == "") {
           alert("Form nama supplier tidak boleh kosong");

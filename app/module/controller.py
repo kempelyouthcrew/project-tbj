@@ -10,6 +10,7 @@ from functools import wraps
 from app import app
 from .Model import db, SupplierDB, SparepartName, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail, UserManagementDB
 from flask_navigation import Navigation
+import bcrypt
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
@@ -20,8 +21,8 @@ nav.Bar('leftbar', [
         nav.Item('Konsumen', 'konsumen'),
         nav.Item('Supplier', 'supplier'),
         nav.Item('Sparepart', 'sparepart'),
-        nav.Item('User Management', 'usermanagement'),
         nav.Item('Sparepart Name', 'sparepartName'),
+        nav.Item('User Management', 'usermanagement'),
     ]),
 ])
 
@@ -287,11 +288,7 @@ def sparepartNameAdd():
         except Exception as e:
             print("Failed to add data.")
             print(e)
-<<<<<<< HEAD
-        return redirect("/supplier")
-=======
         return render_template("sites/sparepartName/addForm.html")
->>>>>>> 8d7195bceba95f53de7f7a8aba302f30f7432e28
 
 
 @app.route('/sparepartName/edit/<int:id>')
@@ -302,13 +299,7 @@ def sparepartNameEditForm(id):
 def sparepartNameEdit():
     if request.method == 'POST':
         id = request.form['id']
-<<<<<<< HEAD
-        supplier_name = request.form['supplier_name']
-        supplier_alamat = request.form['supplier_alamat']
-        supplier_phone = request.form['supplier_phone']
-=======
         sparepart_name = request.form['sparepart_name']
->>>>>>> 8d7195bceba95f53de7f7a8aba302f30f7432e28
         try:
             sparepartName = SparepartName.query.filter_by(id=id).first()
             sparepartname.sparepart_name=sparepart_name
@@ -327,8 +318,7 @@ def sparepartNameDelete(id):
     except Exception as e:
         print("Failed to delete data")
         print(e)
-<<<<<<< HEAD
-    return redirect("/supplier")
+    return redirect("/sparepartName")
 
 # User Management
 @app.route('/usermanagement', methods=['GET'])
@@ -397,6 +387,3 @@ def deleteusermanagement(id):
         print("Failed to delete data")
         print(e)
     return redirect("/usermanagement")
-=======
-    return redirect("/sparepartName")
->>>>>>> 8d7195bceba95f53de7f7a8aba302f30f7432e28
