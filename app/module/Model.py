@@ -40,11 +40,12 @@ class SparepartBrand(db.Model, Serializer):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-class SparepartDB(db.Model):
+class SparepartDB(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     sparepart_name = db.Column(db.String(255), nullable=False)
     sparepart_number = db.Column(db.String(255), nullable=False)
     sparepart_brand = db.Column(db.String(255), nullable=False)
+    sparepart_price = db.Column(db.Integer, nullable=False)
     supplier_id = db.Column(db.String(255), nullable=False)
     created_by = db.Column(db.String(255), nullable=True)
     updated_by = db.Column(db.String(255), nullable=True)
@@ -54,7 +55,13 @@ class SparepartDB(db.Model):
 class QuotationDB(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     quotation_date = db.Column(db.DateTime, nullable=False)
+    quotation_number = db.Column(db.String(255), nullable=False)
+    quotation_validity = db.Column(db.Integer, nullable=False)
     konsumen_id = db.Column(db.Integer, nullable=False)
+    quotation_price = db.Column(db.Integer, nullable=False)
+    quotation_ppn = db.Column(db.Integer, nullable=False)
+    quotation_materai = db.Column(db.Integer, nullable=False)
+    quotation_totalprice = db.Column(db.Integer, nullable=False)
     created_by = db.Column(db.String(255), nullable=True)
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)
@@ -62,10 +69,11 @@ class QuotationDB(db.Model):
 
 class QuotationDetail(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
-    quotation_number = db.Column(db.Integer, nullable=False)
-    sparepart_number = db.Column(db.Integer, nullable=False)
+    sparepart_number = db.Column(db.String(255), nullable=False)
     sparepart_qty = db.Column(db.Integer, nullable=False)
     sparepart_price = db.Column(db.Integer, nullable=False)
+    sparepart_totalprice = db.Column(db.Integer, nullable=False)
+    sparepart_description = db.Column(db.String(255), nullable=False)
     created_by = db.Column(db.String(255), nullable=True)
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)

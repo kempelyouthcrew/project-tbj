@@ -234,11 +234,13 @@ def sparepartAdd():
         supplier_id = request.form['supplier_id']
         sparepart_number = request.form['sparepart_number']
         sparepart_brand = request.form['sparepart_brand']
+        sparepart_price = request.form['sparepart_price']
         try:
             sparepart = SparepartDB(sparepart_name=sparepart_name, 
                                     sparepart_number=sparepart_number,
                                     sparepart_brand=sparepart_brand,
-                                    supplier_id=supplier_id)
+                                    supplier_id=supplier_id,
+                                    sparepart_price=sparepart_price)
             db.session.add(sparepart)
             db.session.commit()
         except Exception as e:
@@ -262,11 +264,13 @@ def sparepartEdit():
         sparepart_name = request.form['sparepart_name']
         sparepart_number = request.form['sparepart_number']
         sparepart_brand = request.form['sparepart_brand']
+        sparepart_price = request.form['sparepart_price']
         try:
             sparepart = SparepartDB.query.filter_by(id=id).first()
             sparepart.sparepart_name=sparepart_name
             sparepart.sparepart_number=sparepart_number
             sparepart.sparepart_brand=sparepart_brand
+            sparepart.sparepart_price=sparepart_price
             db.session.commit()
         except Exception as e:
             print("Failed to update data")
@@ -411,18 +415,32 @@ def quotationAddForm():
 @app.route('/quotation/add', methods=['POST'])
 def quotationAdd():
     quotation_date = request.form['quotation_date']
-    konsumen_id = request.form['konsumen_id']
     quotation_number = request.form['quotation_number']
+    quotation_validity = request.form['quotation_validity']
+    konsumen_id = request.form['konsumen_id']
+    quotation_price = request.form['quotation_price']
+    quotation_ppn = request.form['quotation_ppn']
+    quotation_materai = request.form['quotation_materai']
+    quotation_totalprice = request.form['quotation_totalprice']
     sparepart_number = request.form['sparepart_number']
     sparepart_qty = request.form['sparepart_qty']
     sparepart_price = request.form['sparepart_price']
+    sparepart_totalprice = request.form['sparepart_totalprice']
+    sparepart_description = request.form['sparepart_description']
     try:
         quotation = QuotationDB(quotation_date=quotation_date,
-                                konsumen_id=konsumen_id)
-        quotationDet = QuotationDetail(quotation_number=quotation_number,
-                                sparepart_number=sparepart_number,
+                                quotation_number=quotation_number,
+                                quotation_validity=quotation_validity,
+                                konsumen_id=konsumen_id,
+                                quotation_price=quotation_price,
+                                quotation_ppn=quotation_ppn,
+                                quotation_materai=quotation_materai,
+                                quotation_totalprice=quotation_totalprice)
+        quotationDet = QuotationDetail(sparepart_number=sparepart_number,
                                 sparepart_qty=sparepart_qty,
-                                sparepart_price=sparepart_price)
+                                sparepart_price=sparepart_price,
+                                sparepart_totalprice=sparepart_totalprice,
+                                sparepart_description=sparepart_description)
         db.session.add(quotation)
         db.session.add(quotationDet)
         db.session.commit()
@@ -441,20 +459,34 @@ def quotationEditForm(id):
 def quotationEdit():
     id = request.form['id']
     quotation_date = request.form['quotation_date']
-    konsumen_id = request.form['konsumen_id']
     quotation_number = request.form['quotation_number']
+    quotation_validity = request.form['quotation_validity']
+    konsumen_id = request.form['konsumen_id']
+    quotation_price = request.form['quotation_price']
+    quotation_ppn = request.form['quotation_ppn']
+    quotation_materai = request.form['quotation_materai']
+    quotation_totalprice = request.form['quotation_totalprice']
     sparepart_number = request.form['sparepart_number']
     sparepart_qty = request.form['sparepart_qty']
     sparepart_price = request.form['sparepart_price']
+    sparepart_totalprice = request.form['sparepart_totalprice']
+    sparepart_description = request.form['sparepart_description']
     try:
         quotation = QuotationDB.query.filter_by(id=id).first()
         quotationDet= QuotationDetail.query.filter_by(id=id).first()
         quotation.quotation_date=quotation_date
-        quotation.konsumen_id=konsumen_id 
-        quotationDet.quotation_number=quotation_number
+        quotation.quotation_number=quotation_number
+        quotation.quotation_validity=quotation_validity
+        quotation.konsumen_id=konsumen_id
+        quotation.quotation_price=quotation_price
+        quotation.quotation_ppn=quotation_ppn
+        quotation.quotation_materai=quotation_materai
+        quotation.quotation_totalprice=quotation_totalprice
         quotationDet.sparepart_number=sparepart_number
         quotationDet.sparepart_qty=sparepart_qty
         quotationDet.sparepart_price=sparepart_price
+        quotationDet.sparepart_totalprice=sparepart_totalprice
+        quotationDet.sparepart_description=sparepart_description
         db.session.commit()
     except Exception as e:
         print("Failed to update data")
