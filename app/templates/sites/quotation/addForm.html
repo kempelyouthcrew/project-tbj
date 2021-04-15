@@ -61,11 +61,13 @@
             <div class="form-group">
                 <label class="col-md-2 control-label sparepart_row" for="sparepart_number">-</label>
                 <div class="col-md-10">
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <label class="head-dyn" for="sparepart">Sparepart:</label>
                         <select id="sparepart_1" name="sparepart_1" class="sparepart_1 select-select2" data-placeholder="Choose one.." style="width: 250px;">
                             <option></option>
                         </select>
+                    </div>
+                    <div class="col-sm-1">
                     </div>
                     <div class="col-sm-1">
                         <label class="head-dyn" for="qty">Quantity:</label>
@@ -78,6 +80,10 @@
                     <div class="col-sm-2">
                         <label class="head-dyn" for="total_price">Total Price:</label>
                         <input type="text" id="total_price_1" name="total_price_1" class="form-control money-format prc" placeholder="total price" value="0" readonly>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="head-dyn" for="price">description:</label>
+                        <input type="text" id="description_1" name="description_1" class="form-control" placeholder="description" value="-" readonly>
                     </div>
                     <div class="col-sm-1">
                     </div>
@@ -107,10 +113,10 @@
                    
                 </div>
                 <div class="col-sm-1">
-                    <label class="head-dyn" for="ppn">PPN:</label>
+                    <label class="head-dyn" for="ppn">PPN 10%:</label>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="10" readonly>
+                    <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="0" readonly>
                 </div>
                 <div class="col-sm-1">
                 </div>
@@ -201,8 +207,10 @@
             index++; //text box increment
             let optionElement = '<div class="form-group">'
                 +'<label class="col-md-2 control-label" for="sparepart_number">-</label><div class="col-md-10">'
-                +'<div class="col-sm-3">'
+                +'<div class="col-sm-2">'
                 +'<select id="sparepart_'+ index +'" name="sparepart_'+ index +'" class="sparepart_1 select-select2" data-placeholder="Choose one.." style="width: 250px;"><option></option></select>'
+                +'</div>'
+                +'<div class="col-sm-1">'
                 +'</div>'
                 +'<div class="col-sm-1">'
                 +'    <input type="number" id="qty_'+ index +'" name="qty_'+ index +'" class="form-control" placeholder="qty" min="1" value ="1">'
@@ -212,6 +220,9 @@
                 +'</div>'
                 +'<div class="col-sm-2">'
                 +'    <input type="text" id="total_price_'+ index +'" name="total_price_'+ index +'" class="form-control money-format prc" placeholder="total price" value="0" readonly>'
+                +'</div>'
+                +'<div class="col-sm-3">'
+                +'    <input type="text" id="description_'+ index +'" name="description_'+ index +'" class="form-control" placeholder="description" value="-" readonly>'
                 +'</div>'
                 +'<div class="col-sm-1">'
                 +'    <button type="button" class="btn btn-default remove-form-button"><i class="gi gi-circle_remove"></i></button>'
@@ -274,11 +285,12 @@
         });
         $("#sum_price").val(sum);
         let fp = parseInt($("#sum_price").val())
-        let ppn = parseInt($("#ppn").val())
+        let ppn = 10
         let materai = parseInt($("#materai").val())
-        ppn = fp * (ppn/100);
+        let ppn_due = fp * (ppn/100);
+        let grandprice = fp + ppn_due + materai
 
-        let grandprice = fp + ppn + materai
+        $("#ppn").val(ppn_due);
         $("#grandprice").val(grandprice);
 
     }

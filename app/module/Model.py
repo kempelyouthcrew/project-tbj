@@ -69,6 +69,7 @@ class QuotationDB(db.Model):
 
 class QuotationDetail(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    quotation_id = db.Column(db.String(255), nullable=False)
     sparepart_number = db.Column(db.String(255), nullable=False)
     sparepart_qty = db.Column(db.Integer, nullable=False)
     sparepart_price = db.Column(db.Integer, nullable=False)

@@ -445,22 +445,25 @@ def quotationAdd():
     i = 0
     while i < int(formCount):
         i = i + 1
-        sparepart_number = request.form['sparepart_'+ str(i)]
-        sparepart_qty = request.form['qty_'+ str(i)]
-        sparepart_price = request.form['price_'+ str(i)]
-        sparepart_totalprice = request.form['total_price_'+ str(i)]
-        sparepart_description = "llll"
-        try:
-            quotationDet = QuotationDetail(sparepart_number=sparepart_number,
-                                sparepart_qty=sparepart_qty,
-                                sparepart_price=sparepart_price,
-                                sparepart_totalprice=sparepart_totalprice,
-                                sparepart_description=idParent)
-            db.session.add(quotationDet)
-            db.session.commit()
-        except Exception as e:
-            print("Failed to add data.")
-            print(e)
+        if 'sparepart_'+ str(i) in request.form:
+            quotation_id = idParent
+            sparepart_number = request.form['sparepart_'+ str(i)]
+            sparepart_qty = request.form['qty_'+ str(i)]
+            sparepart_price = request.form['price_'+ str(i)]
+            sparepart_totalprice = request.form['total_price_'+ str(i)]
+            sparepart_description = request.form['description_'+ str(i)]
+            try:
+                quotationDet = QuotationDetail(quotation_id=quotation_id,
+                                    sparepart_number=sparepart_number,
+                                    sparepart_qty=sparepart_qty,
+                                    sparepart_price=sparepart_price,
+                                    sparepart_totalprice=sparepart_totalprice,
+                                    sparepart_description=sparepart_description)
+                db.session.add(quotationDet)
+                db.session.commit()
+            except Exception as e:
+                print("Failed to add data.")
+                print(e)
 
     return render_template("sites/quotation/addForm.html")
 
@@ -521,11 +524,34 @@ def quotationKonsumen(id):
         print(e)
     return redirect("/quotation")
 
-@app.route('/quotation/info')
-def quotationInfo():
-    quotation = QuotationDB.query.filter_by(id=id).first()
-    quotationDet = QuotationDetail.query.filter_by(id=id).first()
-    return render_template("sites/quotation/info.html", quotation=enumerate(quotation), quotationDet=enumerate(quotationDet))
+@app.route('/quotation/info/<int:id>', methods=['GET'])
+def quotationInfo(id):
+    quotation = QuotationDetail.query\
+        .join(QuotationDB, QuotationDB.id==QuotationDetail.quotation_id)\
+        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+        .join(SparepartDB, QuotationDetail.sparepart_number==SparepartDB.id)\
+        .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+        .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+        .add_columns(\
+            QuotationDB.id,\
+            QuotationDB.quotation_date,\
+            QuotationDB.quotation_number,\
+            QuotationDB.quotation_price,\
+            QuotationDB.quotation_ppn,\
+            QuotationDB.quotation_materai,\
+            QuotationDB.quotation_totalprice,\
+            SparepartDB.sparepart_number,\
+            SparepartName.sparepart_name,\
+            QuotationDetail.sparepart_qty,\
+            QuotationDetail.sparepart_price,\
+            QuotationDetail.sparepart_totalprice,\
+            QuotationDB.quotation_number,\
+            KonsumenDB.konsumen_address,\
+            KonsumenDB.konsumen_name\
+        )\
+        .all()
+    print(quotation)
+    return render_template("sites/quotation/info.html", quotation=quotation)
 
 # User Management
 @app.route('/usermanagement', methods=['GET'])
