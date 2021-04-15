@@ -11,6 +11,7 @@ from app import app
 from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail, UserManagementDB
 from flask_navigation import Navigation
 import bcrypt
+import json
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
@@ -89,11 +90,6 @@ def konsumen():
 @app.route('/konsumen/add', methods=['GET'])
 def konsumenAddForm():
     return render_template("sites/konsumen/addForm.html")
-
-@app.route('/master/konsumen', methods=['GET'])
-def konsumenMaster():
-    konsumen = KonsumenDB.query.all()
-    return json.dumps(KonsumenDB.serialize_list(konsumen))
 
 @app.route('/konsumen/add', methods=['POST'])
 def konsumenAdd():
@@ -410,7 +406,7 @@ def quotation():
 def quotationAddForm():
     listSparepart = SparepartDB.query.all()
     listKonsumen = KonsumenDB.query.all()
-    return render_template("sites/quotation/addForm.html", listSparepart=enumerate(listSparepart), listKonsumen=enumerate(listKonsumen))
+    return render_template("sites/quotation/addForm.html", listSparepart=listSparepart, listKonsumen=enumerate(listKonsumen))
 
 @app.route('/quotation/add', methods=['POST'])
 def quotationAdd():
@@ -579,3 +575,15 @@ def deleteusermanagement(id):
         print("Failed to delete data")
         print(e)
     return redirect("/usermanagement")
+
+# Master json
+
+@app.route('/master/konsumen', methods=['GET'])
+def konsumenMaster():
+    konsumen = KonsumenDB.query.all()
+    return json.dumps(KonsumenDB.serialize_list(konsumen))
+
+@app.route('/master/sparepart', methods=['GET'])
+def sparepartMaster():
+    sparepart = SparepartDB.query.all()
+    return json.dumps(SparepartDB.serialize_list(sparepart))

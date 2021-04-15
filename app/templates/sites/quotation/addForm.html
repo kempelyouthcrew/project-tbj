@@ -47,23 +47,9 @@
             <div class="col-md-10">
                 <select id="konsumen_id" name="konsumen_id" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
                     <option></option>
-                    {% for no, x in listKonsumen %}
-                        <option value="{{ x.id }}">{{ x.konsumen_name }}</option>
-                    {% endfor %}
                 </select>
             </div>
         </div>
-        <!-- <div class="form-group">
-            <label class="col-md-2 control-label" for="sparepart_number">Sparepart Number</label>
-            <div class="col-md-10">
-                <select id="sparepart_number" name="sparepart_number" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
-                    <option></option>
-                    {% for no, x in listSparepart %}
-                        <option value="{{ x.id }}">{{ x.sparepart_number }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div> -->
         <div class="form-group">
             <label class="col-md-2 control-label" for="sparepart_number">Sparepart</label>
             <div class="col-md-10">
@@ -75,20 +61,22 @@
                 <label class="col-md-2 control-label sparepart_row" for="sparepart_number">-</label>
                 <div class="col-md-10">
                     <div class="col-sm-3">
-                        <label class="head-dyn" for="sparepart">Nama Sparepart:</label>
-                        <input type="text" id="sparepart[1]" name="sparepart[1]" class="form-control" placeholder="sparepart">
+                        <label class="head-dyn" for="sparepart">Sparepart:</label>
+                        <select id="sparepart_1" name="sparepart[]" class="sparepart_1 select-select2" data-placeholder="Choose one.." style="width: 250px;">
+                            <option></option>
+                        </select>
                     </div>
                     <div class="col-sm-1">
                         <label class="head-dyn" for="qty">Quantity:</label>
-                        <input type="text" id="qty[1]" name="qty[1]" class="form-control" placeholder="qty">
+                        <input type="number" id="qty_1" name="qty[]" class="form-control" placeholder="qty" min="1" value ="1">
                     </div>
                     <div class="col-sm-2">
                         <label class="head-dyn" for="price">price:</label>
-                        <input type="text" id="price[1]" name="price[1]" class="form-control money-format" placeholder="price">
+                        <input type="text" id="price_1" name="price[]" class="form-control money-format" placeholder="price" value="0" readonly>
                     </div>
                     <div class="col-sm-2">
                         <label class="head-dyn" for="total_price">Total Price:</label>
-                        <input type="text" id="total_price[1]" name="total_price[1]" class="form-control money-format" placeholder="total price">
+                        <input type="text" id="total_price_1" name="total_price[]" class="form-control money-format prc" placeholder="total price" value="0" readonly>
                     </div>
                     <div class="col-sm-1">
                     </div>
@@ -96,7 +84,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label sparepart_row" for="sparepart_number">-</label>
+            <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>
             <div class="col-md-10">
                 <div class="col-sm-5">
                    
@@ -105,7 +93,7 @@
                     <label class="head-dyn" for="final_price">Final Price:</label>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="final_price" name="final_price" class="form-control money-format" placeholder="final price">
+                    <input type="text" id="final_price" name="final_price" class="form-control money-format" placeholder="final price" value="0" readonly>
                 </div>
                 <div class="col-sm-1">
                 </div>
@@ -126,6 +114,13 @@
 {% block body_js %}
 
 <script>
+    let max_fields      = 10; //maximum input boxes allowed
+    let index = 1;
+    let sparePartData
+    getKonsumen()
+    getSparepart(1)
+    actionFormDynamic(index)
+
     function validateForm() {
         var x = document.forms["form"]["konsumen_id"].value;
         if (x == "") {
@@ -149,41 +144,134 @@
         }
     }
 
-    $( '.money-format' ).mask('000.000.000', {reverse: true});
+    // $( '.money-format' ).mask('000.000.000', {reverse: true});
 
-    var max_fields      = 10; //maximum input boxes allowed
-    
-    var index = 1; //initlal text box count
     $(".add-form-button").click(function(e){ //on add input button click
         e.preventDefault();
-        if(index < max_fields){ //max input box allowed
+        // if(index < max_fields){
             index++; //text box increment
-            $(".sparepart-form").append('<div class="form-group">'
+            let optionElement = '<div class="form-group">'
                 +'<label class="col-md-2 control-label" for="sparepart_number">-</label><div class="col-md-10">'
                 +'<div class="col-sm-3">'
-                +'    <input type="text" id="sparepart['+ index +']" name="sparepart['+ index +']" class="form-control" placeholder="sparepart">'
+                +'<select id="sparepart_'+ index +'" name="sparepart[]" class="sparepart_1 select-select2" data-placeholder="Choose one.." style="width: 250px;"><option></option></select>'
                 +'</div>'
                 +'<div class="col-sm-1">'
-                +'    <input type="text" id="qty['+ index +']" name="qty['+ index +']" class="form-control" placeholder="qty">'
+                +'    <input type="number" id="qty_'+ index +'" name="qty[]" class="form-control" placeholder="qty" min="1" value ="1">'
                 +'</div>'
                 +'<div class="col-sm-2">'
-                +'    <input type="text" id="price['+ index +']" name="price['+ index +']" class="form-control money-format" placeholder="price">'
+                +'    <input type="text" id="price_'+ index +'" name="price[]" class="form-control money-format" placeholder="price" value="0" readonly>'
                 +'</div>'
                 +'<div class="col-sm-2">'
-                +'    <input type="text" id="total_price['+ index +']" name="total_price['+ index +']" class="form-control money-format" placeholder="total price">'
+                +'    <input type="text" id="total_price_'+ index +'" name="total_price[]" class="form-control money-format prc" placeholder="total price" value="0" readonly>'
                 +'</div>'
                 +'<div class="col-sm-1">'
                 +'    <button type="button" class="btn btn-default remove-form-button"><i class="gi gi-circle_remove"></i></button>'
                 +'</div>'
                 +'</div>'
                 +'</div>'
-            ); // add input boxes.
-        }
+
+            $(".sparepart-form").append(optionElement); // add input boxes.
+            $('#sparepart_'+ index).select2();
+            let html = setOption()
+            $('#sparepart_' + index).append(html);
+            actionFormDynamic(index)
+        // }
     });
+
+    function actionFormDynamic(index) {        
+        $('#sparepart_'+ index).change(function(){ 
+            let id_spare = parseInt($('#sparepart_'+ index).val())
+            let qty = parseInt($('#qty_'+ index).val())
+            let price = 0
+            let total_price = 0
+
+            for (i = 0; i < sparePartData.length; i++) {
+                if (parseInt(sparePartData[i].id) == id_spare) {
+                    price = sparePartData[i].sparepart_price
+                    i = sparePartData.length
+                }
+            }
+
+            total_price = price * qty
+
+            $('#price_'+ index).val(price)
+            $('#total_price_'+ index).val(total_price)
+            setFinalPrice()
+        });
+        $('#qty_'+ index).change(function(){ 
+            let qty = parseInt($('#qty_'+ index).val())
+            let price = parseInt($('#price_'+ index).val())
+            let total_price = price * qty
+            console.log('fe',total_price)
+            $('#total_price_'+ index).val(total_price)
+        });
+        $('#qty_'+ index).change(function(){ 
+            var sum = 0;
+            $(".prc").each(function(){
+                sum += +$(this).val();
+            });
+            $("#final_price").val(sum);
+            setFinalPrice()
+        });
+    }
+
+    function setFinalPrice() {
+        var sum = 0;
+        $(".prc").each(function(){
+            sum += +$(this).val();
+        });
+        $("#final_price").val(sum);
+    }
     
     $(".sparepart-form").on("click",".remove-form-button", function(e){ //user click on remove text
-        e.preventDefault(); $(this).parent('div').parent('div').parent('div').remove(); index--;
+        e.preventDefault(); $(this).parent('div').parent('div').parent('div').remove();
+        setFinalPrice()
     })
+
+    function setOption() {
+        let html = ""
+        for (i = 0; i < sparePartData.length; i++) {
+            id = sparePartData[i].id
+            sparepart_number = sparePartData[i].sparepart_number
+            html += "<option value='"+ id +"'>"+ sparepart_number +"</option>"
+        }
+        return html
+    }
+
+    function getKonsumen() {
+        $.ajax({
+            type:"GET",
+            url:"http://localhost:5000/master/konsumen",
+            success: function(data) {
+                html = ""
+                for (i = 0; i < data.length; i++) {
+                    id = data[i].id
+                    konsumen_name = data[i].konsumen_name
+                    html += "<option value='"+ id +"'>"+ konsumen_name +"</option>"
+                }
+                $('#konsumen_id').append(html);              
+            },
+            dataType: 'json',
+          });
+    }
+
+    function getSparepart(numberRow) {
+        $.ajax({
+            type:"GET",
+            url:"http://localhost:5000/master/sparepart",
+            success: function(data) {
+                sparePartData = data
+                html = ""
+                for (i = 0; i < data.length; i++) {
+                    id = data[i].id
+                    sparepart_number = data[i].sparepart_number
+                    html += "<option value='"+ id +"'>"+ sparepart_number +"</option>"
+                }
+                $('#sparepart_' + numberRow).append(html);               
+            },
+            dataType: 'json',
+          });
+    }
 
 </script>
 
