@@ -12,6 +12,7 @@ from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, Q
 from flask_navigation import Navigation
 import bcrypt
 import json
+import datetime
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
@@ -397,10 +398,11 @@ def sparepartBrandDelete(id):
 # Quotation
 @app.route('/quotation', methods=['GET'])
 def quotation():
-    listQuotation = QuotationDB.query.all()
-    listQuotationDet = QuotationDetail.query.all()
+    listQuotation = QuotationDB.query.join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+        .add_columns(QuotationDB.id, QuotationDB.quotation_date, QuotationDB.quotation_number, KonsumenDB.konsumen_name)
+
     print(listQuotation)
-    return render_template("sites/quotation/index.html", listQuotation=enumerate(listQuotation), listQuotationDet=enumerate(listQuotationDet))
+    return render_template("sites/quotation/index.html", listQuotation=enumerate(listQuotation))
 
 @app.route('/quotation/add', methods=['GET'])
 def quotationAddForm():
@@ -410,19 +412,18 @@ def quotationAddForm():
 
 @app.route('/quotation/add', methods=['POST'])
 def quotationAdd():
-    quotation_date = request.form['quotation_date']
-    quotation_number = request.form['quotation_number']
-    quotation_validity = request.form['quotation_validity']
+    dateNow = datetime.datetime.now()
+    quotation_date = dateNow
+    quotation_number = '909090'
+    quotation_validity = 1
+    formCount = request.form['formCount']
     konsumen_id = request.form['konsumen_id']
-    quotation_price = request.form['quotation_price']
-    quotation_ppn = request.form['quotation_ppn']
-    quotation_materai = request.form['quotation_materai']
-    quotation_totalprice = request.form['quotation_totalprice']
-    sparepart_number = request.form['sparepart_number']
-    sparepart_qty = request.form['sparepart_qty']
-    sparepart_price = request.form['sparepart_price']
-    sparepart_totalprice = request.form['sparepart_totalprice']
-    sparepart_description = request.form['sparepart_description']
+    quotation_price = request.form['sum_price']
+    quotation_ppn = request.form['ppn']
+    quotation_materai = request.form['materai']
+    quotation_totalprice = request.form['grandprice']
+    idParent = ""
+
     try:
         quotation = QuotationDB(quotation_date=quotation_date,
                                 quotation_number=quotation_number,
@@ -432,17 +433,35 @@ def quotationAdd():
                                 quotation_ppn=quotation_ppn,
                                 quotation_materai=quotation_materai,
                                 quotation_totalprice=quotation_totalprice)
-        quotationDet = QuotationDetail(sparepart_number=sparepart_number,
-                                sparepart_qty=sparepart_qty,
-                                sparepart_price=sparepart_price,
-                                sparepart_totalprice=sparepart_totalprice,
-                                sparepart_description=sparepart_description)
         db.session.add(quotation)
-        db.session.add(quotationDet)
         db.session.commit()
+        db.session.flush()  
+        idParent = quotation.id
+        
     except Exception as e:
         print("Failed to add data.")
         print(e)
+
+    i = 0
+    while i < int(formCount):
+        i = i + 1
+        sparepart_number = request.form['sparepart_'+ str(i)]
+        sparepart_qty = request.form['qty_'+ str(i)]
+        sparepart_price = request.form['price_'+ str(i)]
+        sparepart_totalprice = request.form['total_price_'+ str(i)]
+        sparepart_description = "llll"
+        try:
+            quotationDet = QuotationDetail(sparepart_number=sparepart_number,
+                                sparepart_qty=sparepart_qty,
+                                sparepart_price=sparepart_price,
+                                sparepart_totalprice=sparepart_totalprice,
+                                sparepart_description=idParent)
+            db.session.add(quotationDet)
+            db.session.commit()
+        except Exception as e:
+            print("Failed to add data.")
+            print(e)
+
     return render_template("sites/quotation/addForm.html")
 
 @app.route('/quotation/edit/<int:id>', methods=['GET'])

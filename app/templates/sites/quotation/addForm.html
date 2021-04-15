@@ -41,6 +41,7 @@
     </div>
     <!-- END Dropzone Title -->
     <form action="add" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+        <input type="text" id="formCount" name="formCount" class="form-control" value="1" style="display: none;">
         <h4 class="sub-header">Text Inputs</h4>
         <div class="form-group">
             <label class="col-md-2 control-label" for="konsumen_id">Konsumen</label>
@@ -62,21 +63,21 @@
                 <div class="col-md-10">
                     <div class="col-sm-3">
                         <label class="head-dyn" for="sparepart">Sparepart:</label>
-                        <select id="sparepart_1" name="sparepart[]" class="sparepart_1 select-select2" data-placeholder="Choose one.." style="width: 250px;">
+                        <select id="sparepart_1" name="sparepart_1" class="sparepart_1 select-select2" data-placeholder="Choose one.." style="width: 250px;">
                             <option></option>
                         </select>
                     </div>
                     <div class="col-sm-1">
                         <label class="head-dyn" for="qty">Quantity:</label>
-                        <input type="number" id="qty_1" name="qty[]" class="form-control" placeholder="qty" min="1" value ="1">
+                        <input type="number" id="qty_1" name="qty_1" class="form-control" placeholder="qty" min="1" value ="1">
                     </div>
                     <div class="col-sm-2">
                         <label class="head-dyn" for="price">price:</label>
-                        <input type="text" id="price_1" name="price[]" class="form-control money-format" placeholder="price" value="0" readonly>
+                        <input type="text" id="price_1" name="price_1" class="form-control money-format" placeholder="price" value="0" readonly>
                     </div>
                     <div class="col-sm-2">
                         <label class="head-dyn" for="total_price">Total Price:</label>
-                        <input type="text" id="total_price_1" name="total_price[]" class="form-control money-format prc" placeholder="total price" value="0" readonly>
+                        <input type="text" id="total_price_1" name="total_price_1" class="form-control money-format prc" placeholder="total price" value="0" readonly>
                     </div>
                     <div class="col-sm-1">
                     </div>
@@ -90,10 +91,58 @@
                    
                 </div>
                 <div class="col-sm-1">
-                    <label class="head-dyn" for="final_price">Final Price:</label>
+                    <label class="head-dyn" for="sum_price">Total Price:</label>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="final_price" name="final_price" class="form-control money-format" placeholder="final price" value="0" readonly>
+                    <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="0" readonly>
+                </div>
+                <div class="col-sm-1">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>
+            <div class="col-md-10">
+                <div class="col-sm-5">
+                   
+                </div>
+                <div class="col-sm-1">
+                    <label class="head-dyn" for="ppn">PPN:</label>
+                </div>
+                <div class="col-sm-2">
+                    <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="10" readonly>
+                </div>
+                <div class="col-sm-1">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>
+            <div class="col-md-10">
+                <div class="col-sm-5">
+                   
+                </div>
+                <div class="col-sm-1">
+                    <label class="head-dyn" for="materai">Materai:</label>
+                </div>
+                <div class="col-sm-2">
+                    <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="10000" readonly>
+                </div>
+                <div class="col-sm-1">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>
+            <div class="col-md-10">
+                <div class="col-sm-5">
+                   
+                </div>
+                <div class="col-sm-1">
+                    <label class="head-dyn" for="grandprice">Grand Price:</label>
+                </div>
+                <div class="col-sm-2">
+                    <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="0" readonly>
                 </div>
                 <div class="col-sm-1">
                 </div>
@@ -153,16 +202,16 @@
             let optionElement = '<div class="form-group">'
                 +'<label class="col-md-2 control-label" for="sparepart_number">-</label><div class="col-md-10">'
                 +'<div class="col-sm-3">'
-                +'<select id="sparepart_'+ index +'" name="sparepart[]" class="sparepart_1 select-select2" data-placeholder="Choose one.." style="width: 250px;"><option></option></select>'
+                +'<select id="sparepart_'+ index +'" name="sparepart_'+ index +'" class="sparepart_1 select-select2" data-placeholder="Choose one.." style="width: 250px;"><option></option></select>'
                 +'</div>'
                 +'<div class="col-sm-1">'
-                +'    <input type="number" id="qty_'+ index +'" name="qty[]" class="form-control" placeholder="qty" min="1" value ="1">'
+                +'    <input type="number" id="qty_'+ index +'" name="qty_'+ index +'" class="form-control" placeholder="qty" min="1" value ="1">'
                 +'</div>'
                 +'<div class="col-sm-2">'
-                +'    <input type="text" id="price_'+ index +'" name="price[]" class="form-control money-format" placeholder="price" value="0" readonly>'
+                +'    <input type="text" id="price_'+ index +'" name="price_'+ index +'" class="form-control money-format" placeholder="price" value="0" readonly>'
                 +'</div>'
                 +'<div class="col-sm-2">'
-                +'    <input type="text" id="total_price_'+ index +'" name="total_price[]" class="form-control money-format prc" placeholder="total price" value="0" readonly>'
+                +'    <input type="text" id="total_price_'+ index +'" name="total_price_'+ index +'" class="form-control money-format prc" placeholder="total price" value="0" readonly>'
                 +'</div>'
                 +'<div class="col-sm-1">'
                 +'    <button type="button" class="btn btn-default remove-form-button"><i class="gi gi-circle_remove"></i></button>'
@@ -174,6 +223,9 @@
             $('#sparepart_'+ index).select2();
             let html = setOption()
             $('#sparepart_' + index).append(html);
+            let formCount = parseInt($('#formCount').val())
+            formCount++
+            $('#formCount').val(formCount)
             actionFormDynamic(index)
         // }
     });
@@ -210,17 +262,25 @@
             $(".prc").each(function(){
                 sum += +$(this).val();
             });
-            $("#final_price").val(sum);
+            $("#sum_price").val(sum);
             setFinalPrice()
         });
     }
 
     function setFinalPrice() {
-        var sum = 0;
+        let sum = 0;
         $(".prc").each(function(){
-            sum += +$(this).val();
+            sum += +$(this).val()
         });
-        $("#final_price").val(sum);
+        $("#sum_price").val(sum);
+        let fp = parseInt($("#sum_price").val())
+        let ppn = parseInt($("#ppn").val())
+        let materai = parseInt($("#materai").val())
+        ppn = fp * (ppn/100);
+
+        let grandprice = fp + ppn + materai
+        $("#grandprice").val(grandprice);
+
     }
     
     $(".sparepart-form").on("click",".remove-form-button", function(e){ //user click on remove text

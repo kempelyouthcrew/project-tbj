@@ -30,24 +30,23 @@
     <table id="example-datatable" class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th class="text-center">id</th>
-                <th>name</th>
-                <th>address</th>
-                <th>phone</th>
+                <th>Date</th>
+                <th>Quotation Number</th>
+                <th>Konsumen</th>
                 <th>action</th>
             </tr>
         </thead>
         <tbody>
-            {% for no, x in data %}
+            {% for no, x in listQuotation %}
                 <tr>
-                    <td>{{ x.konsumen_id }}</td>
+                    <td>{{ x.quotation_date }}</td>
+                    <td>{{ x.quotation_number }}</td>
                     <td>{{ x.konsumen_name }}</td>
-                    <td>{{ x.konsumen_address }}</td>
-                    <td>{{ x.konsumen_phone }}</td>
                     <td class="text-center">
                         <div class="btn-group">
                             <a href="quotation/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
                             <a href="quotation/delete/{{ x.id }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
+                            <a href="quotation/detail/{{ x.id }}" data-toggle="tooltip" title="Detail" class="btn btn-xs btn-default"><i class="fa fa-folder-open"></i></a>
                         </div>
                     </td>
                 </tr>
@@ -68,7 +67,7 @@
 
         /* Initialize Datatables */
         $('#example-datatable').dataTable({
-            columnDefs: [{orderable: false, targets: [4]}],
+            columnDefs: [{orderable: false, targets: [3]}],
             pageLength: 15,
             lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
         });
