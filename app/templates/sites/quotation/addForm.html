@@ -75,7 +75,7 @@
                     </div>
                     <div class="col-sm-2">
                         <label class="head-dyn" for="price">price:</label>
-                        <input type="text" id="price_1" name="price_1" class="form-control money-format" placeholder="price" value="0" readonly>
+                        <input type="text" id="price_1" name="price_1" class="form-control money-format" placeholder="price" value="0">
                     </div>
                     <div class="col-sm-2">
                         <label class="head-dyn" for="total_price">Total Price:</label>
@@ -199,7 +199,7 @@
         }
     }
 
-    // $( '.money-format' ).mask('000.000.000', {reverse: true});
+    $( '.money-format' ).mask('000000000', {reverse: true});
 
     $(".add-form-button").click(function(e){ //on add input button click
         e.preventDefault();
@@ -216,7 +216,7 @@
                 +'    <input type="number" id="qty_'+ index +'" name="qty_'+ index +'" class="form-control" placeholder="qty" min="1" value ="1">'
                 +'</div>'
                 +'<div class="col-sm-2">'
-                +'    <input type="text" id="price_'+ index +'" name="price_'+ index +'" class="form-control money-format" placeholder="price" value="0" readonly>'
+                +'    <input type="text" id="price_'+ index +'" name="price_'+ index +'" class="form-control money-format" placeholder="price" value="0">'
                 +'</div>'
                 +'<div class="col-sm-2">'
                 +'    <input type="text" id="total_price_'+ index +'" name="total_price_'+ index +'" class="form-control money-format prc" placeholder="total price" value="0" readonly>'
@@ -274,6 +274,14 @@
                 sum += +$(this).val();
             });
             $("#sum_price").val(sum);
+            setFinalPrice()
+        });
+        $('#price_'+ index).change(function(){ 
+            let qty = parseInt($('#qty_'+ index).val())
+            let price = parseInt($('#price_'+ index).val())
+            let total_price = price * qty
+            console.log('fe',total_price)
+            $('#total_price_'+ index).val(total_price)
             setFinalPrice()
         });
     }

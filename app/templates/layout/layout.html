@@ -37,6 +37,25 @@
 
         <!-- The themes stylesheet of this template (for using specific theme color in individual elements - must included last) -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+
+        <style>            
+            header.navbar .navbar-brand {
+                width: 80px !important;
+                background-color: white;
+            }
+            .img-head {
+                display: inline-block;
+                width: 100% !important;
+            }
+            header.navbar .navbar-brand > img {
+                display: inline-block;
+                width: 100% !important;
+            }
+            header.navbar .navbar-brand:hover, header.navbar .navbar-brand:focus {
+                width: 15% !important
+            }
+        </style>
+        
         <!-- END Stylesheets -->
 
         <!-- Modernizr (Browser feature detection library) & Respond.js (Enable responsive CSS code on browsers that don't support it, eg IE8) -->

@@ -120,7 +120,7 @@ header.navbar-inverse.add-opacity:hover {
 }
 
 header.navbar .navbar-brand {
-    width: 50px;
+    width: 80px;
     height: 45px;
     line-height: 45px;
     padding: 0 15px;
@@ -129,7 +129,7 @@ header.navbar .navbar-brand {
     float: none;
     display: block;
     text-align: center;
-    background-color: #2e3030;
+    background-color: white;
 }
 
 header.navbar .navbar-brand > img {
