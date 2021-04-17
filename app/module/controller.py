@@ -12,7 +12,8 @@ from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, Q
 from flask_navigation import Navigation
 import bcrypt
 import json
-import datetime
+import decimal, datetime
+from sqlalchemy.sql import text
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
@@ -21,6 +22,7 @@ nav.Bar('leftbar', [
     ]),
     nav.Item('Purchasing', 'data', items=[
         nav.Item('Quotation', 'quotation'),
+        nav.Item('PO Konsumen', 'pokonsumen'),
     ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
@@ -31,6 +33,14 @@ nav.Bar('leftbar', [
         nav.Item('User Management', 'usermanagement'),
     ]),
 ])
+
+#alchemyEncoder for json
+def alchemyencoder(obj):
+    """JSON encoder function for SQLAlchemy special classes."""
+    if isinstance(obj, datetime.date):
+        return obj.isoformat()
+    elif isinstance(obj, decimal.Decimal):
+        return float(obj)
 
 def login_required(f):
     @wraps(f)
@@ -399,7 +409,7 @@ def sparepartBrandDelete(id):
 @app.route('/quotation', methods=['GET'])
 def quotation():
     listQuotation = QuotationDB.query.join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
-        .add_columns(QuotationDB.id, QuotationDB.quotation_date, QuotationDB.quotation_number, KonsumenDB.konsumen_name)
+        .add_columns(QuotationDB.id, QuotationDB.quotation_date, QuotationDB.quotation_number, KonsumenDB.konsumen_name,  QuotationDB.quotation_validity)
 
     print(listQuotation)
     return render_template("sites/quotation/index.html", listQuotation=enumerate(listQuotation))
@@ -414,7 +424,7 @@ def quotationAddForm():
 def quotationAdd():
     dateNow = datetime.datetime.now()
     quotation_date = dateNow
-    quotation_number = '909090'
+    quotation_number = '99999'
     quotation_validity = 1
     formCount = request.form['formCount']
     konsumen_id = request.form['konsumen_id']
@@ -528,6 +538,7 @@ def quotationKonsumen(id):
 def quotationInfo(id):
     quotation = QuotationDetail.query\
         .join(QuotationDB, QuotationDB.id==QuotationDetail.quotation_id)\
+        .filter_by(id=id)\
         .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
         .join(SparepartDB, QuotationDetail.sparepart_number==SparepartDB.id)\
         .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
@@ -540,6 +551,7 @@ def quotationInfo(id):
             QuotationDB.quotation_ppn,\
             QuotationDB.quotation_materai,\
             QuotationDB.quotation_totalprice,\
+            QuotationDB.quotation_validity,\
             SparepartDB.sparepart_number,\
             SparepartName.sparepart_name,\
             QuotationDetail.sparepart_qty,\
@@ -552,6 +564,18 @@ def quotationInfo(id):
         .all()
     print(quotation)
     return render_template("sites/quotation/info.html", quotation=quotation)
+
+@app.route('/quotation/validity/<int:id>/<int:validity>', methods=['get'])
+def quotationAccept(id,validity):
+    validityVal = validity
+    try:
+        quotation = QuotationDB.query.filter_by(id=id).first()
+        quotation.quotation_validity=validityVal
+        db.session.commit()
+    except Exception as e:
+        print("Failed to update data")
+        print(e)
+    return redirect("/quotation")
 
 # User Management
 @app.route('/usermanagement', methods=['GET'])
@@ -621,8 +645,82 @@ def deleteusermanagement(id):
         print(e)
     return redirect("/usermanagement")
 
-# Master json
+# PO Konsumen
+@app.route('/pokonsumen', methods=['GET'])
+def pokonsumen():
+    listPOKonsumen = PODB.query\
+        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+        .add_columns(PODB.id, PODB.po_date, PODB.po_number, KonsumenDB.konsumen_name, PODB.po_number)
 
+    print(listPOKonsumen)
+    return render_template("sites/pokonsumen/index.html", listPOKonsumen=enumerate(listPOKonsumen))
+
+@app.route('/pokonsumen/add', methods=['GET'])
+def pokonsumenAddForm():
+    listSparepart = SparepartDB.query.all()
+    listKonsumen = KonsumenDB.query.all()
+    return render_template("sites/pokonsumen/addForm.html", listSparepart=listSparepart, listKonsumen=enumerate(listKonsumen))
+
+@app.route('/pokonsumen/add', methods=['POST'])
+def pokonsumenAdd():
+    dateNow = datetime.datetime.now()
+    po_date = dateNow
+    quotation_id = request.form['quotation']
+    seller_name = request.form['seller']
+    po_number = request.form['reference']
+
+    try:
+        po = PODB(po_date=po_date,
+                quotation_id=quotation_id,
+                po_number=po_number,
+                seller_name=seller_name)
+        db.session.add(po)
+        db.session.commit()
+        db.session.flush()  
+        idParent = po.id
+        
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+
+    return render_template("sites/pokonsumen/addForm.html")
+
+@app.route('/pokonsumen/info/<int:id>', methods=['GET'])
+def pokonsumenInfo(id):
+    pokonsumen = QuotationDetail.query\
+        .join(QuotationDB, QuotationDetail.quotation_id==QuotationDB.id)\
+        .join(PODB, PODB.quotation_id==QuotationDB.id)\
+        .filter_by(id=id)\
+        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+        .join(SparepartDB, QuotationDetail.sparepart_number==SparepartDB.id)\
+        .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+        .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+        .add_columns(\
+            PODB.po_number,\
+            PODB.po_date,\
+            QuotationDB.id,\
+            QuotationDB.quotation_date,\
+            QuotationDB.quotation_number,\
+            QuotationDB.quotation_price,\
+            QuotationDB.quotation_ppn,\
+            QuotationDB.quotation_materai,\
+            QuotationDB.quotation_totalprice,\
+            QuotationDB.quotation_validity,\
+            SparepartDB.sparepart_number,\
+            SparepartName.sparepart_name,\
+            QuotationDetail.sparepart_qty,\
+            QuotationDetail.sparepart_price,\
+            QuotationDetail.sparepart_totalprice,\
+            QuotationDB.quotation_number,\
+            KonsumenDB.konsumen_address,\
+            KonsumenDB.konsumen_name\
+        )\
+        .all()
+    print(quotation)
+    return render_template("sites/pokonsumen/info.html", pokonsumen=pokonsumen)
+
+# Master json
 @app.route('/master/konsumen', methods=['GET'])
 def konsumenMaster():
     konsumen = KonsumenDB.query.all()
@@ -632,3 +730,28 @@ def konsumenMaster():
 def sparepartMaster():
     sparepart = SparepartDB.query.all()
     return json.dumps(SparepartDB.serialize_list(sparepart))
+
+@app.route('/master/quotation/<string:validity>', methods=['GET'])
+def quotationMaster(validity):
+    validityVal = validity
+    quotation = db.engine.execute("\
+        SELECT \
+        *\
+        FROM quotationDB as quo\
+        WHERE quotation_validity = 1\
+    ")
+    return json.dumps([dict(r) for r in quotation], default=alchemyencoder)
+
+@app.route('/master/quotationdetail/<string:quotation_id>', methods=['GET'])
+def quotationdetailMaster(quotation_id):
+    s = text("\
+        SELECT \
+        *\
+        FROM quotation_detail as quodet \
+        INNER JOIN quotationDB as quo ON quodet.quotation_id = quo.id\
+        INNER JOIN sparepartDB as sparepart ON quodet.sparepart_number = sparepart.id\
+        INNER JOIN sparepart_name as sparepartname ON sparepart.sparepart_name = sparepartname.id\
+        WHERE quodet.quotation_id = :x \
+    ")
+    quotationdetail = db.engine.execute(s, x=quotation_id).fetchall() 
+    return json.dumps([dict(r) for r in quotationdetail], default=alchemyencoder)

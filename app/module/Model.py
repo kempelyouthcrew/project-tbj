@@ -52,7 +52,7 @@ class SparepartDB(db.Model, Serializer):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-class QuotationDB(db.Model):
+class QuotationDB(db.Model,Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     quotation_date = db.Column(db.DateTime, nullable=False)
     quotation_number = db.Column(db.String(255), nullable=False)
@@ -67,7 +67,7 @@ class QuotationDB(db.Model):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-class QuotationDetail(db.Model):
+class QuotationDetail(db.Model,Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     quotation_id = db.Column(db.String(255), nullable=False)
     sparepart_number = db.Column(db.String(255), nullable=False)
@@ -91,7 +91,7 @@ class KonsumenDB(db.Model, Serializer):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-class DODB(db.Model):
+class DODB(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     do_number = db.Column(db.Integer, nullable=False)
     do_date = db.Column(db.DateTime, nullable=False)
@@ -107,19 +107,18 @@ class DODB(db.Model):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-class PODB(db.Model):
+class PODB(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    quotation_id = db.Column(db.String(255), nullable=False)
     po_date = db.Column(db.DateTime, nullable=False)
-    seller_nama = db.Column(db.String(255), nullable=False)
-    konsumen_name = db.Column(db.String(255), nullable=False)
-    po_number = db.Column(db.Integer, nullable=False)
-    po_reference_number = db.Column(db.Integer, nullable=False)
+    seller_name = db.Column(db.String(255), nullable=False)
+    po_number = db.Column(db.String(255), nullable=False)
     created_by = db.Column(db.String(255), nullable=True)
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-class PODetail(db.Model):
+class PODetail(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     po_date = db.Column(db.DateTime, nullable=False)
     sparepart_name = db.Column(db.String(255), nullable=False)
@@ -132,7 +131,7 @@ class PODetail(db.Model):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-class UserManagementDB(db.Model):
+class UserManagementDB(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     user_name = db.Column(db.String(255), nullable=False)
     user_email = db.Column(db.String(255), nullable=False)

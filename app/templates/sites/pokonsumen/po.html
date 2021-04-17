@@ -25,28 +25,17 @@
         <li>Pages</li>
         <li><a href="#">Quotation</a></li>
     </ul>
-    
-    <a class="btn btn-primary" style="margin-bottom: 14px;" href="/quotation"><i class="fa fa-arrow-left"></i> Kembali</a>
-    {% if quotation[0].quotation_validity == 1 %}
-    <a class="btn btn-primary pull-right" style="margin-bottom: 14px;" href="#">STATUS: PENDING</a>
-    {% elif quotation[0].quotation_validity == 2 %}
-    <a class="btn btn-success pull-right" style="margin-bottom: 14px;" href="#">STATUS: VALID</a>
-    {% elif quotation[0].quotation_validity == 3 %}
-    <a class="btn btn-danger pull-right" style="margin-bottom: 14px;" href="#">STATUS: DECLINE</a>
-    {% endif %}
+    <!-- END Invoice Header -->
+
     <!-- Invoice Block -->
     <div class="block full">
         <!-- Invoice Title -->
         <div class="block-title">
             <div class="block-options pull-right">
                 <div class="btn-group">
-                    {% if quotation[0].quotation_validity == 1 %}
-                    <a href="/quotation/validity/{{ quotation[0].id }}/2" class="btn btn-primary">ACCEPT QUOTATION</a>
-                    <a href="/quotation/validity/{{ quotation[0].id }}/3" class="btn btn-primary">DECLINE QUOTATION</a>
-                    {% endif %}
-                    {% if quotation[0].quotation_validity != 3 %}
-                    <a href="javascript:void(0)" class="btn btn-primary" onclick="window.print();">PRINT QUOTATION</a>
-                    {% endif %}
+                    <a href="javascript:void(0)" class="btn btn-primary" onclick="window.print();"><i class="fa fa-print"></i> Print</a>
+                    <a href="javascript:void(0)" class="btn btn-primary" data-toggle="tooltip" title="Save"><i class="fa fa-floppy-o"></i></a>
+                    <a href="javascript:void(0)" class="btn btn-primary" data-toggle="tooltip" title="Delete"><i class="fa fa-times"></i></a>
                 </div>
             </div>
             <h2><i class="fa fa-file-text-o"></i> {{ quotation[0].quotation_number }}</h2>
@@ -138,7 +127,7 @@
                     </tr>
                     <tr class="success">
                         <td colspan="4" class="text-right"><strong>TOTAL DUE</strong></td>
-                        <td class="text-right"><span class="label label-success">Rp. {{ quotation[0].quotation_totalprice }}</span></td>
+                        <td class="text-right"><span class="label label-success">$ {{ quotation[0].quotation_totalprice }}</span></td>
                     </tr>
                 </tbody>
             </table>

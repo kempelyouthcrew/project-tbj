@@ -14,47 +14,39 @@
     <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
     <a href="" class="header-title-link">
         <h1>
-            <i class="fa fa-cogs animation-expandUp"></i>Quotation
+            <i class="fa fa-cogs animation-expandUp"></i>Po Konsumen
             <br>
-            <small>Data Quotation</small>
+            <small>Data Po Konsumen</small>
         </h1>
     </a>
 </div>
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
-    <li>Quotation</li>
+    <li>Po Konsumen</li>
 </ul>
-<a class="btn btn-primary" style="margin-bottom: 14px;" href="quotation/add"><i class="fa fa-arrow-right"></i> Tambah Data</a>
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="pokonsumen/add"><i class="fa fa-arrow-right"></i> Tambah Data</a>
 <!-- Datatables Content -->
 <div class="table-responsive">
     <table id="example-datatable" class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th>Date</th>
-                <th>Quotation Number</th>
+                <th>PO Number</th>
                 <th>Konsumen</th>
-                <th>Status</th>
                 <th>action</th>
             </tr>
         </thead>
         <tbody>
-            {% for no, x in listQuotation %}
+            {% for no, x in listPOKonsumen %}
                 <tr>
-                    <td>{{ x.quotation_date }}</td>
-                    <td>{{ x.quotation_number }}</td>
+                    <td>{{ x.po_date }}</td>
+                    <td>{{ x.po_number }}</td>
                     <td>{{ x.konsumen_name }}</td>
-                    {% if x.quotation_validity == 1 %}
-                        <td><span class="label label-primary">Pending</span></td>
-                    {% elif x.quotation_validity == 2 %}
-                        <td><span class="label label-success">Valid</span></td>
-                    {% elif x.quotation_validity == 3 %}
-                        <td><span class="label label-danger">Decline</span></td>
-                    {% endif %}
                     <td class="text-center">
                         <div class="btn-group">
-                            <a href="quotation/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-                            <a href="quotation/delete/{{ x.id }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
-                            <a href="quotation/info/{{ x.id }}" data-toggle="tooltip" title="Info Detail" class="btn btn-xs btn-default"><i class="fa fa-folder-open"></i></a>
+                            <a href="pokonsumen/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+                            <a href="pokonsumen/delete/{{ x.id }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
+                            <a href="pokonsumen/info/{{ x.id }}" data-toggle="tooltip" title="Info Detail" class="btn btn-xs btn-default"><i class="fa fa-folder-open"></i></a>
                         </div>
                     </td>
                 </tr>
@@ -75,7 +67,7 @@
 
         /* Initialize Datatables */
         $('#example-datatable').dataTable({
-            columnDefs: [{orderable: false, targets: [4]}],
+            columnDefs: [{orderable: false, targets: [3]}],
             pageLength: 15,
             lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
         });
