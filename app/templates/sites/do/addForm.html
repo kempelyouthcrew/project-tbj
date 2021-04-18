@@ -6,6 +6,9 @@
     .sparepart_row{
         margin-top: 30px;
     }
+    .sparepart-summary {
+        content-visibility: hidden;
+    }
 </style>
 
 {% endblock %}
@@ -59,6 +62,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-md-2 control-label" for="do_terms">Term</label>
+            <div class="col-md-3">
+                <input type="text" id="do_terms" name="do_terms" class="form-control" placeholder="do_terms" value="">
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-md-2 control-label" for="sparepart_number">Sparepart</label>
             <div class="col-md-10">
                 <div class="col-sm-2">
@@ -68,17 +77,6 @@
                 </div>
                 <div class="col-sm-1">
                     <label class="head-dyn" for="qty">Quantity:</label>
-                </div>
-                <div class="col-sm-2">
-                    <label class="head-dyn" for="price">price:</label>
-                </div>
-                <div class="col-sm-2">
-                    <label class="head-dyn" for="total_price">Total Price:</label>
-                </div>
-                <div class="col-sm-3">
-                    <label class="head-dyn" for="price">description:</label>
-                </div>
-                <div class="col-sm-1">
                 </div>
             </div>
         </div>
@@ -164,7 +162,7 @@
                     id = data[i].id
                     po_number = data[i].po_number
                     konsumen_name = data[i].konsumen_name
-                    html += "<option value='"+ id +"'>"+ po_number +" - "+ konsumen_name +"</option>"
+                    html += "<option value='"+ id +"'>"+ po_number +" | "+ konsumen_name +"</option>"
                 }
                 $('#po_id').append(html);              
             },
@@ -193,6 +191,7 @@
             success: function(data) {
                 $(".sparepart-form").empty(); // clear boxes.
                 $(".sparepart-summary").empty();
+                $('#formCount').val(data.length)
                 for (index = 0; index < data.length; index++) {
                     let optionElement = '<div class="form-group">'
                         +'<label class="col-md-2 control-label" for="sparepart_number">-</label><div class="col-md-10">'
@@ -200,84 +199,31 @@
                         +'    <input type="text" id="sparepart_'+ index +'" name="sparepart_'+ index +'" class="form-control" placeholder="sparepart" value ="'+ data[index].sparepart_name +'" readonly>'
                         +'</div>'
                         +'<div class="col-sm-1">'
-                        +'    <input type="number" id="qty_'+ index +'" name="qty_'+ index +'" class="form-control" placeholder="qty" min="1" value ="'+ data[index].sparepart_qty +'" readonly>'
+                        +'    <input type="number" id="qty_'+ index +'" name="qty_'+ index +'" class="form-control" placeholder="qty" min="1" value ="0">'
                         +'</div>'
                         +'<div class="col-sm-2">'
-                        +'    <input type="text" id="price_'+ index +'" name="price_'+ index +'" class="form-control money-format" placeholder="price" value="'+ data[index].sparepart_price +'" readonly>'
+                        +'    <input type="text" id="price_'+ index +'" name="price_'+ index +'" class="form-control money-format" placeholder="price" value="'+ data[index].sparepart_price +'" style="display: none;">'
                         +'</div>'
                         +'<div class="col-sm-2">'
-                        +'    <input type="text" id="total_price_'+ index +'" name="total_price_'+ index +'" class="form-control money-format prc" placeholder="total price" value="'+ data[index].sparepart_totalprice +'" readonly>'
+                        +'    <input type="text" id="total_price_'+ index +'" name="total_price_'+ index +'" class="form-control money-format prc" placeholder="total price" value="'+ data[index].sparepart_totalprice +'" style="display: none;">'
                         +'</div>'
                         +'<div class="col-sm-3">'
-                        +'    <input type="text" id="description_'+ index +'" name="description_'+ index +'" class="form-control" placeholder="description" value="'+ data[index].sparepart_description +'" readonly>'
+                        +'    <input type="text" id="description_'+ index +'" name="description_'+ index +'" class="form-control" placeholder="description" value="'+ data[index].sparepart_description +'" style="display: none;">'
                         +'</div>'
                         +'</div>'
                         +'</div>'
         
                     $(".sparepart-form").append(optionElement);
+                    actionFormDynamic(index)
                 }
 
-                let elementSummary = '<div class="form-group">'
-                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
-                +'    <div class="col-md-10">'
-                +'        <div class="col-sm-5">'
-                +'        </div>'
-                +'        <div class="col-sm-1">'
-                +'            <label class="head-dyn" for="sum_price">Total Price:</label>'
-                +'        </div>'
-                +'        <div class="col-sm-2">'
-                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].quotation_price +'" readonly>'
-                +'        </div>'
-                +'        <div class="col-sm-1">'
-                +'        </div>'
-                +'    </div>'
-                +'</div>'
-                +'<div class="form-group">'
-                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
-                +'    <div class="col-md-10">'
-                +'        <div class="col-sm-5">'
-                +'        </div>'
-                +'        <div class="col-sm-1">'
-                +'            <label class="head-dyn" for="ppn">PPN 10%:</label>'
-                +'        </div>'
-                +'        <div class="col-sm-2">'
-                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].quotation_ppn +'" readonly>'
-                +'        </div>'
-                +'        <div class="col-sm-1">'
-                +'        </div>'
-                +'    </div>'
-                +'</div>'
-                +'<div class="form-group">'
-                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
-                +'    <div class="col-md-10">'
-                +'        <div class="col-sm-5">'
-                +'        </div>'
-                +'        <div class="col-sm-1">'
-                +'            <label class="head-dyn" for="materai">Materai:</label>'
-                +'        </div>'
-                +'        <div class="col-sm-2">'
-                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].quotation_materai +'" readonly>'
-                +'        </div>'
-                +'        <div class="col-sm-1">'
-                +'        </div>'
-                +'    </div>'
-                +'</div>'
-                +'<div class="form-group">'
-                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
-                +'    <div class="col-md-10">'
-                +'        <div class="col-sm-5">'
-                +'        '
-                +'        </div>'
-                +'        <div class="col-sm-1">'
-                +'            <label class="head-dyn" for="grandprice">Grand Price:</label>'
-                +'        </div>'
-                +'        <div class="col-sm-2">'
-                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].quotation_totalprice +'" readonly>'
-                +'        </div>'
-                +'        <div class="col-sm-1">'
-                +'        </div>'
-                +'    </div>'
-                +'</div>'
+                let elementSummary = '<div>'
+                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].quotation_price +'" style="visibility:hidden">'
+                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].quotation_ppn +'" style="visibility:hidden">'
+                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].quotation_materai +'" style="visibility:hidden">'
+                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].quotation_totalprice +'" style="visibility:hidden">'
+                +'            </div>'
+
                 
                 $(".sparepart-summary").append(elementSummary);
                           
@@ -286,6 +232,32 @@
             });
         });
     }    
+
+    function actionFormDynamic(index) { 
+        $('#qty_'+ index).change(function(){ 
+            let qty = parseInt($('#qty_'+ index).val())
+            let price = parseInt($('#price_'+ index).val())
+            let total_price = price * qty
+            console.log('fe',total_price)
+            $('#total_price_'+ index).val(total_price)
+        });
+        $('#qty_'+ index).change(function(){ 
+            var sum = 0;
+            $(".prc").each(function(){
+                sum += +$(this).val();
+            });
+            $("#sum_price").val(sum);
+            setFinalPrice()
+        });
+        $('#price_'+ index).change(function(){ 
+            let qty = parseInt($('#qty_'+ index).val())
+            let price = parseInt($('#price_'+ index).val())
+            let total_price = price * qty
+            console.log('fe',total_price)
+            $('#total_price_'+ index).val(total_price)
+            setFinalPrice()
+        });
+    }
 
 </script>
 

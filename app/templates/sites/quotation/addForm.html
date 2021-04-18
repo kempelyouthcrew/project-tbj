@@ -344,7 +344,7 @@
                 html = ""
                 for (i = 0; i < data.length; i++) {
                     id = data[i].id
-                    html += "<option value='"+ id +"'>"+ data[i].sparepart_name + " - " + data[i].sparepart_number + " - " + data[i].sparepart_brand + "</option>"
+                    html += "<option value='"+ id +"'>"+ data[i].sparepart_name + " | " + data[i].sparepart_number + " | " + data[i].sparepart_brand + "</option>"
                 }
                 $('#sparepart_' + numberRow).append(html);               
             },

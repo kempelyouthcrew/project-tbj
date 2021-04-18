@@ -749,6 +749,53 @@ def doAddForm():
     listKonsumen = KonsumenDB.query.all()
     return render_template("sites/do/addForm.html", listSparepart=listSparepart, listKonsumen=enumerate(listKonsumen))
 
+@app.route('/do/add', methods=['POST'])
+def doAdd():
+    dateNow = datetime.datetime.now()
+    do_date = dateNow
+    do_number = 'DO.TBJ-' + str(random.randint(1000, 9999))
+    po_id = request.form['po_id']
+    do_terms = request.form['do_terms']
+    formCount = request.form['formCount']
+    idParent = ""
+
+    try:
+        do = DODB(po_id=po_id,
+                    do_number=do_number,
+                    do_date=do_date,
+                    do_terms=do_terms)
+        db.session.add(do)
+        db.session.commit()
+        db.session.flush()  
+        idParent = do.id
+        
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+
+    i = 0
+    while i < int(formCount):
+        i = i + 1
+        if 'sparepart_'+ str(i) in request.form:
+            po_id = idParent
+            sparepart_number = request.form['sparepart_'+ str(i)]
+            sparepart_qty = request.form['qty_'+ str(i)]
+            sparepart_price = request.form['price_'+ str(i)]
+            sparepart_totalprice = request.form['total_price_'+ str(i)]
+            try:
+                poDet = PODetail(po_id=po_id,
+                                    sparepart_number=sparepart_number,
+                                    sparepart_qty=sparepart_qty,
+                                    sparepart_price=sparepart_price,
+                                    sparepart_totalprice=sparepart_totalprice)
+                db.session.add(poDet)
+                db.session.commit()
+            except Exception as e:
+                print("Failed to add data.")
+                print(e)
+
+    return render_template("sites/po/addForm.html")
+
 # Master json
 @app.route('/master/konsumen', methods=['GET'])
 def konsumenMaster():
