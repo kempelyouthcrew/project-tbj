@@ -8,7 +8,7 @@
 from flask import render_template, request, redirect, session, flash
 from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, UserManagementDB
+from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, UserManagementDB, DODetail, InvoiceDB
 from flask_navigation import Navigation
 import bcrypt
 import json
@@ -25,6 +25,7 @@ nav.Bar('leftbar', [
         nav.Item('Quotation', 'quotation'),
         nav.Item('PO Konsumen', 'pokonsumen'),
         nav.Item('DO', 'do'),
+        nav.Item('Invoice', 'invoice'),
     ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
@@ -733,13 +734,16 @@ def pokonsumenInfo(id):
 # DO
 @app.route('/do', methods=['GET'])
 def do():
-    # listDO = DODB.query\
-    #     .join(PODB, DODB.po_id==PODB.id)\
-    #     .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
-    #     .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
-    #     .add_columns(DODB.id)
-    listDO = DODB.query.all()
-
+    listDO = DODB.query\
+        .join(PODB, DODB.po_id==PODB.id)\
+        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+        .add_columns(\
+            DODB.id\
+            ,DODB.do_date\
+            ,DODB.do_number\
+            ,KonsumenDB.konsumen_name\
+        )
     print(listDO)
     return render_template("sites/do/index.html", listDO=enumerate(listDO))
 
@@ -756,6 +760,12 @@ def doAdd():
     do_number = 'DO.TBJ-' + str(random.randint(1000, 9999))
     po_id = request.form['po_id']
     do_terms = request.form['do_terms']
+    
+    do_price = request.form['sum_price']
+    do_ppn = request.form['ppn']
+    do_materai = request.form['materai']
+    do_totalprice = request.form['grandprice']
+
     formCount = request.form['formCount']
     idParent = ""
 
@@ -763,6 +773,10 @@ def doAdd():
         do = DODB(po_id=po_id,
                     do_number=do_number,
                     do_date=do_date,
+                    do_price=do_price,
+                    do_ppn=do_ppn,
+                    do_materai=do_materai,
+                    do_totalprice=do_totalprice,
                     do_terms=do_terms)
         db.session.add(do)
         db.session.commit()
@@ -777,24 +791,67 @@ def doAdd():
     while i < int(formCount):
         i = i + 1
         if 'sparepart_'+ str(i) in request.form:
-            po_id = idParent
+            do_id = idParent
             sparepart_number = request.form['sparepart_'+ str(i)]
             sparepart_qty = request.form['qty_'+ str(i)]
             sparepart_price = request.form['price_'+ str(i)]
             sparepart_totalprice = request.form['total_price_'+ str(i)]
             try:
-                poDet = PODetail(po_id=po_id,
+                DODet = DODetail(do_id=do_id,
                                     sparepart_number=sparepart_number,
                                     sparepart_qty=sparepart_qty,
                                     sparepart_price=sparepart_price,
                                     sparepart_totalprice=sparepart_totalprice)
-                db.session.add(poDet)
+                db.session.add(DODet)
                 db.session.commit()
             except Exception as e:
                 print("Failed to add data.")
                 print(e)
 
-    return render_template("sites/po/addForm.html")
+    return render_template("sites/do/addForm.html")
+
+# DO
+@app.route('/invoice', methods=['GET'])
+def invoice():
+    listInvoice = InvoiceDB.query\
+        .join(DODB, InvoiceDB.do_id==DODB.id)\
+        .join(PODB, DODB.po_id==PODB.id)\
+        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+        .add_columns(\
+            DODB.id\
+            ,DODB.do_date\
+            ,InvoiceDB.invoice_number\
+            ,KonsumenDB.konsumen_name\
+        )
+    print(listInvoice)
+    return render_template("sites/invoice/index.html", listInvoice=enumerate(listInvoice))
+
+@app.route('/invoice/add', methods=['GET'])
+def invoiceAddForm():
+    return render_template("sites/invoice/addForm.html")
+
+@app.route('/invoice/add', methods=['POST'])
+def invoiceAdd():
+    dateNow = datetime.datetime.now()
+    invoice_date = dateNow
+    invoice_number = 'INV.TBJ-' + str(random.randint(1000, 9999))
+    do_id = request.form['do_id']
+    invoice_terms = request.form['invoice_terms']
+
+    try:
+        invoice = InvoiceDB(do_id=do_id,
+                    invoice_number=invoice_number,
+                    invoice_date=invoice_date,
+                    invoice_terms=invoice_terms)
+        db.session.add(invoice)
+        db.session.commit()
+        
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+
+    return render_template("sites/invoice/addForm.html")
 
 # Master json
 @app.route('/master/konsumen', methods=['GET'])
@@ -807,6 +864,7 @@ def sparepartlMaster():
     s = text("\
         SELECT \
         *\
+        ,spr.id as spid\
         FROM sparepartDB as spr \
         INNER JOIN sparepart_name as name ON name.id = spr.sparepart_name\
         INNER JOIN sparepart_brand as brand ON brand.id = spr.sparepart_brand\
@@ -831,6 +889,7 @@ def quotationdetailMaster(quotation_id):
     s = text("\
         SELECT \
         *\
+        ,sparepart.id as spid\
         FROM quotation_detail as quodet \
         INNER JOIN quotationDB as quo ON quodet.quotation_id = quo.id\
         INNER JOIN sparepartDB as sparepart ON quodet.sparepart_number = sparepart.id\
@@ -845,9 +904,53 @@ def poMaster():
     s = text("\
         SELECT \
         *\
+        ,po.id as poid\
         FROM PODB AS po \
         INNER JOIN quotationDB AS quo ON po.quotation_id = quo.id \
         INNER JOIN konsumenDB AS kon ON quo.konsumen_id = kon.id \
     ")
     podb = db.engine.execute(s).fetchall() 
     return json.dumps([dict(r) for r in podb], default=alchemyencoder)
+
+@app.route('/master/do', methods=['GET'])
+def doMaster():
+    s = text("\
+        SELECT \
+        *\
+        ,do.id as doid\
+        FROM DODB AS do \
+        INNER JOIN PODB AS po ON do.po_id = po.id \
+        INNER JOIN quotationDB AS quo ON po.quotation_id = quo.id \
+        INNER JOIN konsumenDB AS kon ON quo.konsumen_id = kon.id \
+    ")
+    dodb = db.engine.execute(s).fetchall() 
+    return json.dumps([dict(r) for r in dodb], default=alchemyencoder)
+
+@app.route('/master/dodetail/<string:do_id>', methods=['GET'])
+def dodetailMaster(do_id):
+    s = text("\
+        SELECT \
+        *\
+        ,sparepart.id as spid\
+        FROM do_detail as dodet \
+        INNER JOIN sparepartDB as sparepart ON dodet.sparepart_number = sparepart.id\
+        INNER JOIN sparepart_name as sparepartname ON sparepart.sparepart_name = sparepartname.id\
+        WHERE dodet.do_id = :x \
+    ")
+    dodetail = db.engine.execute(s, x=do_id).fetchall() 
+    return json.dumps([dict(r) for r in dodetail], default=alchemyencoder)
+
+@app.route('/master/invoice/<string:invoice_id>', methods=['GET'])
+def invoiceMaster(invoice_id):
+    s = text("\
+        SELECT \
+        *\
+        ,sparepart.id as sparepart_id\
+        FROM do_detail as dodet \
+        INNER JOIN sparepartDB as sparepart ON dodet.sparepart_number = sparepart.id\
+        INNER JOIN invoiceDB as inv ON inv.do_id = dodet.do_id\
+        INNER JOIN sparepart_name as sparepartname ON sparepart.sparepart_name = sparepartname.id\
+        WHERE inv.id = :x \
+    ")
+    invoiceDetail = db.engine.execute(s, x=invoice_id).fetchall() 
+    return json.dumps([dict(r) for r in invoiceDetail], default=alchemyencoder)
