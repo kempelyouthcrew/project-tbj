@@ -12,6 +12,7 @@ from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, Q
 from flask_navigation import Navigation
 import bcrypt
 import json
+import random
 import decimal, datetime
 from sqlalchemy.sql import text
 
@@ -222,8 +223,16 @@ def supplierDelete(id):
 # Sparepart
 @app.route('/sparepart', methods=['GET'])
 def sparepart():
-    listSparepart = SparepartDB.query.all()
-    print(listSparepart)
+    listSparepart = SparepartDB.query\
+        .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+        .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+        .join(SupplierDB, SparepartDB.supplier_id==SupplierDB.id)\
+        .add_columns(SparepartDB.id,\
+            SparepartDB.sparepart_number,\
+            SparepartName.sparepart_name,\
+            SparepartBrand.sparepart_brand,\
+            SupplierDB.supplier_name\
+        )
     return render_template("sites/sparepart/index.html", data=enumerate(listSparepart,1))
 
 @app.route('/sparepart/add', methods=['GET'])
@@ -424,7 +433,7 @@ def quotationAddForm():
 def quotationAdd():
     dateNow = datetime.datetime.now()
     quotation_date = dateNow
-    quotation_number = '99999'
+    quotation_number = 'QUO.TBJ-' + str(random.randint(1000, 9999))
     quotation_validity = 1
     formCount = request.form['formCount']
     konsumen_id = request.form['konsumen_id']
@@ -727,9 +736,16 @@ def konsumenMaster():
     return json.dumps(KonsumenDB.serialize_list(konsumen))
 
 @app.route('/master/sparepart', methods=['GET'])
-def sparepartMaster():
-    sparepart = SparepartDB.query.all()
-    return json.dumps(SparepartDB.serialize_list(sparepart))
+def sparepartlMaster():
+    s = text("\
+        SELECT \
+        *\
+        FROM sparepartDB as spr \
+        INNER JOIN sparepart_name as name ON name.id = spr.sparepart_name\
+        INNER JOIN sparepart_brand as brand ON brand.id = spr.sparepart_brand\
+    ")
+    quotationdetail = db.engine.execute(s).fetchall() 
+    return json.dumps([dict(r) for r in quotationdetail], default=alchemyencoder)
 
 @app.route('/master/quotation/<string:validity>', methods=['GET'])
 def quotationMaster(validity):

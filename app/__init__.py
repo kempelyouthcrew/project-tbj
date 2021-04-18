@@ -13,6 +13,9 @@ nav = Navigation(app)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost/testflask'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://u5073922_tbjuser_0:D,q-DGb;Bny]@teknikberlianjaya.com/u5073922_tbjlive_0'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_size' : 300, 'pool_recycle' : 7200, 'pool_pre_ping': True}
 db = SQLAlchemy(app)
+with app.app_context():
+    db.init_app(app)
 CORS(app)
 from app.module.controller import *
