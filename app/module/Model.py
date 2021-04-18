@@ -101,6 +101,18 @@ class DODB(db.Model, Serializer):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
+class InvoiceDB(db.Model, Serializer):
+    id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    do_id = db.Column(db.String(255), nullable=False)
+    invoice_date = db.Column(db.DateTime, nullable=False)
+    invoice_number = db.Column(db.String(255), nullable=False)
+    invoice_terms = db.Column(db.String(255), nullable=False)
+    created_by = db.Column(db.String(255), nullable=True)
+    updated_by = db.Column(db.String(255), nullable=True)
+    created_add = db.Column(db.DateTime, nullable=True)
+    updated_add = db.Column(db.DateTime, nullable=True)
+
+
 class PODB(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     quotation_id = db.Column(db.String(255), nullable=False)
@@ -111,19 +123,7 @@ class PODB(db.Model, Serializer):
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
-
-class PODetail(db.Model, Serializer):
-    id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
-    po_date = db.Column(db.DateTime, nullable=False)
-    sparepart_name = db.Column(db.String(255), nullable=False)
-    sparepart_qty = db.Column(db.Integer, nullable=False)
-    konsumen_id = db.Column(db.Integer, nullable=False)
-    sparepart_price = db.Column(db.Integer, nullable=False)
-    sparepart_brand = db.Column(db.String(255), nullable=False)
-    created_by = db.Column(db.String(255), nullable=True)
-    updated_by = db.Column(db.String(255), nullable=True)
-    created_add = db.Column(db.DateTime, nullable=True)
-    updated_add = db.Column(db.DateTime, nullable=True)
+    
 
 class UserManagementDB(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
