@@ -24,6 +24,7 @@ nav.Bar('leftbar', [
     nav.Item('Purchasing', 'data', items=[
         nav.Item('Quotation', 'quotation'),
         nav.Item('PO Konsumen', 'pokonsumen'),
+        nav.Item('DO', 'do'),
     ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
@@ -729,6 +730,25 @@ def pokonsumenInfo(id):
     print(quotation)
     return render_template("sites/pokonsumen/info.html", pokonsumen=pokonsumen)
 
+# DO
+@app.route('/do', methods=['GET'])
+def do():
+    # listDO = DODB.query\
+    #     .join(PODB, DODB.po_id==PODB.id)\
+    #     .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+    #     .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+    #     .add_columns(DODB.id)
+    listDO = DODB.query.all()
+
+    print(listDO)
+    return render_template("sites/do/index.html", listDO=enumerate(listDO))
+
+@app.route('/do/add', methods=['GET'])
+def doAddForm():
+    listSparepart = SparepartDB.query.all()
+    listKonsumen = KonsumenDB.query.all()
+    return render_template("sites/do/addForm.html", listSparepart=listSparepart, listKonsumen=enumerate(listKonsumen))
+
 # Master json
 @app.route('/master/konsumen', methods=['GET'])
 def konsumenMaster():
@@ -750,12 +770,13 @@ def sparepartlMaster():
 @app.route('/master/quotation/<string:validity>', methods=['GET'])
 def quotationMaster(validity):
     validityVal = validity
-    quotation = db.engine.execute("\
+    s = text("\
         SELECT \
-        *\
-        FROM quotationDB as quo\
+        * \
+        FROM quotationDB as quo \
         WHERE quotation_validity = 1\
     ")
+    quotation = db.engine.execute(s, x=validityVal).fetchall() 
     return json.dumps([dict(r) for r in quotation], default=alchemyencoder)
 
 @app.route('/master/quotationdetail/<string:quotation_id>', methods=['GET'])
@@ -771,3 +792,15 @@ def quotationdetailMaster(quotation_id):
     ")
     quotationdetail = db.engine.execute(s, x=quotation_id).fetchall() 
     return json.dumps([dict(r) for r in quotationdetail], default=alchemyencoder)
+
+@app.route('/master/po', methods=['GET'])
+def poMaster():
+    s = text("\
+        SELECT \
+        *\
+        FROM PODB AS po \
+        INNER JOIN quotationDB AS quo ON po.quotation_id = quo.id \
+        INNER JOIN konsumenDB AS kon ON quo.konsumen_id = kon.id \
+    ")
+    podb = db.engine.execute(s).fetchall() 
+    return json.dumps([dict(r) for r in podb], default=alchemyencoder)
