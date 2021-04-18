@@ -8,7 +8,7 @@
 from flask import render_template, request, redirect, session, flash
 from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, PODetail, UserManagementDB
+from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, UserManagementDB
 from flask_navigation import Navigation
 import bcrypt
 import json
