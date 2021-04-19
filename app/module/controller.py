@@ -107,12 +107,34 @@ def konsumenAddForm():
 
 @app.route('/konsumen/add', methods=['POST'])
 def konsumenAdd():
-    konsumen_id = request.form['konsumen_id']
     konsumen_name = request.form['konsumen_name']
     konsumen_address = request.form['konsumen_address']
     konsumen_phone = request.form['konsumen_phone']
+
+    phrase = (konsumen_name.replace('PT', '')).split()
+    acronym = ""
+    phraseCount = len(phrase)
+    i = 0
+
+    if phraseCount == 1:
+        while i < phraseCount:
+            acronym = acronym + phrase[i][0].upper()
+            acronym = acronym + phrase[i][1].upper()
+            acronym = acronym + phrase[i][2].upper()
+            i += 1
+    elif phraseCount == 2:
+        while i < phraseCount:
+            acronym = acronym + phrase[i][0].upper()
+            i += 1
+            if i == phraseCount:
+                acronym = acronym + phrase[1][1].upper()                
+    else:
+        while i < phraseCount:
+            acronym = acronym + phrase[i][0].upper()
+            i += 1
+        
     try:
-        konsumen = KonsumenDB(konsumen_id=konsumen_id, 
+        konsumen = KonsumenDB(konsumen_id=acronym, 
                             konsumen_name=konsumen_name, 
                             konsumen_address=konsumen_address, 
                             konsumen_phone=konsumen_phone)
