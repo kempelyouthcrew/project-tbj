@@ -5,7 +5,8 @@
 # dotenv_path = join(dirname(__file__), '.env')
 # load_dotenv(dotenv_path)
 
-from flask import render_template, request, redirect, session, flash
+import os
+from flask import render_template, request, redirect, session, flash, make_response, url_for
 from functools import wraps
 from app import app
 from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, UserManagementDB, DODetail, InvoiceDB
@@ -15,6 +16,7 @@ import json
 import random
 import decimal, datetime
 from sqlalchemy.sql import text
+from flask_weasyprint import HTML, render_pdf
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
@@ -976,3 +978,28 @@ def invoiceMaster(invoice_id):
     ")
     invoiceDetail = db.engine.execute(s, x=invoice_id).fetchall() 
     return json.dumps([dict(r) for r in invoiceDetail], default=alchemyencoder)
+
+dirname = os.path.dirname(__file__)
+
+# generate pdf
+def generatePDF():
+    # Make a PDF straight from HTML in a string.
+    name='pdftest'
+    html = render_template('pdf/test.html', name=name)
+
+    pdf = HTML(string=html).write_pdf()
+
+    if os.path.exists(dirname):
+
+        f = open(os.path.join(dirname, '../file/tes/'+ name +'.pdf'), 'wb')
+        f.write(pdf)
+    
+    return 'd'
+
+# Alternatively, if the PDF does not have a matching HTML page:
+
+# @app.route('/pdftest_<name>.pdf')
+# def pdftest_pdf(name):
+#     # Make a PDF straight from HTML in a string.
+#     html = render_template('/pdftest.html', name=name)
+#     return render_pdf(HTML(string=html))
