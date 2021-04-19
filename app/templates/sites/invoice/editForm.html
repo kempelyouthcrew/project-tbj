@@ -23,7 +23,7 @@
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
     <li>Konsumen</li>
-    <li>Tambah Data</li>
+    <li>Edit Data</li>
 </ul>
 
 <a class="btn btn-primary" style="margin-bottom: 14px;" href="/konsumen"><i class="fa fa-arrow-left"></i> Kembali</a>
@@ -34,24 +34,31 @@
         <h2>Form Tambah Data</h2>
     </div>
     <!-- END Dropzone Title -->
-    <form action="add" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+    <form action="/konsumen/edit" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+        <input type="text" id="id" name="id" class="form-control" value="{{ data.id }}" style="display:none;" >
         <h4 class="sub-header">Text Inputs</h4>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="konsumen_id">ID Konsumen</label>
+            <div class="col-md-3">
+                <input type="text" id="konsumen_id" name="konsumen_id" class="form-control" value="{{ data.konsumen_id }}" >
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-md-2 control-label" for="konsumen_name">Nama Konsumen</label>
             <div class="col-md-3">
-                <input type="text" id="konsumen_name" name="konsumen_name" class="form-control" >
+                <input type="text" id="konsumen_name" name="konsumen_name" class="form-control" value="{{ data.konsumen_name }}" >
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label" for="konsumen_address">Alamat</label>
             <div class="col-md-3">
-                <input type="text" id="konsumen_address" name="konsumen_address" class="form-control" >
+                <input type="text" id="konsumen_address" name="konsumen_address" class="form-control" value="{{ data.konsumen_address }}" >
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label" for="konsumen_phone">Telephone</label>
             <div class="col-md-3">
-                <input type="text" id="konsumen_phone" name="konsumen_phone" class="form-control" >
+                <input type="text" id="konsumen_phone" name="konsumen_phone" class="form-control" value="{{ data.konsumen_phone }}" >
             </div>
         </div>
         <div class="form-group">
