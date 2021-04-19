@@ -143,6 +143,30 @@ class PODB(db.Model, Serializer):
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
+
+class POKeluarDB(db.Model, Serializer):
+    id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    po_id = db.Column(db.String(255), nullable=False)
+    supplier_id = db.Column(db.String(255), nullable=False)
+    pokeluar_number = db.Column(db.String(255), nullable=False)
+    pokeluar_date = db.Column(db.DateTime, nullable=False)
+    pokeluar_price = db.Column(db.Integer, nullable=False)
+    created_by = db.Column(db.String(255), nullable=True)
+    updated_by = db.Column(db.String(255), nullable=True)
+    created_add = db.Column(db.DateTime, nullable=True)
+    updated_add = db.Column(db.DateTime, nullable=True)
+
+class POKeluarDetail(db.Model, Serializer):
+    id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    pokeluar_id = db.Column(db.String(255), nullable=False)
+    sparepart_number = db.Column(db.String(255), nullable=False)
+    sparepart_qty = db.Column(db.Integer, nullable=False)
+    sparepart_price = db.Column(db.Integer, nullable=False)
+    sparepart_totalprice = db.Column(db.Integer, nullable=False)
+    created_by = db.Column(db.String(255), nullable=True)
+    updated_by = db.Column(db.String(255), nullable=True)
+    created_add = db.Column(db.DateTime, nullable=True)
+    updated_add = db.Column(db.DateTime, nullable=True)
     
 
 class UserManagementDB(db.Model, Serializer):

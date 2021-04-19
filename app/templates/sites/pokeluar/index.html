@@ -1,0 +1,81 @@
+{% extends "layout/layout.html" %}
+
+{% block head_css %}
+
+{% endblock %}
+
+{% block head_js %}
+{% endblock %}
+
+{% block body_content %}
+
+
+<div class="block-header">
+    <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
+    <a href="" class="header-title-link">
+        <h1>
+            <i class="fa fa-cogs animation-expandUp"></i>PO Keluar
+            <br>
+            <small>Data PO Keluar</small>
+        </h1>
+    </a>
+</div>
+<ul class="breadcrumb breadcrumb-top">
+    <li><i class="fa fa-pencil-square-o"></i></li>
+    <li>PO Keluar</li>
+</ul>
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="pokeluar/add"><i class="fa fa-arrow-right"></i> Tambah Data</a>
+<!-- Datatables Content -->
+<div class="table-responsive">
+    <table id="example-datatable" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>PO Number</th>
+                <th>PO Reference Number</th>
+                <th>Supplier</th>
+                <th>action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for no, x in listPOKeluar %}
+                <tr>
+                    <td>{{ x.pokeluar_date }}</td>
+                    <td>{{ x.pokeluar_number }}</td>
+                    <td>{{ x.po_number }}</td>
+                    <td>{{ x.supplier_name }}</td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <a href="pokeluar/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+                            <a href="pokeluar/delete/{{ x.id }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
+                            <a href="pokeluar/info/{{ x.id }}" data-toggle="tooltip" title="Info Detail" class="btn btn-xs btn-default"><i class="fa fa-folder-open"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- END Datatables Content -->
+
+
+{% endblock %}
+
+{% block body_js %}
+<script>
+    $(function () {
+        /* Initialize Bootstrap Datatables Integration */
+        webApp.datatables();
+
+        /* Initialize Datatables */
+        $('#example-datatable').dataTable({
+            columnDefs: [{orderable: false, targets: [4]}],
+            pageLength: 15,
+            lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
+        });
+
+        /* Add placeholder attribute to the search form */
+        $('.dataTables_filter input').attr('placeholder', 'Search');
+    });
+</script>
+{% endblock %}

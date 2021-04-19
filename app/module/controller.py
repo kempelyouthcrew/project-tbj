@@ -8,7 +8,7 @@
 from flask import render_template, request, redirect, session, flash
 from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, UserManagementDB
+from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, UserManagementDB, POKeluarDB, POKeluarDetail
 from flask_navigation import Navigation
 import bcrypt
 import json
@@ -25,6 +25,7 @@ nav.Bar('leftbar', [
         nav.Item('Quotation', 'quotation'),
         nav.Item('PO Konsumen', 'pokonsumen'),
         nav.Item('DO', 'do'),
+        nav.Item('PO Keluar', 'pokeluar'),
     ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
@@ -587,6 +588,164 @@ def quotationAccept(id,validity):
         print(e)
     return redirect("/quotation")
 
+# PO Keluar
+@app.route('/pokeluar', methods=['GET'])
+def pokeluar():
+    listPOKeluar = POKeluarDB.query\
+                    .join(PODB, PODB.id==POKeluarDB.po_id)\
+                    .join(SupplierDB, SupplierDB.id==POKeluarDB.supplier_id)\
+                    .add_columns(\
+                        POKeluarDB.id,\
+                        POKeluarDB.pokeluar_date,\
+                        POKeluarDB.pokeluar_number,\
+                        PODB.po_number,\
+                        SupplierDB.supplier_name,\
+                        )
+    
+    return render_template("sites/pokeluar/index.html", listPOKeluar=enumerate(listPOKeluar))
+
+@app.route('/pokeluar/add', methods=['GET'])
+def pokeluarAddForm():
+    listSparepart = SparepartDB.query.all()
+    listPo = PODB.query.all()
+    listSupplier = SupplierDB.query.all()
+    return render_template("sites/pokeluar/addForm.html", listSparepart=listSparepart, listPo=listPo, listSupplier=listSupplier)
+
+@app.route('/pokeluar/add', methods=['POST'])
+def pokeluarAdd():
+    dateNow = datetime.datetime.now()
+    pokeluar_date = dateNow
+    pokeluar_number = 'PO.TBJ-' + str(random.randint(1000, 9999))
+    formCount = request.form['formCount']
+    supplier_id = request.form['supplier_name']
+    po_id = request.form['po_number']
+    pokeluar_price = request.form['sum_price']
+    idParent = ""
+
+    try:
+        pokeluar = POKeluarDB(pokeluar_number=pokeluar_number,
+                            pokeluar_date=pokeluar_date,
+                            supplier_id=supplier_id,
+                            po_id=po_id,
+                            pokeluar_price=pokeluar_price)
+        db.session.add(pokeluar)
+        db.session.commit()
+        db.session.flush()  
+        idParent = pokeluar.id
+        
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+
+    i = 0
+    while i < int(formCount):
+        i = i + 1
+        if 'sparepart_'+ str(i) in request.form:
+            pokeluar_id = idParent
+            sparepart_number = request.form['sparepart_'+ str(i)]
+            sparepart_qty = request.form['qty_'+ str(i)]
+            sparepart_price = request.form['price_'+ str(i)]
+            sparepart_totalprice = request.form['total_price_'+ str(i)]
+            try:
+                pokeluarDet = POKeluarDetail(pokeluar_id=pokeluar_id,
+                                    sparepart_number=sparepart_number,
+                                    sparepart_qty=sparepart_qty,
+                                    sparepart_price=sparepart_price,
+                                    sparepart_totalprice=sparepart_totalprice)
+                db.session.add(pokeluarDet)
+                db.session.commit()
+            except Exception as e:
+                print("Failed to add data.")
+                print(e)
+
+    return render_template("sites/pokeluar/addForm.html")
+
+# @app.route('/pokeluar/edit/<int:id>', methods=['GET'])
+# def quotationEditForm(id):
+#     quotation = QuotationDB.query.filter_by(id=id).first()
+#     quotationDet= QuotationDetail.query.filter_by(id=id).first()
+#     return render_template("sites/quotation/editForm.html", quotation=enumerate(quotation), quotationDet=enumerate(quotationDet))
+
+# @app.route('/quotation/edit', methods=['POST'])
+# def quotationEdit():
+#     id = request.form['id']
+#     quotation_date = request.form['quotation_date']
+#     quotation_number = request.form['quotation_number']
+#     quotation_validity = request.form['quotation_validity']
+#     konsumen_id = request.form['konsumen_id']
+#     quotation_price = request.form['quotation_price']
+#     quotation_ppn = request.form['quotation_ppn']
+#     quotation_materai = request.form['quotation_materai']
+#     quotation_totalprice = request.form['quotation_totalprice']
+#     sparepart_number = request.form['sparepart_number']
+#     sparepart_qty = request.form['sparepart_qty']
+#     sparepart_price = request.form['sparepart_price']
+#     sparepart_totalprice = request.form['sparepart_totalprice']
+#     sparepart_description = request.form['sparepart_description']
+#     try:
+#         quotation = QuotationDB.query.filter_by(id=id).first()
+#         quotationDet= QuotationDetail.query.filter_by(id=id).first()
+#         quotation.quotation_date=quotation_date
+#         quotation.quotation_number=quotation_number
+#         quotation.quotation_validity=quotation_validity
+#         quotation.konsumen_id=konsumen_id
+#         quotation.quotation_price=quotation_price
+#         quotation.quotation_ppn=quotation_ppn
+#         quotation.quotation_materai=quotation_materai
+#         quotation.quotation_totalprice=quotation_totalprice
+#         quotationDet.sparepart_number=sparepart_number
+#         quotationDet.sparepart_qty=sparepart_qty
+#         quotationDet.sparepart_price=sparepart_price
+#         quotationDet.sparepart_totalprice=sparepart_totalprice
+#         quotationDet.sparepart_description=sparepart_description
+#         db.session.commit()
+#     except Exception as e:
+#         print("Failed to update data")
+#         print(e)
+#     return redirect("/quotation")
+
+# @app.route('/quotation/delete/<int:id>')
+# def quotationKonsumen(id):
+#     try:
+#         quotation = QuotationDB.query.filter_by(id=id).first()
+#         quotationDet = QuotationDetail.query.filter_by(id=id).first()
+#         db.session.delete(quotation)
+#         db.session.delete(quotationDet)
+#         db.session.commit()
+#     except Exception as e:
+#         print("Failed to delete data")
+#         print(e)
+#     return redirect("/quotation")
+
+@app.route('/pokeluar/info/<int:id>', methods=['GET'])
+def pokeluarInfo(id):
+    pokeluar = POKeluarDetail.query\
+        .join(POKeluarDB, POKeluarDB.id==POKeluarDetail.pokeluar_id)\
+        .filter_by(id=id)\
+        .join(SupplierDB, POKeluarDB.supplier_id==SupplierDB.id)\
+        .join(SparepartDB, POKeluarDetail.sparepart_number==SparepartDB.id)\
+        .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+        .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+        .add_columns(\
+            POKeluarDB.id,\
+            POKeluarDB.pokeluar_date,\
+            POKeluarDB.pokeluar_number,\
+            POKeluarDB.pokeluar_price,\
+            SparepartDB.sparepart_number,\
+            SparepartName.sparepart_name,\
+            POKeluarDetail.sparepart_qty,\
+            POKeluarDetail.sparepart_price,\
+            POKeluarDetail.sparepart_totalprice,\
+            POKeluarDB.po_id,\
+            SupplierDB.supplier_alamat,\
+            SupplierDB.supplier_name\
+        )\
+        .all()
+    print(pokeluar)
+    return render_template("sites/pokeluar/info.html", pokeluar=pokeluar)
+
+
+
 # User Management
 @app.route('/usermanagement', methods=['GET'])
 def usermanagement():
@@ -845,9 +1004,15 @@ def poMaster():
     s = text("\
         SELECT \
         *\
+        ,po.id AS poid \
         FROM PODB AS po \
         INNER JOIN quotationDB AS quo ON po.quotation_id = quo.id \
         INNER JOIN konsumenDB AS kon ON quo.konsumen_id = kon.id \
     ")
     podb = db.engine.execute(s).fetchall() 
     return json.dumps([dict(r) for r in podb], default=alchemyencoder)
+
+@app.route('/master/supplier', methods=['GET'])
+def supplierMaster():
+    supplier = SupplierDB.query.all()
+    return json.dumps(SupplierDB.serialize_list(supplier))
