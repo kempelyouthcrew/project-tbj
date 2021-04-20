@@ -1,0 +1,209 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+<style>
+    body {
+        background: rgb(204,204,204); 
+    }
+    page {
+        background: white;
+        display: block;
+        margin: 0 auto;
+        margin-bottom: 0.5cm;
+        box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+    }
+    page[size="A4"] {  
+        width: 21cm;
+        height: 29.7cm; 
+    }
+    @media print {
+        body, page {
+            margin: 0;
+            box-shadow: 0;
+        }
+    }
+    header {
+        text-align: center;
+    }
+    .headbar {
+        width: 100%;
+    }
+    .pagepadding {
+        padding: 35px;
+    }
+    .pagepadding-variant {
+        padding-left: 35px;
+        padding-right: 0px;
+        padding-bottom: 0px;
+    }
+    .boxvariant {
+        background-color: #2978b5;
+        height: 100px;
+        width: 379px;
+        border-radius: 10px 0px;
+    }
+    .boxvariant p {
+        color: white;
+        font-size: 70px;
+    }
+    .detail-section p {
+        margin-bottom: 0px;
+    }
+    .ptname {
+        font-weight: bold;
+    }
+    .showdate {
+        font-size: 25px;
+        border-bottom: 5px solid #2978b5;
+    }
+    .wrap-date {
+        text-align: center;
+    }
+    .table-quodetail {
+        width: 100%;
+        font-size: 15px;
+    }
+    .quodetail-head {
+        width: 130px;
+    }
+    .logo-doc{
+        width: 60%;
+        margin-top: -25px;
+    }
+    .table-section{
+        margin-top: 25px;
+        margin-left: 15px;
+        padding-right: 45px;
+        border-color: white !important;
+    }
+    .table-spare {
+        font-size: 12px;
+    }
+    .table-spare thead {
+        color: white;
+        background: #2978b5;
+    }
+    .table-spare th {
+        border-bottom: 0px solid #ddd !important;
+    }
+    .table-spare td {
+        border-top: 0px solid #ddd !important;
+        border-bottom: 1px solid black!important;
+    }
+</style>
+
+<page size="A4">
+    <div class="pagepadding">
+        <header>
+            <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="headbar">
+        </header>
+    </div>
+    <div class="col-md-12 pagepadding-variant">
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/tbj/logo_side_text.png') }}" class="logo-doc" alt="logo-doc">
+        </div>
+        <div class="col-md-6 boxvariant">
+            <p>Quotation</p>
+        </div>
+    </div>
+    <div class="pagepadding">
+        <div class="col-md-12">
+            <div class="col-md-5 pull-right wrap-date">
+                <p class="showdate">25 January 2021</p>
+            </div>
+        </div>
+    </div>
+    <div class="pagepadding detail-section">
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <p>Quotation to</p>
+                <p class="ptname">PT.COBA COBA</p>
+                <p>Bu Novi Sehat</p>
+                <p>Jalan Maju Terus no 3, Pakis, Malan, Indonesia</p>
+                <p>081286384966</p>
+            </div>
+            <div class="col-md-5 pull-right">
+                <table class="table-quodetail">
+                    <tr>
+                        <td class="quodetail-head">Quotation Number</td>
+                        <td>:</td>
+                        <td>value</td>
+                    </tr>
+                    <tr>
+                        <td class="quodetail-head">Costumer ID</td>
+                        <td>:</td>
+                        <td>value</td>
+                    </tr>
+                    <tr>
+                        <td class="quodetail-head">Due Date</td>
+                        <td>:</td>
+                        <td>value</td>
+                    </tr>
+                    <tr>
+                        <td class="quodetail-head">Subject</td>
+                        <td>:</td>
+                        <td>value</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="pagepadding">
+        <div class="col-md-12 table-section">
+            <table class="table table-spare">
+                <thead class="">
+                    <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">Part Number</th>
+                    <th scope="col">Part Name</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Total Price</th>
+                    <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</page>

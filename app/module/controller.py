@@ -1,15 +1,8 @@
-# import os
-# from os.path import join, dirname
-# from dotenv import load_dotenv
-
-# dotenv_path = join(dirname(__file__), '.env')
-# load_dotenv(dotenv_path)
-
 import os
 from flask import render_template, request, redirect, session, flash, make_response, url_for
 from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, PODB, UserManagementDB, DODetail, InvoiceDB
+from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, DODetail, PODB, UserManagementDB, POKeluarDB, POKeluarDetail, InvoiceDB
 from flask_navigation import Navigation
 import bcrypt
 import json
@@ -27,6 +20,7 @@ nav.Bar('leftbar', [
         nav.Item('Quotation', 'quotation'),
         nav.Item('PO Konsumen', 'pokonsumen'),
         nav.Item('DO', 'do'),
+        nav.Item('PO Keluar', 'pokeluar'),
         nav.Item('Invoice', 'invoice'),
     ]),
     nav.Item('Data Master', 'data', items=[
@@ -510,6 +504,7 @@ def quotationAdd():
                 print("Failed to add data.")
                 print(e)
 
+    generatePDF('tes','quotation','quotdata')
     return render_template("sites/quotation/addForm.html")
 
 @app.route('/quotation/edit/<int:id>', methods=['GET'])
@@ -611,6 +606,107 @@ def quotationAccept(id,validity):
         print("Failed to update data")
         print(e)
     return redirect("/quotation")
+
+# PO Keluar
+@app.route('/pokeluar', methods=['GET'])
+def pokeluar():
+    listPOKeluar = POKeluarDB.query\
+                    .join(PODB, PODB.id==POKeluarDB.po_id)\
+                    .join(SupplierDB, SupplierDB.id==POKeluarDB.supplier_id)\
+                    .add_columns(\
+                        POKeluarDB.id,\
+                        POKeluarDB.pokeluar_date,\
+                        POKeluarDB.pokeluar_number,\
+                        PODB.po_number,\
+                        SupplierDB.supplier_name,\
+                        )
+    
+    return render_template("sites/pokeluar/index.html", listPOKeluar=enumerate(listPOKeluar))
+
+@app.route('/pokeluar/add', methods=['GET'])
+def pokeluarAddForm():
+    listSparepart = SparepartDB.query.all()
+    listPo = PODB.query.all()
+    listSupplier = SupplierDB.query.all()
+    return render_template("sites/pokeluar/addForm.html", listSparepart=listSparepart, listPo=listPo, listSupplier=listSupplier)
+
+@app.route('/pokeluar/add', methods=['POST'])
+def pokeluarAdd():
+    dateNow = datetime.datetime.now()
+    pokeluar_date = dateNow
+    pokeluar_number = 'PO.TBJ-' + str(random.randint(1000, 9999))
+    formCount = request.form['formCount']
+    supplier_id = request.form['supplier_name']
+    po_id = request.form['po_number']
+    pokeluar_price = request.form['sum_price']
+    idParent = ""
+
+    try:
+        pokeluar = POKeluarDB(pokeluar_number=pokeluar_number,
+                            pokeluar_date=pokeluar_date,
+                            supplier_id=supplier_id,
+                            po_id=po_id,
+                            pokeluar_price=pokeluar_price)
+        db.session.add(pokeluar)
+        db.session.commit()
+        db.session.flush()  
+        idParent = pokeluar.id
+        
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+
+    i = 0
+    while i < int(formCount):
+        i = i + 1
+        if 'sparepart_'+ str(i) in request.form:
+            pokeluar_id = idParent
+            sparepart_number = request.form['sparepart_'+ str(i)]
+            sparepart_qty = request.form['qty_'+ str(i)]
+            sparepart_price = request.form['price_'+ str(i)]
+            sparepart_totalprice = request.form['total_price_'+ str(i)]
+            try:
+                pokeluarDet = POKeluarDetail(pokeluar_id=pokeluar_id,
+                                    sparepart_number=sparepart_number,
+                                    sparepart_qty=sparepart_qty,
+                                    sparepart_price=sparepart_price,
+                                    sparepart_totalprice=sparepart_totalprice)
+                db.session.add(pokeluarDet)
+                db.session.commit()
+            except Exception as e:
+                print("Failed to add data.")
+                print(e)
+
+    return render_template("sites/pokeluar/addForm.html")
+ 
+@app.route('/pokeluar/info/<int:id>', methods=['GET'])
+def pokeluarInfo(id):
+    pokeluar = POKeluarDetail.query\
+        .join(POKeluarDB, POKeluarDB.id==POKeluarDetail.pokeluar_id)\
+        .filter_by(id=id)\
+        .join(SupplierDB, POKeluarDB.supplier_id==SupplierDB.id)\
+        .join(SparepartDB, POKeluarDetail.sparepart_number==SparepartDB.id)\
+        .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+        .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+        .add_columns(\
+            POKeluarDB.id,\
+            POKeluarDB.pokeluar_date,\
+            POKeluarDB.pokeluar_number,\
+            POKeluarDB.pokeluar_price,\
+            SparepartDB.sparepart_number,\
+            SparepartName.sparepart_name,\
+            POKeluarDetail.sparepart_qty,\
+            POKeluarDetail.sparepart_price,\
+            POKeluarDetail.sparepart_totalprice,\
+            POKeluarDB.po_id,\
+            SupplierDB.supplier_alamat,\
+            SupplierDB.supplier_name\
+        )\
+        .all()
+    print(pokeluar)
+    return render_template("sites/pokeluar/info.html", pokeluar=pokeluar)
+
+
 
 # User Management
 @app.route('/usermanagement', methods=['GET'])
@@ -928,7 +1024,7 @@ def poMaster():
     s = text("\
         SELECT \
         *\
-        ,po.id as poid\
+        ,po.id AS poid \
         FROM PODB AS po \
         INNER JOIN quotationDB AS quo ON po.quotation_id = quo.id \
         INNER JOIN konsumenDB AS kon ON quo.konsumen_id = kon.id \
@@ -936,6 +1032,10 @@ def poMaster():
     podb = db.engine.execute(s).fetchall() 
     return json.dumps([dict(r) for r in podb], default=alchemyencoder)
 
+@app.route('/master/supplier', methods=['GET'])
+def supplierMaster():
+    supplier = SupplierDB.query.all()
+    return json.dumps(SupplierDB.serialize_list(supplier))
 @app.route('/master/do', methods=['GET'])
 def doMaster():
     s = text("\
@@ -982,24 +1082,28 @@ def invoiceMaster(invoice_id):
 dirname = os.path.dirname(__file__)
 
 # generate pdf
-def generatePDF():
+def generatePDF(filename,variant,data):
+    if variant == 'po':
+        templ = 'pdf/po.html'
+    elif variant == 'do':
+        templ = 'pdf/do.html'
+    elif variant == 'invoice':
+        templ = 'pdf/invoice.html'
+    elif variant == 'quotation':
+        templ = 'pdf/quotation.html'
+        
     # Make a PDF straight from HTML in a string.
-    name='pdftest'
-    html = render_template('pdf/test.html', name=name)
+    html = render_template(templ, name=data)
 
     pdf = HTML(string=html).write_pdf()
 
     if os.path.exists(dirname):
 
-        f = open(os.path.join(dirname, '../file/tes/'+ name +'.pdf'), 'wb')
+        f = open(os.path.join(dirname, '../file/'+ variant +'/'+ filename +'.pdf'), 'wb')
         f.write(pdf)
     
-    return 'd'
+    return 'success'
 
-# Alternatively, if the PDF does not have a matching HTML page:
-
-# @app.route('/pdftest_<name>.pdf')
-# def pdftest_pdf(name):
-#     # Make a PDF straight from HTML in a string.
-#     html = render_template('/pdftest.html', name=name)
-#     return render_pdf(HTML(string=html))
+@app.route('/setdoc/<string:filename>', methods=['GET'])
+def setdoc(filename):
+    return render_template("pdf/"+ filename +".html")
