@@ -18,10 +18,10 @@ nav.Bar('leftbar', [
     ]),
     nav.Item('Purchasing', 'data', items=[
         nav.Item('Quotation', 'quotation'),
-        nav.Item('PO Konsumen', 'pokonsumen'),
-        nav.Item('DO', 'do'),
-        nav.Item('PO Keluar', 'pokeluar'),
+        nav.Item('PO Masuk', 'pokonsumen'),
+        nav.Item('Delivery Order', 'do'),
         nav.Item('Invoice', 'invoice'),
+        nav.Item('PO Keluar', 'pokeluar'),
     ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
@@ -86,7 +86,6 @@ def logout():
 
 # Dashboard
 @app.route('/dashboard', methods=['GET'])
-@login_required
 def dashboard():
     return render_template("sites/dashboard.html")
 
@@ -507,63 +506,6 @@ def quotationAdd():
     generatePDF(quotation_number,'quotation',idParent)
     return render_template("sites/quotation/addForm.html")
 
-@app.route('/quotation/edit/<int:id>', methods=['GET'])
-def quotationEditForm(id):
-    quotation = QuotationDB.query.filter_by(id=id).first()
-    quotationDet= QuotationDetail.query.filter_by(id=id).first()
-    return render_template("sites/quotation/editForm.html", quotation=enumerate(quotation), quotationDet=enumerate(quotationDet))
-
-@app.route('/quotation/edit', methods=['POST'])
-def quotationEdit():
-    id = request.form['id']
-    quotation_date = request.form['quotation_date']
-    quotation_number = request.form['quotation_number']
-    quotation_validity = request.form['quotation_validity']
-    konsumen_id = request.form['konsumen_id']
-    quotation_price = request.form['quotation_price']
-    quotation_ppn = request.form['quotation_ppn']
-    quotation_materai = request.form['quotation_materai']
-    quotation_totalprice = request.form['quotation_totalprice']
-    sparepart_number = request.form['sparepart_number']
-    sparepart_qty = request.form['sparepart_qty']
-    sparepart_price = request.form['sparepart_price']
-    sparepart_totalprice = request.form['sparepart_totalprice']
-    sparepart_description = request.form['sparepart_description']
-    try:
-        quotation = QuotationDB.query.filter_by(id=id).first()
-        quotationDet= QuotationDetail.query.filter_by(id=id).first()
-        quotation.quotation_date=quotation_date
-        quotation.quotation_number=quotation_number
-        quotation.quotation_validity=quotation_validity
-        quotation.konsumen_id=konsumen_id
-        quotation.quotation_price=quotation_price
-        quotation.quotation_ppn=quotation_ppn
-        quotation.quotation_materai=quotation_materai
-        quotation.quotation_totalprice=quotation_totalprice
-        quotationDet.sparepart_number=sparepart_number
-        quotationDet.sparepart_qty=sparepart_qty
-        quotationDet.sparepart_price=sparepart_price
-        quotationDet.sparepart_totalprice=sparepart_totalprice
-        quotationDet.sparepart_description=sparepart_description
-        db.session.commit()
-    except Exception as e:
-        print("Failed to update data")
-        print(e)
-    return redirect("/quotation")
-
-@app.route('/quotation/delete/<int:id>')
-def quotationKonsumen(id):
-    try:
-        quotation = QuotationDB.query.filter_by(id=id).first()
-        quotationDet = QuotationDetail.query.filter_by(id=id).first()
-        db.session.delete(quotation)
-        db.session.delete(quotationDet)
-        db.session.commit()
-    except Exception as e:
-        print("Failed to delete data")
-        print(e)
-    return redirect("/quotation")
-
 @app.route('/quotation/info/<int:id>', methods=['GET'])
 def quotationInfo(id):
     quotation = QuotationDetail.query\
@@ -595,17 +537,6 @@ def quotationInfo(id):
     print(quotation)
     return render_template("sites/quotation/info.html", quotation=quotation)
 
-@app.route('/quotation/validity/<int:id>/<int:validity>', methods=['get'])
-def quotationAccept(id,validity):
-    validityVal = validity
-    try:
-        quotation = QuotationDB.query.filter_by(id=id).first()
-        quotation.quotation_validity=validityVal
-        db.session.commit()
-    except Exception as e:
-        print("Failed to update data")
-        print(e)
-    return redirect("/quotation")
 
 # PO Keluar
 @app.route('/pokeluar', methods=['GET'])
@@ -678,7 +609,8 @@ def pokeluarAdd():
                 print(e)
 
     return render_template("sites/pokeluar/addForm.html")
- 
+
+
 @app.route('/pokeluar/info/<int:id>', methods=['GET'])
 def pokeluarInfo(id):
     pokeluar = POKeluarDetail.query\
@@ -851,6 +783,48 @@ def pokonsumenInfo(id):
     print(quotation)
     return render_template("sites/pokonsumen/info.html", pokonsumen=pokonsumen)
 
+
+@app.route('/pokonsumen/edit/<int:id>')
+def poKonsumenEditForm(id):
+    pokonsumen = PODB.query.filter_by(id=id).first()
+    listQuotation = QuotationDB.query.all()
+    listSparepart = SparepartDB.query.all()
+    return render_template("sites/pokonsumen/editForm.html", data=pokonsumen, listQuotation=enumerate(listQuotation), listSparepart=enumerate(listSparepart))
+
+@app.route('/pokonsumen/edit', methods=['POST'])
+def poKonsumenEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        dateNow = datetime.datetime.now()
+        po_date = dateNow
+        quotation_id = request.form['quotation']
+        seller_name = request.form['seller_name']
+        po_number = request.form['po_number']
+        try:
+            pokonsumen = PODB.query.filter_by(id=id).first()
+            pokonsumen.po_date=po_date
+            pokonsumen.quotation_id=quotation_id
+            pokonsumen.seller_name=seller_name
+            pokonsumen.po_number=po_number
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/pokonsumen")
+
+@app.route('/pokonsumen/delete/<int:id>')
+def poKonsumenDelete(id):
+    try:
+        pokonsumen = PODB.query.filter_by(id=id).first()
+        db.session.delete(pokonsumen)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/pokonsumen")
+
+
+
 # DO
 @app.route('/do', methods=['GET'])
 def do():
@@ -930,7 +904,73 @@ def doAdd():
 
     return render_template("sites/do/addForm.html")
 
-# DO
+@app.route('/do/info/<int:id>', methods=['GET'])
+def doInfo(id):
+    do = DODetail.query\
+        .join(DODB, DODB.id==DODetail.do_id)\
+        .filter_by(id=id)\
+        .join(SparepartDB, DODetail.sparepart_number==SparepartDB.id)\
+        .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+        .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+        .add_columns(\
+            DODB.id,\
+            DODB.do_date,\
+            DODB.do_number,\
+            DODB.do_terms,\
+            DODB.do_price,\
+            DODB.do_ppn,\
+            DODB.do_materai,\
+            DODB.do_totalprice,\
+            SparepartDB.sparepart_number,\
+            SparepartName.sparepart_name,\
+            DODetail.sparepart_qty,\
+            DODetail.sparepart_price,\
+            DODetail.sparepart_totalprice,\
+        )\
+        .all()
+    print(do)
+    return render_template("sites/do/info.html", do=do)
+
+@app.route('/do/edit/<int:id>')
+def doEditForm(id):
+    do = DODB.query.filter_by(id=id).first()
+    listQuotation = QuotationDB.query.all()
+    listPo = PODB.query.all()
+    return render_template("sites/do/editForm.html", data=do, listQuotation=enumerate(listQuotation), listPo=enumerate(listPo))
+
+@app.route('/do/edit', methods=['POST'])
+def doEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        dateNow = datetime.datetime.now()
+        po_date = dateNow
+        quotation_id = request.form['quotation']
+        seller_name = request.form['seller_name']
+        po_number = request.form['po_number']
+        try:
+            pokonsumen = PODB.query.filter_by(id=id).first()
+            pokonsumen.po_date=po_date
+            pokonsumen.quotation_id=quotation_id
+            pokonsumen.seller_name=seller_name
+            pokonsumen.po_number=po_number
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/do")
+
+@app.route('/do/delete/<int:id>')
+def doDelete(id):
+    try:
+        do = DODB.query.filter_by(id=id).first()
+        db.session.delete(do)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/do")
+
+# Invoice
 @app.route('/invoice', methods=['GET'])
 def invoice():
     listInvoice = InvoiceDB.query\
@@ -939,7 +979,7 @@ def invoice():
         .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
         .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
         .add_columns(\
-            DODB.id\
+            InvoiceDB.id\
             ,DODB.do_date\
             ,InvoiceDB.invoice_number\
             ,KonsumenDB.konsumen_name\
@@ -972,6 +1012,71 @@ def invoiceAdd():
         print(e)
 
     return render_template("sites/invoice/addForm.html")
+
+@app.route('/invoice/edit/<int:id>')
+def invoiceEditForm(id):
+    invoice = InvoiceDB.query.filter_by(id=id).first()
+    listDo = DODB.query.all()
+    print(invoice)
+    return render_template("sites/invoice/editForm.html", data=invoice, listDo=enumerate(listDo))
+
+@app.route('/invoice/edit', methods=['POST'])
+def invoiceEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        dateNow = datetime.datetime.now()
+        invoice_date = dateNow
+        do_id = request.form['do_id']
+        invoice_terms = request.form['invoice_terms']
+        try:
+            invoice = InvoiceDB.query.filter_by(id=id).first()
+            invoice.invoice_date=invoice_date
+            invoice.do_id=do_id
+            invoice.invoice_terms=invoice_terms
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/invoice")
+
+@app.route('/invoice/delete/<int:id>')
+def invoiceDelete(id):
+    try:
+        invoice = InvoiceDB.query.filter_by(id=id).first()
+        db.session.delete(invoice)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/invoice")
+
+@app.route('/invoice/info/<int:id>', methods=['GET'])
+def invoiceInfo(id):
+    invoice = DODetail.query\
+        .join(DODB, DODB.id==DODetail.do_id)\
+        .join(InvoiceDB, InvoiceDB.do_id==DODB.id)\
+        .filter_by(id=id)\
+        .join(SparepartDB, DODetail.sparepart_number==SparepartDB.id)\
+        .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+        .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+        .add_columns(\
+            DODB.id,\
+            DODB.do_date,\
+            DODB.do_number,\
+            DODB.do_terms,\
+            DODB.do_price,\
+            DODB.do_ppn,\
+            DODB.do_materai,\
+            DODB.do_totalprice,\
+            SparepartDB.sparepart_number,\
+            SparepartName.sparepart_name,\
+            DODetail.sparepart_qty,\
+            DODetail.sparepart_price,\
+            DODetail.sparepart_totalprice,\
+        )\
+        .all()
+    print(invoice)
+    return render_template("sites/invoice/info.html", invoice=invoice)
 
 # Master json
 @app.route('/master/konsumen', methods=['GET'])

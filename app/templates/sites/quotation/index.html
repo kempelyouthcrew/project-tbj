@@ -33,7 +33,6 @@
                 <th>Date</th>
                 <th>Quotation Number</th>
                 <th>Konsumen</th>
-                <th>Status</th>
                 <th>action</th>
             </tr>
         </thead>
@@ -43,17 +42,8 @@
                     <td>{{ x.quotation_date }}</td>
                     <td>{{ x.quotation_number }}</td>
                     <td>{{ x.konsumen_name }}</td>
-                    {% if x.quotation_validity == 1 %}
-                        <td><span class="label label-primary">Pending</span></td>
-                    {% elif x.quotation_validity == 2 %}
-                        <td><span class="label label-success">Valid</span></td>
-                    {% elif x.quotation_validity == 3 %}
-                        <td><span class="label label-danger">Decline</span></td>
-                    {% endif %}
                     <td class="text-center">
                         <div class="btn-group">
-                            <a href="quotation/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-                            <a href="quotation/delete/{{ x.id }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>
                             <a href="quotation/info/{{ x.id }}" data-toggle="tooltip" title="Info Detail" class="btn btn-xs btn-default"><i class="fa fa-folder-open"></i></a>
                         </div>
                     </td>
@@ -75,7 +65,7 @@
 
         /* Initialize Datatables */
         $('#example-datatable').dataTable({
-            columnDefs: [{orderable: false, targets: [4]}],
+            columnDefs: [{orderable: false, targets: [3]}],
             pageLength: 15,
             lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
         });

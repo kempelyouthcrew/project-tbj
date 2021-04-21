@@ -2,6 +2,12 @@
 
 {% block head_css %}
 
+<style>
+    .sparepart_row{
+        margin-top: 30px;
+    }
+</style>
+
 {% endblock %}
 
 {% block head_js %}
@@ -14,7 +20,7 @@
     <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
     <a href="" class="header-title-link">
         <h1>
-            <i class="fa fa-cogs animation-expandUp"></i>Konsumen
+            <i class="fa fa-cogs animation-expandUp"></i>DO
             <br>
             <small>Tambah Data</small>
         </h1>
@@ -22,11 +28,11 @@
 </div>
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
-    <li>Konsumen</li>
-    <li>Edit Data</li>
+    <li>DO</li>
+    <li>Tambah Data</li>
 </ul>
 
-<a class="btn btn-primary" style="margin-bottom: 14px;" href="/konsumen"><i class="fa fa-arrow-left"></i> Kembali</a>
+<a class="btn btn-primary" style="margin-bottom: 14px;" href="/do"><i class="fa fa-arrow-left"></i> Kembali</a>
 
 <div class="block full">
     <!-- Dropzone Title -->
@@ -34,32 +40,55 @@
         <h2>Form Tambah Data</h2>
     </div>
     <!-- END Dropzone Title -->
-    <form action="/konsumen/edit" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+    <form action="/do/edit" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
         <input type="text" id="id" name="id" class="form-control" value="{{ data.id }}" style="display:none;" >
         <h4 class="sub-header">Text Inputs</h4>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_id">ID Konsumen</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_id" name="konsumen_id" class="form-control" value="{{ data.konsumen_id }}" >
+            <label class="col-md-2 control-label" for="po_id">PO Number</label>
+            <div class="col-md-10">
+                <select id="po_id" name="po_id" class="select-select2" data-placeholder="Choose one.." style="width: 250px;" >
+                    <option></option>
+                    {% for no, x in listPo %}
+                        {% set number = data.po_id | int %}
+                        {% if number == x.id %}
+                            <option selected value="{{ x.id }}">{{ x.po_number }} </option>
+                        {% else %}
+                            <option value="{{ x.id }}">{{ x.po_number }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select >
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_name">Nama Konsumen</label>
+            <label class="col-md-2 control-label" for="quotation_number">Quotation</label>
             <div class="col-md-3">
-                <input type="text" id="konsumen_name" name="konsumen_name" class="form-control" value="{{ data.konsumen_name }}" >
+                <input type="text" id="quotation_number" name="quotation_number" class="form-control" value="{{ data.quotation_number }}" >
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_address">Alamat</label>
+            <label class="col-md-2 control-label" for="do_terms">Term</label>
             <div class="col-md-3">
-                <input type="text" id="konsumen_address" name="konsumen_address" class="form-control" value="{{ data.konsumen_address }}" >
+                <input type="text" id="do_terms" name="do_terms" class="form-control" value="{{ data.do_terms }}" >
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="konsumen_phone">Telephone</label>
-            <div class="col-md-3">
-                <input type="text" id="konsumen_phone" name="konsumen_phone" class="form-control" value="{{ data.konsumen_phone }}" >
+            <label class="col-md-2 control-label" for="sparepart_number">Sparepart</label>
+            <div class="col-md-10">
+                <div class="col-sm-2">
+                    <label class="head-dyn" for="sparepart">Sparepart:</label>
+                </div>
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-1">
+                    <label class="head-dyn" for="qty">Quantity:</label>
+                </div>
+                <div class="col-sm-1">
+                </div>
             </div>
+        </div>
+        <div class="sparepart-form">
+        </div>
+        <div class="sparepart-summary">
         </div>
         <div class="form-group">
             <div class="col-md-5 col-md-offset-2">
@@ -76,6 +105,12 @@
 {% block body_js %}
 
 <script>
+    let max_fields      = 10; //maximum input boxes allowed
+    let index = 1;
+    let sparePartData
+    getPO()
+    actionForPO()
+
     function validateForm() {
         var x = document.forms["form"]["konsumen_id"].value;
         if (x == "") {
@@ -97,7 +132,125 @@
           alert("Form telephone tidak boleh kosong");
           return false;
         }
-      }
+    }
+
+    // $( '.money-format' ).mask('000.000.000', {reverse: true});
+
+    function setFinalPrice() {
+        let sum = 0;
+        $(".prc").each(function(){
+            sum += +$(this).val()
+        });
+        $("#sum_price").val(sum);
+        let fp = parseInt($("#sum_price").val())
+        let ppn = 10
+        let materai = parseInt($("#materai").val())
+        let ppn_due = fp * (ppn/100);
+        let grandprice = fp + ppn_due + materai
+
+        $("#ppn").val(ppn_due);
+        $("#grandprice").val(grandprice);
+
+    }
+    
+    $(".sparepart-form").on("click",".remove-form-button", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').parent('div').parent('div').remove();
+        setFinalPrice()
+    })
+
+    function setOption() {
+        let html = ""
+        for (i = 0; i < sparePartData.length; i++) {
+            id = sparePartData[i].id
+            sparepart_number = sparePartData[i].sparepart_number
+            html += "<option value='"+ id +"'>"+ sparepart_number +"</option>"
+        }
+        return html
+    }
+
+    function getPO() {
+        $.ajax({
+            type:"GET",
+            url:"http://localhost:5000/master/po",
+            success: function(data) {
+                podbData = data
+                html = ""
+                for (i = 0; i < data.length; i++) {
+                    id = data[i].poid
+                    po_number = data[i].po_number
+                    konsumen_name = data[i].konsumen_name
+                    html += "<option value='"+ id +"'>"+ po_number +" | "+ konsumen_name +"</option>"
+                }
+                $('#po_id').append(html);              
+            },
+            dataType: 'json',
+          });
+        actionForPO()
+    }
+
+    function actionForPO() {    
+        $('#po_id').change(function(){ 
+            let html = ""
+            let po_id = $('#po_id').val()
+
+            for (i = 0; i < podbData.length; i++) {
+                if(podbData[i].poid == po_id){
+                    $('#quotation_id').val(podbData[i].quotation_id)
+                    $('#quotation').val(podbData[i].quotation_number)
+                }
+            }
+
+            let quot_id = $('#quotation_id').val()
+            
+            $.ajax({
+            type:"GET",
+            url:"http://localhost:5000/master/quotationdetail/" + quot_id,
+            success: function(data) {
+                $(".sparepart-form").empty(); // clear boxes.
+                $(".sparepart-summary").empty();
+                $('#formCount').val(data.length)
+                for (index = 0; index < data.length; index++) {
+                    let optionElement = '<div class="form-group">'
+                        +'<label class="col-md-2 control-label" for="sparepart_number">-</label><div class="col-md-10">'
+                        +'<div class="col-sm-3">'
+                        +'    <input type="text" id="sparepart_name'+ (parseInt(index) + 1) +'" name="sparepart_name'+ (parseInt(index) + 1) +'" class="form-control" placeholder="sparepart" value ="'+ data[index].sparepart_name +'" readonly>'
+                        +'    <input type="text" id="sparepart_'+ (parseInt(index) + 1) +'" name="sparepart_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="sparepart" value ="'+ data[index].spid +'" style="display: none;">'
+                        +'</div>'
+                        +'<div class="col-sm-1">'
+                        +'    <input type="number" id="qty_'+ (parseInt(index) + 1) +'" name="qty_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="qty" min="1" value ="0">'
+                        +'</div>'
+                        +'<div class="col-sm-2">'
+                        +'    <input type="text" id="price_'+ (parseInt(index) + 1) +'" name="price_'+ (parseInt(index) + 1) +'" class="form-control money-format" placeholder="price" value="'+ data[index].sparepart_price +'" style="display: none;">'
+                        +'</div>'
+                        +'<div class="col-sm-2">'
+                        +'    <input type="text" id="total_price_'+ (parseInt(index) + 1) +'" name="total_price_'+ (parseInt(index) + 1) +'" class="form-control money-format prc" placeholder="total price" value="0" style="display: none;">'
+                        +'</div>'
+                        +'<div class="col-sm-3">'
+                        +'    <input type="text" id="description_'+ (parseInt(index) + 1) +'" name="description_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="description" value="0" style="display: none;">'
+                        +'</div>'
+                        +'</div>'
+                        +'</div>'
+        
+                    $(".sparepart-form").append(optionElement);
+                    actionFormDynamic(index + 1)
+                }
+
+                let elementSummary = '<div>'
+                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].quotation_price +'" style="visibility:hidden">'
+                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].quotation_ppn +'" style="visibility:hidden">'
+                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].quotation_materai +'" style="visibility:hidden">'
+                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].quotation_totalprice +'" style="visibility:hidden">'
+                +'            </div>'
+
+                
+                $(".sparepart-summary").append(elementSummary);
+                          
+            },
+                dataType: 'json',
+            });
+        });
+    }    
+
 </script>
 
 {% endblock %}
