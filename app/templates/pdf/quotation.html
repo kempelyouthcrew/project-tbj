@@ -198,10 +198,10 @@
             <tr>
                 <td class="quot-address">
                     <p>Quotation to</p>
-                    <p class="ptname">PT.COBA COBA</p>
+                    <p class="ptname">{{ data.konsumen_name }}</p>
                     <p>Bu Novi Sehat</p>
-                    <p>Jalan Maju Terus no 3, Pakis, Malan, Indonesia</p>
-                    <p>081286384966</p>
+                    <p>{{ data.konsumen_address }}</p>
+                    <p>{{ data.konsumen_phone }}</p>
                 </td>
                 <td class="quot-detail">
                     <table class="table-quodetail">
@@ -213,12 +213,12 @@
                         <tr>
                             <td class="quodetail-head">Costumer ID</td>
                             <td>:</td>
-                            <td>value</td>
+                            <td>{{ data.konsumen_id }}</td>
                         </tr>
                         <tr>
                             <td class="quodetail-head">Due Date</td>
                             <td>:</td>
-                            <td>value</td>
+                            <td>7 Day</td>
                         </tr>
                         <tr>
                             <td class="quodetail-head">Subject</td>

@@ -22,14 +22,14 @@
         <h1>
             <i class="fa fa-cogs animation-expandUp"></i>DO
             <br>
-            <small>Tambah Data</small>
+            <small>Edit Data</small>
         </h1>
     </a>
 </div>
 <ul class="breadcrumb breadcrumb-top">
     <li><i class="fa fa-pencil-square-o"></i></li>
     <li>DO</li>
-    <li>Tambah Data</li>
+    <li>Edit Data</li>
 </ul>
 
 <a class="btn btn-primary" style="margin-bottom: 14px;" href="/do"><i class="fa fa-arrow-left"></i> Kembali</a>
@@ -37,15 +37,21 @@
 <div class="block full">
     <!-- Dropzone Title -->
     <div class="block-title">
-        <h2>Form Tambah Data</h2>
+        <h2>Form Edit Data</h2>
     </div>
     <!-- END Dropzone Title -->
     <form action="/do/edit" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
         <input type="text" id="id" name="id" class="form-control" value="{{ data.id }}" style="display:none;" >
         <h4 class="sub-header">Text Inputs</h4>
         <div class="form-group">
+            <label class="col-md-2 control-label" for="do_number">DO Number</label>
+            <div class="col-md-3">
+                <input type="text" id="do_number" name="do_number" class="form-control" value="{{ data.do_number }}" >
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-md-2 control-label" for="po_id">PO Number</label>
-            <div class="col-md-10">
+            <!-- <div class="col-md-10">
                 <select id="po_id" name="po_id" class="select-select2" data-placeholder="Choose one.." style="width: 250px;" >
                     <option></option>
                     {% for no, x in listPo %}
@@ -57,6 +63,9 @@
                         {% endif %}
                     {% endfor %}
                 </select >
+            </div> -->
+            <div class="col-md-3">
+                <input type="text" id="po_number" name="po_number" class="form-control" value="{{ data.po_number }}" >
             </div>
         </div>
         <div class="form-group">
@@ -108,8 +117,7 @@
     let max_fields      = 10; //maximum input boxes allowed
     let index = 1;
     let sparePartData
-    getPO()
-    actionForPO()
+    actionDetail()
 
     function validateForm() {
         var x = document.forms["form"]["konsumen_id"].value;
@@ -168,86 +176,52 @@
         return html
     }
 
-    function getPO() {
+    function actionDetail() {    
+        let do_id = $('#id').val()
         $.ajax({
-            type:"GET",
-            url:"http://localhost:5000/master/po",
-            success: function(data) {
-                podbData = data
-                html = ""
-                for (i = 0; i < data.length; i++) {
-                    id = data[i].poid
-                    po_number = data[i].po_number
-                    konsumen_name = data[i].konsumen_name
-                    html += "<option value='"+ id +"'>"+ po_number +" | "+ konsumen_name +"</option>"
-                }
-                $('#po_id').append(html);              
-            },
-            dataType: 'json',
-          });
-        actionForPO()
-    }
-
-    function actionForPO() {    
-        $('#po_id').change(function(){ 
-            let html = ""
-            let po_id = $('#po_id').val()
-
-            for (i = 0; i < podbData.length; i++) {
-                if(podbData[i].poid == po_id){
-                    $('#quotation_id').val(podbData[i].quotation_id)
-                    $('#quotation').val(podbData[i].quotation_number)
-                }
+        type:"GET",
+        url:"http://localhost:5000/master/dodetail/" + do_id,
+        success: function(data) {
+            $(".sparepart-form").empty(); // clear boxes.
+            $(".sparepart-summary").empty();
+            $('#formCount').val(data.length)
+            for (index = 0; index < data.length; index++) {
+                let optionElement = '<div class="form-group">'
+                    +'<label class="col-md-2 control-label" for="sparepart_number">-</label><div class="col-md-10">'
+                    +'<div class="col-sm-3">'
+                    +'    <input type="text" id="sparepart_name'+ (parseInt(index) + 1) +'" name="sparepart_name'+ (parseInt(index) + 1) +'" class="form-control" placeholder="sparepart" value ="'+ data[index].sparepart_name +'" readonly>'
+                    +'    <input type="text" id="sparepart_'+ (parseInt(index) + 1) +'" name="sparepart_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="sparepart" value ="'+ data[index].spid +'" style="display: none;">'
+                    +'</div>'
+                    +'<div class="col-sm-1">'
+                    +'    <input type="number" id="qty_'+ (parseInt(index) + 1) +'" name="qty_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="qty" min="1" value ="'+ data[index].sparepart_qty +'">'
+                    +'</div>'
+                    +'<div class="col-sm-2">'
+                    +'    <input type="text" id="price_'+ (parseInt(index) + 1) +'" name="price_'+ (parseInt(index) + 1) +'" class="form-control money-format" placeholder="price" value="'+ data[index].sparepart_price +'" style="display: none;">'
+                    +'</div>'
+                    +'<div class="col-sm-2">'
+                    +'    <input type="text" id="total_price_'+ (parseInt(index) + 1) +'" name="total_price_'+ (parseInt(index) + 1) +'" class="form-control money-format prc" placeholder="total price" value="0" style="display: none;">'
+                    +'</div>'
+                    +'<div class="col-sm-3">'
+                    +'    <input type="text" id="description_'+ (parseInt(index) + 1) +'" name="description_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="description" value="0" style="display: none;">'
+                    +'</div>'
+                    +'</div>'
+                    +'</div>'
+    
+                $(".sparepart-form").append(optionElement);
             }
 
-            let quot_id = $('#quotation_id').val()
+            let elementSummary = '<div>'
+            +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].quotation_price +'" style="visibility:hidden">'
+            +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].quotation_ppn +'" style="visibility:hidden">'
+            +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].quotation_materai +'" style="visibility:hidden">'
+            +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].quotation_totalprice +'" style="visibility:hidden">'
+            +'            </div>'
+
             
-            $.ajax({
-            type:"GET",
-            url:"http://localhost:5000/master/quotationdetail/" + quot_id,
-            success: function(data) {
-                $(".sparepart-form").empty(); // clear boxes.
-                $(".sparepart-summary").empty();
-                $('#formCount').val(data.length)
-                for (index = 0; index < data.length; index++) {
-                    let optionElement = '<div class="form-group">'
-                        +'<label class="col-md-2 control-label" for="sparepart_number">-</label><div class="col-md-10">'
-                        +'<div class="col-sm-3">'
-                        +'    <input type="text" id="sparepart_name'+ (parseInt(index) + 1) +'" name="sparepart_name'+ (parseInt(index) + 1) +'" class="form-control" placeholder="sparepart" value ="'+ data[index].sparepart_name +'" readonly>'
-                        +'    <input type="text" id="sparepart_'+ (parseInt(index) + 1) +'" name="sparepart_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="sparepart" value ="'+ data[index].spid +'" style="display: none;">'
-                        +'</div>'
-                        +'<div class="col-sm-1">'
-                        +'    <input type="number" id="qty_'+ (parseInt(index) + 1) +'" name="qty_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="qty" min="1" value ="0">'
-                        +'</div>'
-                        +'<div class="col-sm-2">'
-                        +'    <input type="text" id="price_'+ (parseInt(index) + 1) +'" name="price_'+ (parseInt(index) + 1) +'" class="form-control money-format" placeholder="price" value="'+ data[index].sparepart_price +'" style="display: none;">'
-                        +'</div>'
-                        +'<div class="col-sm-2">'
-                        +'    <input type="text" id="total_price_'+ (parseInt(index) + 1) +'" name="total_price_'+ (parseInt(index) + 1) +'" class="form-control money-format prc" placeholder="total price" value="0" style="display: none;">'
-                        +'</div>'
-                        +'<div class="col-sm-3">'
-                        +'    <input type="text" id="description_'+ (parseInt(index) + 1) +'" name="description_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="description" value="0" style="display: none;">'
-                        +'</div>'
-                        +'</div>'
-                        +'</div>'
-        
-                    $(".sparepart-form").append(optionElement);
-                    actionFormDynamic(index + 1)
-                }
-
-                let elementSummary = '<div>'
-                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].quotation_price +'" style="visibility:hidden">'
-                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].quotation_ppn +'" style="visibility:hidden">'
-                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].quotation_materai +'" style="visibility:hidden">'
-                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].quotation_totalprice +'" style="visibility:hidden">'
-                +'            </div>'
-
-                
-                $(".sparepart-summary").append(elementSummary);
-                          
-            },
-                dataType: 'json',
-            });
+            $(".sparepart-summary").append(elementSummary);
+                        
+        },
+            dataType: 'json',
         });
     }    
 

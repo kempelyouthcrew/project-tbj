@@ -933,9 +933,23 @@ def doInfo(id):
 
 @app.route('/do/edit/<int:id>')
 def doEditForm(id):
-    do = DODB.query.filter_by(id=id).first()
+    # do = DODB.query.filter_by(id=id).first()
     listQuotation = QuotationDB.query.all()
     listPo = PODB.query.all()
+    do = DODB.query\
+        .filter_by(id=id)\
+        .join(PODB, DODB.po_id==PODB.id)\
+        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+        .add_columns(\
+            QuotationDB.quotation_number\
+            ,DODB.id\
+            ,DODB.do_number\
+            ,DODB.po_id\
+            ,DODB.do_terms\
+            ,PODB.po_number\
+        )\
+        .first()
+
     return render_template("sites/do/editForm.html", data=do, listQuotation=enumerate(listQuotation), listPo=enumerate(listPo))
 
 @app.route('/do/edit', methods=['POST'])
@@ -1195,7 +1209,19 @@ def generatePDF(filename,variant,idParent):
     elif variant == 'invoice':
         templ = 'pdf/invoice.html'
     elif variant == 'quotation':
-        data = QuotationDB.query.filter_by(id=idParent).first()
+        data = QuotationDB.query\
+            .filter_by(id=idParent)\
+            .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+            .add_columns(QuotationDB.id,\
+                QuotationDB.quotation_date,\
+                QuotationDB.quotation_number,\
+                KonsumenDB.konsumen_name,\
+                KonsumenDB.konsumen_address,\
+                KonsumenDB.konsumen_phone,\
+                QuotationDB.quotation_validity\
+            )\
+            .first()
+
         dataChild= QuotationDetail.query.filter_by(quotation_id=idParent)
         templ = 'pdf/quotation.html'
         
@@ -1213,4 +1239,4 @@ def generatePDF(filename,variant,idParent):
 
 @app.route('/previewdoc/<string:filename>', methods=['GET'])
 def setdoc(filename):
-    return render_template("pdf/"+ filename +".html")
+    return generatePDF('quotation_number','quotation','85')
