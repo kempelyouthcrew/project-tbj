@@ -504,7 +504,7 @@ def quotationAdd():
                 print("Failed to add data.")
                 print(e)
 
-    generatePDF('tes','quotation','quotdata')
+    generatePDF(quotation_number,'quotation',idParent)
     return render_template("sites/quotation/addForm.html")
 
 @app.route('/quotation/edit/<int:id>', methods=['GET'])
@@ -1082,7 +1082,7 @@ def invoiceMaster(invoice_id):
 dirname = os.path.dirname(__file__)
 
 # generate pdf
-def generatePDF(filename,variant,data):
+def generatePDF(filename,variant,idParent):
     if variant == 'po':
         templ = 'pdf/po.html'
     elif variant == 'do':
@@ -1090,10 +1090,12 @@ def generatePDF(filename,variant,data):
     elif variant == 'invoice':
         templ = 'pdf/invoice.html'
     elif variant == 'quotation':
+        data = QuotationDB.query.filter_by(id=idParent).first()
+        dataChild= QuotationDetail.query.filter_by(quotation_id=idParent)
         templ = 'pdf/quotation.html'
         
     # Make a PDF straight from HTML in a string.
-    html = render_template(templ, name=data)
+    html = render_template(templ, data=data, dataChild=dataChild)
 
     pdf = HTML(string=html).write_pdf()
 
@@ -1104,6 +1106,6 @@ def generatePDF(filename,variant,data):
     
     return 'success'
 
-@app.route('/setdoc/<string:filename>', methods=['GET'])
+@app.route('/previewdoc/<string:filename>', methods=['GET'])
 def setdoc(filename):
     return render_template("pdf/"+ filename +".html")

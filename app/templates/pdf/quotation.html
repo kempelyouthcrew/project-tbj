@@ -1,8 +1,4 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
 <style>
-    body {
-        background: rgb(204,204,204); 
-    }
     page {
         background: white;
         display: block;
@@ -11,14 +7,7 @@
         box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
     }
     page[size="A4"] {  
-        width: 21cm;
-        height: 29.7cm; 
-    }
-    @media print {
-        body, page {
-            margin: 0;
-            box-shadow: 0;
-        }
+        size: A4; 
     }
     header {
         text-align: center;
@@ -26,26 +15,27 @@
     .headbar {
         width: 100%;
     }
-    .pagepadding {
-        padding: 35px;
-    }
     .pagepadding-variant {
         padding-left: 35px;
         padding-right: 0px;
         padding-bottom: 0px;
+        padding-top: 15px;
     }
     .boxvariant {
         background-color: #2978b5;
-        height: 100px;
-        width: 379px;
+        height: 100%;
+        width: 100%;
         border-radius: 10px 0px;
-    }
-    .boxvariant p {
         color: white;
         font-size: 70px;
+        margin-top: 0px;
+    }
+    .detail-section {
+        margin-bottom: 15px;
     }
     .detail-section p {
         margin-bottom: 0px;
+        padding-top: 0px;
     }
     .ptname {
         font-weight: bold;
@@ -53,29 +43,30 @@
     .showdate {
         font-size: 25px;
         border-bottom: 5px solid #2978b5;
+        margin-bottom: 0px;
     }
     .wrap-date {
         text-align: center;
-    }
-    .table-quodetail {
         width: 100%;
-        font-size: 15px;
+        padding-bottom: 0px;
+        margin-left: 70%;
+        margin-top: -60px;
     }
     .quodetail-head {
         width: 130px;
     }
     .logo-doc{
         width: 60%;
-        margin-top: -25px;
+        margin-top: -115px;
     }
     .table-section{
-        margin-top: 25px;
-        margin-left: 15px;
-        padding-right: 45px;
-        border-color: white !important;
+        padding-top: 0px;
+        margin-bottom: 15px;
     }
     .table-spare {
         font-size: 12px;
+        border-color: white !important;
+        width: 100%;
     }
     .table-spare thead {
         color: white;
@@ -88,6 +79,89 @@
         border-top: 0px solid #ddd !important;
         border-bottom: 1px solid black!important;
     }
+    .term-total {
+        padding-top: 0px
+    }
+    .table-quodetail {
+        width: 100%;
+        font-size: 12px;
+    }
+    .table-quototal {
+        font-size: 14px;
+    }
+    .quototal-head {
+        width: 95px;
+        font-weight: bold;
+    }
+    .quototal-tidua {
+        width: 15px;
+    }
+    .quototal-rp {
+        width: 30px;
+    }
+    .quototal-val {
+        width: 125px;
+        text-align: right;
+    }
+    .val-gt {
+        font-weight: bold;
+        height: 65px;
+    }
+    .table-quoterm {
+        width: 100%;
+        margin-left: 20px;
+        font-size: 13px;
+    }
+    .quoterm-head {
+        width: 120px;
+    }
+    .signspace {
+        margin-top: 140px;
+        padding-bottom: 10px;
+        width: 100%;
+    }
+    .table-signspace {
+        text-align: center;
+        border-bottom: 1px solid black!important;
+        margin-left: 500px;
+        padding-top: 30px;
+    }
+    .contactus {
+        font-size: 13px;
+    }
+    .logomain {
+        width:73%;
+        padding-top: 10px;
+    }
+    .quot-address {
+        width: 70%;
+        font-size: 12px;
+    }
+    .quot-address p {
+        margin-top: 0px;
+    }
+    .thankyou {
+        font-family: Brush Script MT;
+        font-size: 35px;
+        padding-left: 0px;
+        margin-bottom: -10px;
+    }
+    .signspace-wrap {
+        padding-top: 80px;
+        padding-bottom: 0px;
+    }
+    .thankyou-wrap {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin-top: -25px;
+    }
+    .quot-detail{
+        width:100%
+    }
+    .sign-table {
+        margin-left: 55%;
+    }
+    
 </style>
 
 <page size="A4">
@@ -97,113 +171,157 @@
         </header>
     </div>
     <div class="col-md-12 pagepadding-variant">
-        <div class="col-md-6">
-            <img src="{{ url_for('static', filename='img/tbj/logo_side_text.png') }}" class="logo-doc" alt="logo-doc">
-        </div>
-        <div class="col-md-6 boxvariant">
-            <p>Quotation</p>
-        </div>
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td class="logomain">
+                    <img src="{{ url_for('static', filename='img/tbj/logo_side_text.png') }}" class="logo-doc" alt="logo-doc">
+                </td>
+                <td>
+                    <!-- <div class="boxvariant"> -->
+                        <p class="boxvariant">Quotation</p>
+                    <!-- </div> -->
+                </td>
+            </tr>
+        </table>
     </div>
-    <div class="pagepadding">
-        <div class="col-md-12">
-            <div class="col-md-5 pull-right wrap-date">
-                <p class="showdate">25 January 2021</p>
-            </div>
-        </div>
+    <div class="pagepadding wrap-date">
+        <table cellpadding="0" cellspacing="0" class="">
+            <tr>
+                <td>
+                    <p class="showdate">{{ data.quotation_date.strftime('%d %B %Y') }}</p>
+                </td>
+            </tr>
+        </table>
     </div>
     <div class="pagepadding detail-section">
-        <div class="col-md-12">
-            <div class="col-md-3">
-                <p>Quotation to</p>
-                <p class="ptname">PT.COBA COBA</p>
-                <p>Bu Novi Sehat</p>
-                <p>Jalan Maju Terus no 3, Pakis, Malan, Indonesia</p>
-                <p>081286384966</p>
-            </div>
-            <div class="col-md-5 pull-right">
-                <table class="table-quodetail">
+        <table cellpadding="0" cellspacing="0" class="">
+            <tr>
+                <td class="quot-address">
+                    <p>Quotation to</p>
+                    <p class="ptname">PT.COBA COBA</p>
+                    <p>Bu Novi Sehat</p>
+                    <p>Jalan Maju Terus no 3, Pakis, Malan, Indonesia</p>
+                    <p>081286384966</p>
+                </td>
+                <td class="quot-detail">
+                    <table class="table-quodetail">
+                        <tr>
+                            <td class="quodetail-head">Quotation Number</td>
+                            <td>:</td>
+                            <td>{{ data.quotation_number }}</td>
+                        </tr>
+                        <tr>
+                            <td class="quodetail-head">Costumer ID</td>
+                            <td>:</td>
+                            <td>value</td>
+                        </tr>
+                        <tr>
+                            <td class="quodetail-head">Due Date</td>
+                            <td>:</td>
+                            <td>value</td>
+                        </tr>
+                        <tr>
+                            <td class="quodetail-head">Subject</td>
+                            <td>:</td>
+                            <td>-</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="pagepadding table-section">
+        <table class="table table-spare">
+            <thead class="">
+                <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Part Number</th>
+                <th scope="col">Part Name</th>
+                <th scope="col">Brand</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Qty</th>
+                <th scope="col">Total Price</th>
+                <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in dataChild %}
                     <tr>
-                        <td class="quodetail-head">Quotation Number</td>
+                        <td>1</td>
+                        <td>{{ object.sparepart_number }}</td>
+                        <td>{{ object.sparepart_number }}</td>
+                        <td>{{ object.sparepart_number }}</td>
+                        <td>{{ object.sparepart_number }}</td>
+                        <td>{{ object.sparepart_number }}</td>
+                        <td>{{ object.sparepart_number }}</td>
+                        <td>{{ object.sparepart_number }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagepadding term-total">
+        <table cellpadding="0" cellspacing="0">
+            <td class="quot-address">
+                <p class="term-title">Terms & Condition :</p>
+                <table class="table-quoterm">
+                    <tr>
+                        <td class="quoterm-head">- Payment Term</td>
                         <td>:</td>
                         <td>value</td>
                     </tr>
                     <tr>
-                        <td class="quodetail-head">Costumer ID</td>
+                        <td class="quoterm-head">- Delivery Point</td>
                         <td>:</td>
                         <td>value</td>
                     </tr>
                     <tr>
-                        <td class="quodetail-head">Due Date</td>
-                        <td>:</td>
-                        <td>value</td>
-                    </tr>
-                    <tr>
-                        <td class="quodetail-head">Subject</td>
+                        <td class="quoterm-head">- Bank Number</td>
                         <td>:</td>
                         <td>value</td>
                     </tr>
                 </table>
-            </div>
+            </td>
+            <td>
+                <table class="table-quototal">
+                    <tr>
+                        <td class="quototal-head">Sub Total</td>
+                        <td class="quototal-tidua">:</td>
+                        <td class="quototal-rp">Rp.</td>
+                        <td class="quototal-val">900.000</td>
+                    </tr>
+                    <tr>
+                        <td class="quototal-head">Tax 10%</td>
+                        <td class="quototal-tidua">:</td>
+                        <td class="quototal-rp">Rp.</td>
+                        <td class="quototal-val">900.000</td>
+                    </tr>
+                    <tr>
+                        <td class="quototal-head">Grand Total</td>
+                        <td class="quototal-tidua">:</td>
+                        <td class="quototal-rp">Rp.</td>
+                        <td class="quototal-val val-gt">900.000</td>
+                    </tr>
+                </table>
+            </td>
+        </table>
+    </div>
+    <div class="pagepadding signspace-wrap">
+        <table class="table-signspace">
+            <tr>
+                <td class="signspace">( user login )</td>
+            </tr>
+        </table>
+    </div>
+    <div class="pagepadding thankyou-wrap">
+        <p class="thankyou">Thank You</p>
+        <div class="contactus">
+            <p>If you have any questions about this price quotation, please contact us : 081234567789</p>
         </div>
     </div>
     <div class="pagepadding">
-        <div class="col-md-12 table-section">
-            <table class="table table-spare">
-                <thead class="">
-                    <tr>
-                    <th scope="col">No.</th>
-                    <th scope="col">Part Number</th>
-                    <th scope="col">Part Name</th>
-                    <th scope="col">Brand</th>
-                    <th scope="col">Unit Price</th>
-                    <th scope="col">Qty</th>
-                    <th scope="col">Total Price</th>
-                    <th scope="col">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <footer>
+            <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="footbar">
+        </footer>
     </div>
 </page>
