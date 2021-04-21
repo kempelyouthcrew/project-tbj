@@ -40,7 +40,7 @@
         <div class="form-group">
             <label class="col-md-2 control-label" for="sparepart_name">Nama Sparepart</label>
             <div class="col-md-10">
-                <select id="sparepart_name" name="sparepart_name" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
+                <select id="sparepart_name" name="sparepart_name" class="select-select2" data-placeholder="Choose one.." style="width: 250px;" readonly>
                     <option></option>
                     {% for no, x in listSparepartName %}
                         {% set number = data.sparepart_name | int %}
