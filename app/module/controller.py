@@ -1,11 +1,5 @@
-# import os
-# from os.path import join, dirname
-# from dotenv import load_dotenv
-
-# dotenv_path = join(dirname(__file__), '.env')
-# load_dotenv(dotenv_path)
-
-from flask import render_template, request, redirect, session, flash
+import os
+from flask import render_template, request, redirect, session, flash, make_response, url_for
 from functools import wraps
 from app import app
 from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, DODetail, PODB, UserManagementDB, POKeluarDB, POKeluarDetail, InvoiceDB
@@ -15,6 +9,7 @@ import json
 import random
 import decimal, datetime
 from sqlalchemy.sql import text
+from flask_weasyprint import HTML, render_pdf
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
@@ -508,6 +503,7 @@ def quotationAdd():
                 print("Failed to add data.")
                 print(e)
 
+    generatePDF('tes','quotation','quotdata')
     return render_template("sites/quotation/addForm.html")
 
 @app.route('/quotation/info/<int:id>', methods=['GET'])
@@ -613,6 +609,7 @@ def pokeluarAdd():
                 print(e)
 
     return render_template("sites/pokeluar/addForm.html")
+
 
 @app.route('/pokeluar/info/<int:id>', methods=['GET'])
 def pokeluarInfo(id):
@@ -1186,3 +1183,32 @@ def invoiceMaster(invoice_id):
     ")
     invoiceDetail = db.engine.execute(s, x=invoice_id).fetchall() 
     return json.dumps([dict(r) for r in invoiceDetail], default=alchemyencoder)
+
+dirname = os.path.dirname(__file__)
+
+# generate pdf
+def generatePDF(filename,variant,data):
+    if variant == 'po':
+        templ = 'pdf/po.html'
+    elif variant == 'do':
+        templ = 'pdf/do.html'
+    elif variant == 'invoice':
+        templ = 'pdf/invoice.html'
+    elif variant == 'quotation':
+        templ = 'pdf/quotation.html'
+        
+    # Make a PDF straight from HTML in a string.
+    html = render_template(templ, name=data)
+
+    pdf = HTML(string=html).write_pdf()
+
+    if os.path.exists(dirname):
+
+        f = open(os.path.join(dirname, '../file/'+ variant +'/'+ filename +'.pdf'), 'wb')
+        f.write(pdf)
+    
+    return 'success'
+
+@app.route('/setdoc/<string:filename>', methods=['GET'])
+def setdoc(filename):
+    return render_template("pdf/"+ filename +".html")
