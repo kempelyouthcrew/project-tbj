@@ -1,169 +1,4 @@
-<style>
-    page {
-        background: white;
-        display: block;
-        margin: 0 auto;
-        margin-bottom: 0.5cm;
-        box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
-    }
-    page[size="A4"] {  
-        size: A4; 
-    }
-    header {
-        text-align: center;
-    }
-    .headbar {
-        width: 100%;
-    }
-    .pagepadding-variant {
-        padding-left: 35px;
-        padding-right: 0px;
-        padding-bottom: 0px;
-        padding-top: 15px;
-    }
-    .boxvariant {
-        background-color: #2978b5;
-        height: 100%;
-        width: 100%;
-        border-radius: 10px 0px;
-        color: white;
-        font-size: 70px;
-        margin-top: 0px;
-    }
-    .detail-section {
-        margin-bottom: 15px;
-    }
-    .detail-section p {
-        margin-bottom: 0px;
-        padding-top: 0px;
-    }
-    .ptname {
-        font-weight: bold;
-    }
-    .showdate {
-        font-size: 25px;
-        border-bottom: 5px solid #2978b5;
-        margin-bottom: 0px;
-    }
-    .wrap-date {
-        text-align: center;
-        width: 100%;
-        padding-bottom: 0px;
-        margin-left: 70%;
-        margin-top: -60px;
-    }
-    .quodetail-head {
-        width: 130px;
-    }
-    .logo-doc{
-        width: 60%;
-        margin-top: -115px;
-    }
-    .table-section{
-        padding-top: 0px;
-        margin-bottom: 15px;
-    }
-    .table-spare {
-        font-size: 12px;
-        border-color: white !important;
-        width: 100%;
-    }
-    .table-spare thead {
-        color: white;
-        background: #2978b5;
-    }
-    .table-spare th {
-        border-bottom: 0px solid #ddd !important;
-    }
-    .table-spare td {
-        border-top: 0px solid #ddd !important;
-        border-bottom: 1px solid black!important;
-    }
-    .term-total {
-        padding-top: 0px
-    }
-    .table-quodetail {
-        width: 100%;
-        font-size: 12px;
-    }
-    .table-quototal {
-        font-size: 14px;
-    }
-    .quototal-head {
-        width: 95px;
-        font-weight: bold;
-    }
-    .quototal-tidua {
-        width: 15px;
-    }
-    .quototal-rp {
-        width: 30px;
-    }
-    .quototal-val {
-        width: 125px;
-        text-align: right;
-    }
-    .val-gt {
-        font-weight: bold;
-        height: 65px;
-    }
-    .table-quoterm {
-        width: 100%;
-        margin-left: 20px;
-        font-size: 13px;
-    }
-    .quoterm-head {
-        width: 120px;
-    }
-    .signspace {
-        margin-top: 140px;
-        padding-bottom: 10px;
-        width: 100%;
-    }
-    .table-signspace {
-        text-align: center;
-        border-bottom: 1px solid black!important;
-        margin-left: 500px;
-        padding-top: 30px;
-    }
-    .contactus {
-        font-size: 13px;
-    }
-    .logomain {
-        width:73%;
-        padding-top: 10px;
-    }
-    .quot-address {
-        width: 70%;
-        font-size: 12px;
-    }
-    .quot-address p {
-        margin-top: 0px;
-    }
-    .thankyou {
-        font-family: Brush Script MT;
-        font-size: 35px;
-        padding-left: 0px;
-        margin-bottom: -10px;
-    }
-    .signspace-wrap {
-        padding-top: 80px;
-        padding-bottom: 0px;
-    }
-    .thankyou-wrap {
-        padding-top: 0px;
-        padding-bottom: 0px;
-        margin-top: -25px;
-    }
-    .quot-detail{
-        width:100%
-    }
-    .sign-table {
-        margin-left: 55%;
-    }
-    
-</style>
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pdfdoc.css') }}">
 <page size="A4">
     <div class="pagepadding">
         <header>
@@ -247,14 +82,14 @@
             <tbody>
                 {% for object in dataChild %}
                     <tr>
-                        <td>1</td>
+                        <td style="text-align: center;">{{loop.index}}</td>
                         <td>{{ object.sparepart_number }}</td>
-                        <td>{{ object.sparepart_number }}</td>
-                        <td>{{ object.sparepart_number }}</td>
-                        <td>{{ object.sparepart_number }}</td>
-                        <td>{{ object.sparepart_number }}</td>
-                        <td>{{ object.sparepart_number }}</td>
-                        <td>{{ object.sparepart_number }}</td>
+                        <td>{{ object.sparepart_name }}</td>
+                        <td>{{ object.sparepart_brand }}</td>
+                        <td>{{ object.sparepart_price }}</td>
+                        <td style="text-align: center;">{{ object.sparepart_qty }}</td>
+                        <td>{{ object.sparepart_totalprice }}</td>
+                        <td>{{ object.sparepart_description }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -268,17 +103,17 @@
                     <tr>
                         <td class="quoterm-head">- Payment Term</td>
                         <td>:</td>
-                        <td>value</td>
+                        <td>7 Days</td>
                     </tr>
                     <tr>
                         <td class="quoterm-head">- Delivery Point</td>
                         <td>:</td>
-                        <td>value</td>
+                        <td>-</td>
                     </tr>
                     <tr>
                         <td class="quoterm-head">- Bank Number</td>
                         <td>:</td>
-                        <td>value</td>
+                        <td>-</td>
                     </tr>
                 </table>
             </td>
@@ -288,19 +123,19 @@
                         <td class="quototal-head">Sub Total</td>
                         <td class="quototal-tidua">:</td>
                         <td class="quototal-rp">Rp.</td>
-                        <td class="quototal-val">900.000</td>
+                        <td class="quototal-val">{{ data.quotation_price }}</td>
                     </tr>
                     <tr>
                         <td class="quototal-head">Tax 10%</td>
                         <td class="quototal-tidua">:</td>
                         <td class="quototal-rp">Rp.</td>
-                        <td class="quototal-val">900.000</td>
+                        <td class="quototal-val">{{ data.quotation_ppn }}</td>
                     </tr>
                     <tr>
                         <td class="quototal-head">Grand Total</td>
                         <td class="quototal-tidua">:</td>
                         <td class="quototal-rp">Rp.</td>
-                        <td class="quototal-val val-gt">900.000</td>
+                        <td class="quototal-val val-gt">{{ data.quotation_totalprice }}</td>
                     </tr>
                 </table>
             </td>

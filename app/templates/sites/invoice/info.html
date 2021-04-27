@@ -34,11 +34,11 @@
             <div class="block-options pull-right">
                 <div class="btn-group">
                     {% if invoice[0].quotation_validity != 3 %}
-                    <a href="javascript:void(0)" class="btn btn-primary" onclick="window.print();">PRINT PO KONSUMEN</a>
+                    <a href="javascript:void(0)" class="btn btn-primary" onclick="window.print();">PRINT INVOICE</a>
                     {% endif %}
                 </div>
             </div>
-            <h2><i class="fa fa-file-text-o"></i> {{ invoice[0].do_number }}</h2>
+            <h2><i class="fa fa-file-text-o"></i> {{ invoice[0].invoice_number }}</h2>
         </div>
         <!-- END Invoice Title -->
 

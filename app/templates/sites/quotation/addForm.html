@@ -313,7 +313,10 @@
         for (i = 0; i < sparePartData.length; i++) {
             id = sparePartData[i].spid
             sparepart_number = sparePartData[i].sparepart_number
-            html += "<option value='"+ id +"'>"+ sparepart_number +"</option>"
+            sparepart_name = sparePartData[i].sparepart_name
+            sparepart_brand = sparePartData[i].sparepart_brand
+            html += "<option value='"+ id +"'>"+ sparepart_name + " | " + sparepart_number + " | " + sparepart_brand + "</option>"
+
         }
         return html
     }

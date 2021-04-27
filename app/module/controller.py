@@ -1,5 +1,5 @@
 import os
-from flask import render_template, request, redirect, session, flash, make_response, url_for
+from flask import render_template, request, redirect, session, flash, make_response, url_for, send_file
 from functools import wraps
 from app import app
 from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, DODetail, PODB, UserManagementDB, POKeluarDB, POKeluarDetail, InvoiceDB
@@ -80,27 +80,32 @@ def login():
         return redirect("/login")
 
 @app.route('/logout', methods=["GET", "POST"])
+@login_required
 def logout():
     session.clear()
     return redirect("/login")
 
 # Dashboard
 @app.route('/dashboard', methods=['GET'])
+@login_required
 def dashboard():
     return render_template("sites/dashboard.html")
 
 # Konsumen
 @app.route('/konsumen', methods=['GET'])
+@login_required
 def konsumen():
     listKonsumen = KonsumenDB.query.all()
     print(listKonsumen)
     return render_template("sites/konsumen/index.html", data=enumerate(listKonsumen,1))
 
 @app.route('/konsumen/add', methods=['GET'])
+@login_required
 def konsumenAddForm():
     return render_template("sites/konsumen/addForm.html")
 
 @app.route('/konsumen/add', methods=['POST'])
+@login_required
 def konsumenAdd():
     konsumen_name = request.form['konsumen_name']
     konsumen_address = request.form['konsumen_address']
@@ -141,11 +146,13 @@ def konsumenAdd():
     return render_template("sites/konsumen/addForm.html")
 
 @app.route('/konsumen/edit/<int:id>', methods=['GET'])
+@login_required
 def konsumenEditForm(id):
     konsumen = KonsumenDB.query.filter_by(id=id).first()
     return render_template("sites/konsumen/editForm.html", data=konsumen)
 
 @app.route('/konsumen/edit', methods=['POST'])
+@login_required
 def konsumenEdit():
     id = request.form['id']
     konsumen_id = request.form['konsumen_id']
@@ -165,6 +172,7 @@ def konsumenEdit():
     return redirect("/konsumen")
 
 @app.route('/konsumen/delete/<int:id>')
+@login_required
 def deleteKonsumen(id):
     try:
         konsumen = KonsumenDB.query.filter_by(id=id).first()
@@ -177,16 +185,19 @@ def deleteKonsumen(id):
 
 # Supplier
 @app.route('/supplier', methods=['GET'])
+@login_required
 def supplier():
     listSupplier = SupplierDB.query.all()
     print(listSupplier)
     return render_template("sites/supplier/index.html", data=enumerate(listSupplier,1))
 
 @app.route('/supplier/add', methods=['GET'])
+@login_required
 def supplierAddForm():
     return render_template("sites/supplier/addForm.html")
 
 @app.route('/supplier/add', methods=['POST'])
+@login_required
 def supplierAdd():
     if request.method == 'POST':
         supplier_name = request.form['supplier_name']
@@ -205,11 +216,13 @@ def supplierAdd():
 
 
 @app.route('/supplier/edit/<int:id>')
+@login_required
 def supplierEditForm(id):
     supplier = SupplierDB.query.filter_by(id=id).first()
     return render_template("sites/supplier/editForm.html", data=supplier)
 
 @app.route('/supplier/edit', methods=['POST'])
+@login_required
 def supplierEdit():
     if request.method == 'POST':
         id = request.form['id']
@@ -229,6 +242,7 @@ def supplierEdit():
         return redirect("/supplier")
 
 @app.route('/supplier/delete/<int:id>')
+@login_required
 def supplierDelete(id):
     try:
         konsumen = KonsumenDB.query.filter_by(id=id).first()
@@ -241,6 +255,7 @@ def supplierDelete(id):
 
 # Sparepart
 @app.route('/sparepart', methods=['GET'])
+@login_required
 def sparepart():
     listSparepart = SparepartDB.query\
         .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
@@ -255,6 +270,7 @@ def sparepart():
     return render_template("sites/sparepart/index.html", data=enumerate(listSparepart,1))
 
 @app.route('/sparepart/add', methods=['GET'])
+@login_required
 def sparepartAddForm():
     listSparepartName = SparepartName.query.all()
     listSupplier = SupplierDB.query.all()
@@ -263,6 +279,7 @@ def sparepartAddForm():
     return render_template("sites/sparepart/addForm.html", listSparepartName=enumerate(listSparepartName), listSupplier=enumerate(listSupplier), listSparepartBrand=enumerate(listSparepartBrand))
 
 @app.route('/sparepart/add', methods=['POST'])
+@login_required
 def sparepartAdd():
     if request.method == 'POST':
         sparepart_name = request.form['sparepart_name']
@@ -285,6 +302,7 @@ def sparepartAdd():
 
 
 @app.route('/sparepart/edit/<int:id>')
+@login_required
 def sparepartEditForm(id):
     sparepart = SparepartDB.query.filter_by(id=id).first()
     listSparepartName = SparepartName.query.all()
@@ -293,6 +311,7 @@ def sparepartEditForm(id):
     return render_template("sites/sparepart/editForm.html", data=sparepart, listSparepartName=enumerate(listSparepartName), listSupplier=enumerate(listSupplier), listSparepartBrand=enumerate(listSparepartBrand))
 
 @app.route('/sparepart/edit', methods=['POST'])
+@login_required
 def sparepartEdit():
     if request.method == 'POST':
         id = request.form['id']
@@ -313,6 +332,7 @@ def sparepartEdit():
         return redirect("/sparepart")
 
 @app.route('/sparepart/delete/<int:id>')
+@login_required
 def sparepartDelete(id):
     try:
         sparepart = SparepartDB.query.filter_by(id=id).first()
@@ -325,16 +345,19 @@ def sparepartDelete(id):
 
 # SparepartName
 @app.route('/sparepartName', methods=['GET'])
+@login_required
 def sparepartName():
     listSparepartName = SparepartName.query.all()
     print(listSparepartName)
     return render_template("sites/sparepartName/index.html", data=enumerate(listSparepartName,1))
 
 @app.route('/sparepartName/add', methods=['GET'])
+@login_required
 def sparepartNameAddForm():
     return render_template("sites/sparepartName/addForm.html")
 
 @app.route('/sparepartName/add', methods=['POST'])
+@login_required
 def sparepartNameAdd():
     if request.method == 'POST':
         sparepart_name = request.form['sparepart_name']
@@ -349,11 +372,13 @@ def sparepartNameAdd():
 
 
 @app.route('/sparepartName/edit/<int:id>')
+@login_required
 def sparepartNameEditForm(id):
     sparepart = SparepartName.query.filter_by(id=id).first()
     return render_template("sites/sparepartName/editForm.html", data=sparepart)
 
 @app.route('/sparepartName/edit', methods=['POST'])
+@login_required
 def sparepartNameEdit():
     if request.method == 'POST':
         id = request.form['id']
@@ -368,6 +393,7 @@ def sparepartNameEdit():
         return redirect("/sparepartName")
 
 @app.route('/sparepartName/delete/<int:id>')
+@login_required
 def sparepartNameDelete(id):
     try:
         sparepartName = SparepartName.query.filter_by(id=id).first()
@@ -380,16 +406,19 @@ def sparepartNameDelete(id):
 
 # SparepartBrand
 @app.route('/sparepartBrand', methods=['GET'])
+@login_required
 def sparepartBrand():
     listSparepartBrand = SparepartBrand.query.all()
     print(listSparepartBrand)
     return render_template("sites/sparepartBrand/index.html", data=enumerate(listSparepartBrand,1))
 
 @app.route('/sparepartBrand/add', methods=['GET'])
+@login_required
 def sparepartBrandAddForm():
     return render_template("sites/sparepartBrand/addForm.html")
 
 @app.route('/sparepartBrand/add', methods=['POST'])
+@login_required
 def sparepartBrandAdd():
     if request.method == 'POST':
         sparepart_brand = request.form['sparepart_brand']
@@ -404,11 +433,13 @@ def sparepartBrandAdd():
 
 
 @app.route('/sparepartBrand/edit/<int:id>')
+@login_required
 def sparepartBrandEditForm(id):
     sparepart = SparepartBrand.query.filter_by(id=id).first()
     return render_template("sites/sparepartBrand/editForm.html", data=sparepart)
 
 @app.route('/sparepartBrand/edit', methods=['POST'])
+@login_required
 def sparepartBrandEdit():
     if request.method == 'POST':
         id = request.form['id']
@@ -423,6 +454,7 @@ def sparepartBrandEdit():
         return redirect("/sparepartBrand")
 
 @app.route('/sparepartBrand/delete/<int:id>')
+@login_required
 def sparepartBrandDelete(id):
     try:
         sparepartBrand = SparepartBrand.query.filter_by(id=id).first()
@@ -435,6 +467,7 @@ def sparepartBrandDelete(id):
 
 # Quotation
 @app.route('/quotation', methods=['GET'])
+@login_required
 def quotation():
     listQuotation = QuotationDB.query.join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
         .add_columns(QuotationDB.id, QuotationDB.quotation_date, QuotationDB.quotation_number, KonsumenDB.konsumen_name,  QuotationDB.quotation_validity)
@@ -443,16 +476,18 @@ def quotation():
     return render_template("sites/quotation/index.html", listQuotation=enumerate(listQuotation))
 
 @app.route('/quotation/add', methods=['GET'])
+@login_required
 def quotationAddForm():
     listSparepart = SparepartDB.query.all()
     listKonsumen = KonsumenDB.query.all()
     return render_template("sites/quotation/addForm.html", listSparepart=listSparepart, listKonsumen=enumerate(listKonsumen))
 
 @app.route('/quotation/add', methods=['POST'])
+@login_required
 def quotationAdd():
     dateNow = datetime.datetime.now()
     quotation_date = dateNow
-    quotation_number = 'QUO.TBJ-' + str(random.randint(1000, 9999))
+    quotation_number = 'QUO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
     quotation_validity = 1
     formCount = request.form['formCount']
     konsumen_id = request.form['konsumen_id']
@@ -507,6 +542,7 @@ def quotationAdd():
     return render_template("sites/quotation/addForm.html")
 
 @app.route('/quotation/info/<int:id>', methods=['GET'])
+@login_required
 def quotationInfo(id):
     quotation = QuotationDetail.query\
         .join(QuotationDB, QuotationDB.id==QuotationDetail.quotation_id)\
@@ -540,6 +576,7 @@ def quotationInfo(id):
 
 # PO Keluar
 @app.route('/pokeluar', methods=['GET'])
+@login_required
 def pokeluar():
     listPOKeluar = POKeluarDB.query\
                     .join(PODB, PODB.id==POKeluarDB.po_id)\
@@ -555,6 +592,7 @@ def pokeluar():
     return render_template("sites/pokeluar/index.html", listPOKeluar=enumerate(listPOKeluar))
 
 @app.route('/pokeluar/add', methods=['GET'])
+@login_required
 def pokeluarAddForm():
     listSparepart = SparepartDB.query.all()
     listPo = PODB.query.all()
@@ -562,10 +600,11 @@ def pokeluarAddForm():
     return render_template("sites/pokeluar/addForm.html", listSparepart=listSparepart, listPo=listPo, listSupplier=listSupplier)
 
 @app.route('/pokeluar/add', methods=['POST'])
+@login_required
 def pokeluarAdd():
     dateNow = datetime.datetime.now()
     pokeluar_date = dateNow
-    pokeluar_number = 'PO.TBJ-' + str(random.randint(1000, 9999))
+    pokeluar_number = 'PO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
     formCount = request.form['formCount']
     supplier_id = request.form['supplier_name']
     po_id = request.form['po_number']
@@ -612,6 +651,7 @@ def pokeluarAdd():
 
 
 @app.route('/pokeluar/info/<int:id>', methods=['GET'])
+@login_required
 def pokeluarInfo(id):
     pokeluar = POKeluarDetail.query\
         .join(POKeluarDB, POKeluarDB.id==POKeluarDetail.pokeluar_id)\
@@ -642,16 +682,19 @@ def pokeluarInfo(id):
 
 # User Management
 @app.route('/usermanagement', methods=['GET'])
+@login_required
 def usermanagement():
     listUserManagement = UserManagementDB.query.all()
     print(listUserManagement)
     return render_template("sites/usermanagement/index.html", data=enumerate(listUserManagement,1))
 
 @app.route('/usermanagement/add', methods=['GET'])
+@login_required
 def usermanagementAddForm():
     return render_template("sites/usermanagement/addForm.html")
 
 @app.route('/usermanagement/add', methods=['POST'])
+@login_required
 def usermanagementAdd():
     user_name = request.form['user_name']
     user_email = request.form['user_email']
@@ -672,11 +715,13 @@ def usermanagementAdd():
     return render_template("sites/usermanagement/addForm.html")
 
 @app.route('/usermanagement/edit/<int:id>', methods=['GET'])
+@login_required
 def usermanagementEditForm(id):
     usermanagement = UserManagementDB.query.filter_by(id=id).first()
     return render_template("sites/usermanagement/editForm.html", data=usermanagement)
 
 @app.route('/usermanagement/edit', methods=['POST'])
+@login_required
 def usermanagementEdit():
     id = request.form['id']
     user_name = request.form['user_name']
@@ -698,6 +743,7 @@ def usermanagementEdit():
     return redirect("/usermanagement")
 
 @app.route('/usermanagement/delete/<int:id>')
+@login_required
 def deleteusermanagement(id):
     try:
         usermanagement = UserManagementDB.query.filter_by(id=id).first()
@@ -710,6 +756,7 @@ def deleteusermanagement(id):
 
 # PO Konsumen
 @app.route('/pokonsumen', methods=['GET'])
+@login_required
 def pokonsumen():
     listPOKonsumen = PODB.query\
         .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
@@ -720,12 +767,14 @@ def pokonsumen():
     return render_template("sites/pokonsumen/index.html", listPOKonsumen=enumerate(listPOKonsumen))
 
 @app.route('/pokonsumen/add', methods=['GET'])
+@login_required
 def pokonsumenAddForm():
     listSparepart = SparepartDB.query.all()
     listKonsumen = KonsumenDB.query.all()
     return render_template("sites/pokonsumen/addForm.html", listSparepart=listSparepart, listKonsumen=enumerate(listKonsumen))
 
 @app.route('/pokonsumen/add', methods=['POST'])
+@login_required
 def pokonsumenAdd():
     dateNow = datetime.datetime.now()
     po_date = dateNow
@@ -750,6 +799,7 @@ def pokonsumenAdd():
     return render_template("sites/pokonsumen/addForm.html")
 
 @app.route('/pokonsumen/info/<int:id>', methods=['GET'])
+@login_required
 def pokonsumenInfo(id):
     pokonsumen = QuotationDetail.query\
         .join(QuotationDB, QuotationDetail.quotation_id==QuotationDB.id)\
@@ -785,6 +835,7 @@ def pokonsumenInfo(id):
 
 
 @app.route('/pokonsumen/edit/<int:id>')
+@login_required
 def poKonsumenEditForm(id):
     pokonsumen = PODB.query.filter_by(id=id).first()
     listQuotation = QuotationDB.query.all()
@@ -792,6 +843,7 @@ def poKonsumenEditForm(id):
     return render_template("sites/pokonsumen/editForm.html", data=pokonsumen, listQuotation=enumerate(listQuotation), listSparepart=enumerate(listSparepart))
 
 @app.route('/pokonsumen/edit', methods=['POST'])
+@login_required
 def poKonsumenEdit():
     if request.method == 'POST':
         id = request.form['id']
@@ -813,6 +865,7 @@ def poKonsumenEdit():
         return redirect("/pokonsumen")
 
 @app.route('/pokonsumen/delete/<int:id>')
+@login_required
 def poKonsumenDelete(id):
     try:
         pokonsumen = PODB.query.filter_by(id=id).first()
@@ -827,6 +880,7 @@ def poKonsumenDelete(id):
 
 # DO
 @app.route('/do', methods=['GET'])
+@login_required
 def do():
     listDO = DODB.query\
         .join(PODB, DODB.po_id==PODB.id)\
@@ -842,16 +896,18 @@ def do():
     return render_template("sites/do/index.html", listDO=enumerate(listDO))
 
 @app.route('/do/add', methods=['GET'])
+@login_required
 def doAddForm():
     listSparepart = SparepartDB.query.all()
     listKonsumen = KonsumenDB.query.all()
     return render_template("sites/do/addForm.html", listSparepart=listSparepart, listKonsumen=enumerate(listKonsumen))
 
 @app.route('/do/add', methods=['POST'])
+@login_required
 def doAdd():
     dateNow = datetime.datetime.now()
     do_date = dateNow
-    do_number = 'DO.TBJ-' + str(random.randint(1000, 9999))
+    do_number = 'DO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
     po_id = request.form['po_id']
     do_terms = request.form['do_terms']
     
@@ -902,9 +958,11 @@ def doAdd():
                 print("Failed to add data.")
                 print(e)
 
+    generatePDF(do_number,'do',idParent)
     return render_template("sites/do/addForm.html")
 
 @app.route('/do/info/<int:id>', methods=['GET'])
+@login_required
 def doInfo(id):
     do = DODetail.query\
         .join(DODB, DODB.id==DODetail.do_id)\
@@ -928,10 +986,16 @@ def doInfo(id):
             DODetail.sparepart_totalprice,\
         )\
         .all()
+
+    totqty = 0
+    for item in do:
+            totqty = totqty + item.sparepart_qty
+
     print(do)
-    return render_template("sites/do/info.html", do=do)
+    return render_template("sites/do/info.html", do=do, totqty=totqty)
 
 @app.route('/do/edit/<int:id>')
+@login_required
 def doEditForm(id):
     # do = DODB.query.filter_by(id=id).first()
     listQuotation = QuotationDB.query.all()
@@ -953,6 +1017,7 @@ def doEditForm(id):
     return render_template("sites/do/editForm.html", data=do, listQuotation=enumerate(listQuotation), listPo=enumerate(listPo))
 
 @app.route('/do/edit', methods=['POST'])
+@login_required
 def doEdit():
     if request.method == 'POST':
         id = request.form['id']
@@ -974,6 +1039,7 @@ def doEdit():
         return redirect("/do")
 
 @app.route('/do/delete/<int:id>')
+@login_required
 def doDelete(id):
     try:
         do = DODB.query.filter_by(id=id).first()
@@ -986,6 +1052,7 @@ def doDelete(id):
 
 # Invoice
 @app.route('/invoice', methods=['GET'])
+@login_required
 def invoice():
     listInvoice = InvoiceDB.query\
         .join(DODB, InvoiceDB.do_id==DODB.id)\
@@ -1002,14 +1069,16 @@ def invoice():
     return render_template("sites/invoice/index.html", listInvoice=enumerate(listInvoice))
 
 @app.route('/invoice/add', methods=['GET'])
+@login_required
 def invoiceAddForm():
     return render_template("sites/invoice/addForm.html")
 
 @app.route('/invoice/add', methods=['POST'])
+@login_required
 def invoiceAdd():
     dateNow = datetime.datetime.now()
     invoice_date = dateNow
-    invoice_number = 'INV.TBJ-' + str(random.randint(1000, 9999))
+    invoice_number = 'INV.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
     do_id = request.form['do_id']
     invoice_terms = request.form['invoice_terms']
 
@@ -1028,6 +1097,7 @@ def invoiceAdd():
     return render_template("sites/invoice/addForm.html")
 
 @app.route('/invoice/edit/<int:id>')
+@login_required
 def invoiceEditForm(id):
     invoice = InvoiceDB.query.filter_by(id=id).first()
     listDo = DODB.query.all()
@@ -1035,6 +1105,7 @@ def invoiceEditForm(id):
     return render_template("sites/invoice/editForm.html", data=invoice, listDo=enumerate(listDo))
 
 @app.route('/invoice/edit', methods=['POST'])
+@login_required
 def invoiceEdit():
     if request.method == 'POST':
         id = request.form['id']
@@ -1054,6 +1125,7 @@ def invoiceEdit():
         return redirect("/invoice")
 
 @app.route('/invoice/delete/<int:id>')
+@login_required
 def invoiceDelete(id):
     try:
         invoice = InvoiceDB.query.filter_by(id=id).first()
@@ -1065,6 +1137,7 @@ def invoiceDelete(id):
     return redirect("/invoice")
 
 @app.route('/invoice/info/<int:id>', methods=['GET'])
+@login_required
 def invoiceInfo(id):
     invoice = DODetail.query\
         .join(DODB, DODB.id==DODetail.do_id)\
@@ -1074,7 +1147,8 @@ def invoiceInfo(id):
         .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
         .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
         .add_columns(\
-            DODB.id,\
+            InvoiceDB.id,\
+            InvoiceDB.invoice_number,\
             DODB.do_date,\
             DODB.do_number,\
             DODB.do_terms,\
@@ -1094,11 +1168,13 @@ def invoiceInfo(id):
 
 # Master json
 @app.route('/master/konsumen', methods=['GET'])
+@login_required
 def konsumenMaster():
     konsumen = KonsumenDB.query.all()
     return json.dumps(KonsumenDB.serialize_list(konsumen))
 
 @app.route('/master/sparepart', methods=['GET'])
+@login_required
 def sparepartlMaster():
     s = text("\
         SELECT \
@@ -1109,9 +1185,11 @@ def sparepartlMaster():
         INNER JOIN sparepart_brand as brand ON brand.id = spr.sparepart_brand\
     ")
     quotationdetail = db.engine.execute(s).fetchall() 
-    return json.dumps([dict(r) for r in quotationdetail], default=alchemyencoder)
+    return json.dumps([dict(r) for r in quotationdetail], 
+    default=alchemyencoder)
 
 @app.route('/master/quotation/<string:validity>', methods=['GET'])
+@login_required
 def quotationMaster(validity):
     validityVal = validity
     s = text("\
@@ -1121,9 +1199,11 @@ def quotationMaster(validity):
         WHERE quotation_validity = 1\
     ")
     quotation = db.engine.execute(s, x=validityVal).fetchall() 
-    return json.dumps([dict(r) for r in quotation], default=alchemyencoder)
+    return json.dumps([dict(r) for r in quotation], 
+    default=alchemyencoder)
 
 @app.route('/master/quotationdetail/<string:quotation_id>', methods=['GET'])
+@login_required
 def quotationdetailMaster(quotation_id):
     s = text("\
         SELECT \
@@ -1136,9 +1216,11 @@ def quotationdetailMaster(quotation_id):
         WHERE quodet.quotation_id = :x \
     ")
     quotationdetail = db.engine.execute(s, x=quotation_id).fetchall() 
-    return json.dumps([dict(r) for r in quotationdetail], default=alchemyencoder)
+    return json.dumps([dict(r) for r in quotationdetail], 
+    default=alchemyencoder)
 
 @app.route('/master/po', methods=['GET'])
+@login_required
 def poMaster():
     s = text("\
         SELECT \
@@ -1149,13 +1231,16 @@ def poMaster():
         INNER JOIN konsumenDB AS kon ON quo.konsumen_id = kon.id \
     ")
     podb = db.engine.execute(s).fetchall() 
-    return json.dumps([dict(r) for r in podb], default=alchemyencoder)
+    return json.dumps([dict(r) for r in podb], 
+    default=alchemyencoder)
 
 @app.route('/master/supplier', methods=['GET'])
+@login_required
 def supplierMaster():
     supplier = SupplierDB.query.all()
     return json.dumps(SupplierDB.serialize_list(supplier))
 @app.route('/master/do', methods=['GET'])
+@login_required
 def doMaster():
     s = text("\
         SELECT \
@@ -1167,9 +1252,11 @@ def doMaster():
         INNER JOIN konsumenDB AS kon ON quo.konsumen_id = kon.id \
     ")
     dodb = db.engine.execute(s).fetchall() 
-    return json.dumps([dict(r) for r in dodb], default=alchemyencoder)
+    return json.dumps([dict(r) for r in dodb], 
+    default=alchemyencoder)
 
 @app.route('/master/dodetail/<string:do_id>', methods=['GET'])
+@login_required
 def dodetailMaster(do_id):
     s = text("\
         SELECT \
@@ -1181,9 +1268,11 @@ def dodetailMaster(do_id):
         WHERE dodet.do_id = :x \
     ")
     dodetail = db.engine.execute(s, x=do_id).fetchall() 
-    return json.dumps([dict(r) for r in dodetail], default=alchemyencoder)
+    return json.dumps([dict(r) for r in dodetail], 
+    default=alchemyencoder)
 
 @app.route('/master/invoice/<string:invoice_id>', methods=['GET'])
+@login_required
 def invoiceMaster(invoice_id):
     s = text("\
         SELECT \
@@ -1196,15 +1285,54 @@ def invoiceMaster(invoice_id):
         WHERE inv.id = :x \
     ")
     invoiceDetail = db.engine.execute(s, x=invoice_id).fetchall() 
-    return json.dumps([dict(r) for r in invoiceDetail], default=alchemyencoder)
+    return json.dumps([dict(r) for r in invoiceDetail], 
+    default=alchemyencoder)
 
 dirname = os.path.dirname(__file__)
 
 # generate pdf
+@login_required
 def generatePDF(filename,variant,idParent):
+    totqty = 0
     if variant == 'po':
         templ = 'pdf/po.html'
     elif variant == 'do':
+        data = DODB.query\
+            .filter_by(id=idParent)\
+            .join(PODB, DODB.po_id==PODB.id)\
+            .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+            .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+            .add_columns(QuotationDB.id,\
+                DODB.do_date,\
+                DODB.do_number,\
+                DODB.do_price,\
+                DODB.do_ppn,\
+                DODB.do_totalprice,\
+                DODB.do_terms,\
+                KonsumenDB.konsumen_id,\
+                KonsumenDB.konsumen_name,\
+                KonsumenDB.konsumen_address,\
+                KonsumenDB.konsumen_phone\
+            )\
+            .first()
+
+        dataChild = DODetail.query\
+            .filter_by(do_id=idParent)\
+            .join(SparepartDB, DODetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(DODetail.id,\
+                DODetail.sparepart_qty,\
+                DODetail.sparepart_price,\
+                DODetail.sparepart_totalprice,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+        
+        for item in dataChild:
+            totqty = totqty + item.sparepart_qty
+            
         templ = 'pdf/do.html'
     elif variant == 'invoice':
         templ = 'pdf/invoice.html'
@@ -1215,6 +1343,10 @@ def generatePDF(filename,variant,idParent):
             .add_columns(QuotationDB.id,\
                 QuotationDB.quotation_date,\
                 QuotationDB.quotation_number,\
+                QuotationDB.quotation_price,\
+                QuotationDB.quotation_ppn,\
+                QuotationDB.quotation_totalprice,\
+                KonsumenDB.konsumen_id,\
                 KonsumenDB.konsumen_name,\
                 KonsumenDB.konsumen_address,\
                 KonsumenDB.konsumen_phone,\
@@ -1222,11 +1354,25 @@ def generatePDF(filename,variant,idParent):
             )\
             .first()
 
-        dataChild= QuotationDetail.query.filter_by(quotation_id=idParent)
+        dataChild = QuotationDetail.query\
+            .filter_by(quotation_id=idParent)\
+            .join(SparepartDB, QuotationDetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(QuotationDetail.id,\
+                QuotationDetail.sparepart_qty,\
+                QuotationDetail.sparepart_price,\
+                QuotationDetail.sparepart_totalprice,\
+                QuotationDetail.sparepart_description,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+
         templ = 'pdf/quotation.html'
         
     # Make a PDF straight from HTML in a string.
-    html = render_template(templ, data=data, dataChild=dataChild)
+    html = render_template(templ, data=data, dataChild=dataChild, totqty=totqty)
 
     pdf = HTML(string=html).write_pdf()
 
@@ -1235,8 +1381,18 @@ def generatePDF(filename,variant,idParent):
         f = open(os.path.join(dirname, '../file/'+ variant +'/'+ filename +'.pdf'), 'wb')
         f.write(pdf)
     
-    return 'success'
+    return render_template(templ, data=data, dataChild=dataChild, totqty=totqty)
 
 @app.route('/previewdoc/<string:filename>', methods=['GET'])
+@login_required
 def setdoc(filename):
-    return generatePDF('quotation_number','quotation','85')
+    return generatePDF('do_number','do','10')
+
+@app.route('/download/<string:folder>/<string:filename>')
+@login_required
+def download_file(folder, filename):
+	#path = "html2pdf.pdf"
+	#path = "info.xlsx"
+	path = "file/" + folder +"/" + filename + ".pdf"
+	#path = "sample.txt"
+	return send_file(path, as_attachment=True)

@@ -26,13 +26,14 @@
         <li><a href="#">Delivery Order</a></li>
     </ul>
     
-    <a class="btn btn-primary" style="margin-bottom: 14px;" href="/quotation"><i class="fa fa-arrow-left"></i> Kembali</a>
+    <a class="btn btn-primary" style="margin-bottom: 14px;" href="/do"><i class="fa fa-arrow-left"></i> Kembali</a>
     <!-- Invoice Block -->
     <div class="block full">
         <!-- Invoice Title -->
         <div class="block-title">
             <div class="block-options pull-right">
                 <div class="btn-group">
+                    <a href="/download/do/{{ do[0].do_number }}" target="_blank" class="btn btn-primary">PDF</a>
                 </div>
             </div>
             <h2><i class="fa fa-file-text-o"></i> {{ do.do_number }}</h2>
@@ -91,6 +92,13 @@
                         <td class="text-center"><span class="badge">{{ object.sparepart_qty }}</span></td>
                     </tr>
                     {% endfor %}
+                    <tr>
+                        <td class="text-center"></td>
+                        <td>
+                            
+                        </td>
+                        <td class="text-center" style="background: #e9e9e9;"><span class="badge">{{ totqty }}</span></td>
+                    </tr>
                     <!-- <tr>
                         <td class="text-center">1</td>
                         <td>
