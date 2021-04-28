@@ -10,11 +10,13 @@ import random
 import decimal, datetime
 from sqlalchemy.sql import text
 from flask_weasyprint import HTML, render_pdf
+import webbrowser
 
 nav = Navigation(app)
 nav.Bar('leftbar', [
     nav.Item('Welcome', 'welcome', items=[
         nav.Item('Dashboard', 'dashboard'),
+        nav.Item('Webmail', 'webmail'),
     ]),
     nav.Item('Purchasing', 'data', items=[
         nav.Item('Quotation', 'quotation'),
@@ -90,6 +92,14 @@ def logout():
 @login_required
 def dashboard():
     return render_template("sites/dashboard.html")
+
+# Webmail
+@app.route('/webmail', methods=['GET'])
+@login_required
+def webmail():
+    webbrowser.open_new_tab("http://webmail.teknikberlianjaya.com/")
+    return redirect("/dashboard")
+
 
 # Konsumen
 @app.route('/konsumen', methods=['GET'])
@@ -539,7 +549,8 @@ def quotationAdd():
                 print(e)
 
     generatePDF(quotation_number,'quotation',idParent)
-    return render_template("sites/quotation/addForm.html")
+    numIdParent = str(idParent)
+    return redirect("/quotation/info/" + numIdParent)
 
 @app.route('/quotation/info/<int:id>', methods=['GET'])
 @login_required
@@ -572,6 +583,62 @@ def quotationInfo(id):
         .all()
     print(quotation)
     return render_template("sites/quotation/info.html", quotation=quotation)
+
+@app.route('/quotation/edit/<int:id>')
+@login_required
+def quotationEditForm(id):
+    # quotation = quotationDB.query.filter_by(id=id).first()
+    listQuotation = QuotationDB.query.all()
+    listPo = PODB.query.all()
+    quotation = quotationDB.query\
+        .filter_by(id=id)\
+        .join(PODB, quotationDB.po_id==PODB.id)\
+        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+        .add_columns(\
+            QuotationDB.quotation_number\
+            ,quotationDB.id\
+            ,quotationDB.quotation_number\
+            ,quotationDB.po_id\
+            ,quotationDB.quotation_terms\
+            ,PODB.po_number\
+        )\
+        .first()
+
+    return render_template("sites/quotation/editForm.html", data=quotation, listQuotation=enumerate(listQuotation), listPo=enumerate(listPo))
+
+@app.route('/quotation/edit', methods=['POST'])
+@login_required
+def quotationEdit():
+    if request.method == 'POST':
+        id = request.form['id']
+        dateNow = datetime.datetime.now()
+        po_date = dateNow
+        quotation_id = request.form['quotation']
+        seller_name = request.form['seller_name']
+        po_number = request.form['po_number']
+        try:
+            pokonsumen = PODB.query.filter_by(id=id).first()
+            pokonsumen.po_date=po_date
+            pokonsumen.quotation_id=quotation_id
+            pokonsumen.seller_name=seller_name
+            pokonsumen.po_number=po_number
+            db.session.commit()
+        except Exception as e:
+            print("Failed to update data")
+            print(e)
+        return redirect("/quotation")
+
+@app.route('/quotation/delete/<int:id>')
+@login_required
+def quotationDelete(id):
+    try:
+        quotation = quotationDB.query.filter_by(id=id).first()
+        db.session.delete(quotation)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/quotation")
 
 
 # PO Keluar
@@ -647,7 +714,8 @@ def pokeluarAdd():
                 print("Failed to add data.")
                 print(e)
 
-    return render_template("sites/pokeluar/addForm.html")
+    numIdParent = str(idParent)
+    return redirect("/pokeluar/info/" + numIdParent)
 
 
 @app.route('/pokeluar/info/<int:id>', methods=['GET'])
@@ -796,7 +864,8 @@ def pokonsumenAdd():
         print("Failed to add data.")
         print(e)
 
-    return render_template("sites/pokonsumen/addForm.html")
+    numIdParent = str(idParent)
+    return redirect("/pokonsumen/info/" + numIdParent)
 
 @app.route('/pokonsumen/info/<int:id>', methods=['GET'])
 @login_required
@@ -959,7 +1028,8 @@ def doAdd():
                 print(e)
 
     generatePDF(do_number,'do',idParent)
-    return render_template("sites/do/addForm.html")
+    numIdParent = str(idParent)
+    return redirect("/do/info/" + numIdParent)
 
 @app.route('/do/info/<int:id>', methods=['GET'])
 @login_required
@@ -1089,12 +1159,14 @@ def invoiceAdd():
                     invoice_terms=invoice_terms)
         db.session.add(invoice)
         db.session.commit()
+        idParent = invoice.id
         
     except Exception as e:
         print("Failed to add data.")
         print(e)
 
-    return render_template("sites/invoice/addForm.html")
+    numIdParent = str(idParent)
+    return redirect("/invoice/info/" + numIdParent)
 
 @app.route('/invoice/edit/<int:id>')
 @login_required
