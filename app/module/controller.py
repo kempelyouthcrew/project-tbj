@@ -2,7 +2,7 @@ import os
 from flask import render_template, request, redirect, session, flash, make_response, url_for, send_file
 from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, DODetail, PODB, UserManagementDB, POKeluarDB, POKeluarDetail, InvoiceDB
+from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, DODetail, PODB, PODetail, UserManagementDB, POKeluarDB, POKeluarDetail, InvoiceDB
 from flask_navigation import Navigation
 import bcrypt
 import json
@@ -12,7 +12,7 @@ from sqlalchemy.sql import text
 from flask_weasyprint import HTML, render_pdf
 
 nav = Navigation(app)
-nav.Bar('leftbar', [
+nav.Bar('leftbar1', [
     nav.Item('Welcome', 'welcome', items=[
         nav.Item('Dashboard', 'dashboard'),
     ]),
@@ -30,6 +30,36 @@ nav.Bar('leftbar', [
         nav.Item('Sparepart Name', 'sparepartName'),
         nav.Item('Sparepart Brand', 'sparepartBrand'),
         nav.Item('User Management', 'usermanagement'),
+    ]),
+])
+
+nav.Bar('leftbar2', [
+    nav.Item('Welcome', 'welcome', items=[
+        nav.Item('Dashboard', 'dashboard'),
+    ]),
+    nav.Item('Purchasing', 'data', items=[
+        nav.Item('Quotation', 'quotation'),
+        nav.Item('PO Masuk', 'pokonsumen'),
+        nav.Item('Delivery Order', 'do'),
+        nav.Item('Invoice', 'invoice'),
+        nav.Item('PO Keluar', 'pokeluar'),
+    ]),
+    nav.Item('Data Master', 'data', items=[
+        nav.Item('Konsumen', 'konsumen'),
+        nav.Item('Supplier', 'supplier'),
+        nav.Item('Sparepart', 'sparepart'),
+        nav.Item('Sparepart Name', 'sparepartName'),
+        nav.Item('Sparepart Brand', 'sparepartBrand'),
+        nav.Item('User Management', 'usermanagement'),
+    ]),
+])
+
+nav.Bar('leftbar3', [
+    nav.Item('Welcome', 'welcome', items=[
+        nav.Item('Dashboard', 'dashboard'),
+    ]),
+    nav.Item('Purchasing', 'data', items=[
+        nav.Item('PO Keluar', 'pokeluar'),
     ]),
 ])
 
@@ -562,6 +592,7 @@ def quotationInfo(id):
             QuotationDB.quotation_validity,\
             SparepartDB.sparepart_number,\
             SparepartName.sparepart_name,\
+            SparepartBrand.sparepart_brand,\
             QuotationDetail.sparepart_qty,\
             QuotationDetail.sparepart_price,\
             QuotationDetail.sparepart_totalprice,\
@@ -647,6 +678,7 @@ def pokeluarAdd():
                 print("Failed to add data.")
                 print(e)
 
+    generatePDF(pokeluar_number,'pokeluar',idParent)
     return render_template("sites/pokeluar/addForm.html")
 
 
@@ -667,6 +699,7 @@ def pokeluarInfo(id):
             POKeluarDB.pokeluar_price,\
             SparepartDB.sparepart_number,\
             SparepartName.sparepart_name,\
+            SparepartBrand.sparepart_brand,\
             POKeluarDetail.sparepart_qty,\
             POKeluarDetail.sparepart_price,\
             POKeluarDetail.sparepart_totalprice,\
@@ -778,15 +811,30 @@ def pokonsumenAddForm():
 def pokonsumenAdd():
     dateNow = datetime.datetime.now()
     po_date = dateNow
+    po_number = 'POK.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
+    po_validity = 1
+    formCount = request.form['formCount']
     quotation_id = request.form['quotation']
+    konsumen_id = request.form['konsumen_id']
     seller_name = request.form['seller']
-    po_number = request.form['reference']
+    quotation = request.form['quotation']
+    po_price = request.form['sum_price']
+    po_ppn = request.form['ppn']
+    po_materai = request.form['materai']
+    po_totalprice = request.form['grandprice']
+    idParent = ""
 
     try:
         po = PODB(po_date=po_date,
-                quotation_id=quotation_id,
-                po_number=po_number,
-                seller_name=seller_name)
+                                po_number=po_number,
+                                po_validity=po_validity,
+                                quotation_id=quotation_id,
+                                konsumen_id=konsumen_id,
+                                seller_name=seller_name,
+                                po_price=po_price,
+                                po_ppn=po_ppn,
+                                po_materai=po_materai,
+                                po_totalprice=po_totalprice)
         db.session.add(po)
         db.session.commit()
         db.session.flush()  
@@ -796,36 +844,61 @@ def pokonsumenAdd():
         print("Failed to add data.")
         print(e)
 
+    i = 0
+    while i < int(formCount):
+        i = i + 1
+        if 'sparepart_'+ str(i) in request.form:
+            po_id = idParent
+            sparepart_number = request.form['sparepart_'+ str(i)]
+            sparepart_qty = request.form['qty_'+ str(i)]
+            sparepart_price = request.form['price_'+ str(i)]
+            sparepart_totalprice = request.form['total_price_'+ str(i)]
+            sparepart_description = request.form['description_'+ str(i)]
+            try:
+                poDet = PODetail(po_id=po_id,
+                                    sparepart_number=sparepart_number,
+                                    sparepart_qty=sparepart_qty,
+                                    sparepart_price=sparepart_price,
+                                    sparepart_totalprice=sparepart_totalprice,
+                                    sparepart_description=sparepart_description)
+                db.session.add(poDet)
+                db.session.commit()
+            except Exception as e:
+                print("Failed to add data.")
+                print(e)
+
+    generatePDF(po_number,'po',idParent)
     return render_template("sites/pokonsumen/addForm.html")
+
 
 @app.route('/pokonsumen/info/<int:id>', methods=['GET'])
 @login_required
 def pokonsumenInfo(id):
-    pokonsumen = QuotationDetail.query\
-        .join(QuotationDB, QuotationDetail.quotation_id==QuotationDB.id)\
-        .join(PODB, PODB.quotation_id==QuotationDB.id)\
+    pokonsumen = PODetail.query\
+        .join(PODB, PODetail.po_id==PODB.id)\
         .filter_by(id=id)\
-        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
-        .join(SparepartDB, QuotationDetail.sparepart_number==SparepartDB.id)\
+        .join(KonsumenDB, PODB.konsumen_id==KonsumenDB.id)\
+        .join(SparepartDB, PODetail.sparepart_number==SparepartDB.id)\
         .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
         .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
         .add_columns(\
             PODB.po_number,\
             PODB.po_date,\
-            QuotationDB.id,\
-            QuotationDB.quotation_date,\
-            QuotationDB.quotation_number,\
-            QuotationDB.quotation_price,\
-            QuotationDB.quotation_ppn,\
-            QuotationDB.quotation_materai,\
-            QuotationDB.quotation_totalprice,\
-            QuotationDB.quotation_validity,\
+            PODB.id,\
+            PODB.po_date,\
+            PODB.po_number,\
+            PODB.po_price,\
+            PODB.po_ppn,\
+            PODB.po_materai,\
+            PODB.po_totalprice,\
+            PODB.po_validity,\
             SparepartDB.sparepart_number,\
             SparepartName.sparepart_name,\
-            QuotationDetail.sparepart_qty,\
-            QuotationDetail.sparepart_price,\
-            QuotationDetail.sparepart_totalprice,\
-            QuotationDB.quotation_number,\
+            SparepartBrand.sparepart_brand,\
+            PODetail.sparepart_qty,\
+            PODetail.sparepart_price,\
+            PODetail.sparepart_totalprice,\
+            PODB.po_number,\
             KonsumenDB.konsumen_address,\
             KonsumenDB.konsumen_name\
         )\
@@ -876,16 +949,13 @@ def poKonsumenDelete(id):
         print(e)
     return redirect("/pokonsumen")
 
-
-
 # DO
 @app.route('/do', methods=['GET'])
 @login_required
 def do():
     listDO = DODB.query\
         .join(PODB, DODB.po_id==PODB.id)\
-        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
-        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+        .join(KonsumenDB, PODB.konsumen_id==KonsumenDB.id)\
         .add_columns(\
             DODB.id\
             ,DODB.do_date\
@@ -981,6 +1051,7 @@ def doInfo(id):
             DODB.do_totalprice,\
             SparepartDB.sparepart_number,\
             SparepartName.sparepart_name,\
+            SparepartBrand.sparepart_brand,\
             DODetail.sparepart_qty,\
             DODetail.sparepart_price,\
             DODetail.sparepart_totalprice,\
@@ -1003,9 +1074,8 @@ def doEditForm(id):
     do = DODB.query\
         .filter_by(id=id)\
         .join(PODB, DODB.po_id==PODB.id)\
-        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
         .add_columns(\
-            QuotationDB.quotation_number\
+            PODB.po_number\
             ,DODB.id\
             ,DODB.do_number\
             ,DODB.po_id\
@@ -1050,6 +1120,7 @@ def doDelete(id):
         print(e)
     return redirect("/do")
 
+
 # Invoice
 @app.route('/invoice', methods=['GET'])
 @login_required
@@ -1061,7 +1132,7 @@ def invoice():
         .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
         .add_columns(\
             InvoiceDB.id\
-            ,DODB.do_date\
+            ,InvoiceDB.invoice_date\
             ,InvoiceDB.invoice_number\
             ,KonsumenDB.konsumen_name\
         )
@@ -1089,11 +1160,14 @@ def invoiceAdd():
                     invoice_terms=invoice_terms)
         db.session.add(invoice)
         db.session.commit()
+        db.session.flush()  
+        idParent = invoice.id
         
     except Exception as e:
         print("Failed to add data.")
         print(e)
 
+    generatePDF(invoice_number,'invoice',idParent)
     return render_template("sites/invoice/addForm.html")
 
 @app.route('/invoice/edit/<int:id>')
@@ -1158,6 +1232,7 @@ def invoiceInfo(id):
             DODB.do_totalprice,\
             SparepartDB.sparepart_number,\
             SparepartName.sparepart_name,\
+            SparepartBrand.sparepart_brand,\
             DODetail.sparepart_qty,\
             DODetail.sparepart_price,\
             DODetail.sparepart_totalprice,\
@@ -1217,6 +1292,23 @@ def quotationdetailMaster(quotation_id):
     ")
     quotationdetail = db.engine.execute(s, x=quotation_id).fetchall() 
     return json.dumps([dict(r) for r in quotationdetail], 
+    default=alchemyencoder)
+
+@app.route('/master/podetail/<string:po_id>', methods=['GET'])
+@login_required
+def podetailMaster(po_id):
+    s = text("\
+        SELECT \
+        *\
+        ,sparepart.id as spid\
+        FROM po_detail as podet \
+        INNER JOIN PODB as po ON podet.po_id = po.id\
+        INNER JOIN sparepartDB as sparepart ON podet.sparepart_number = sparepart.id\
+        INNER JOIN sparepart_name as sparepartname ON sparepart.sparepart_name = sparepartname.id\
+        WHERE podet.po_id = :x \
+    ")
+    podetail = db.engine.execute(s, x=po_id).fetchall() 
+    return json.dumps([dict(r) for r in podetail], 
     default=alchemyencoder)
 
 @app.route('/master/po', methods=['GET'])
@@ -1295,6 +1387,37 @@ dirname = os.path.dirname(__file__)
 def generatePDF(filename,variant,idParent):
     totqty = 0
     if variant == 'po':
+        data = PODB.query\
+            .filter_by(id=idParent)\
+            .join(KonsumenDB, PODB.konsumen_id==KonsumenDB.id)\
+            .add_columns(PODB.id,\
+                PODB.po_date,\
+                PODB.po_number,\
+                PODB.po_price,\
+                PODB.po_ppn,\
+                PODB.po_totalprice,\
+                KonsumenDB.konsumen_id,\
+                KonsumenDB.konsumen_name,\
+                KonsumenDB.konsumen_address,\
+                KonsumenDB.konsumen_phone\
+            )\
+            .first()
+
+        dataChild = PODetail.query\
+            .filter_by(po_id=idParent)\
+            .join(SparepartDB, PODetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(PODetail.id,\
+                PODetail.sparepart_qty,\
+                PODetail.sparepart_price,\
+                PODetail.sparepart_totalprice,\
+                PODetail.sparepart_description,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+
         templ = 'pdf/po.html'
     elif variant == 'do':
         data = DODB.query\
@@ -1335,6 +1458,46 @@ def generatePDF(filename,variant,idParent):
             
         templ = 'pdf/do.html'
     elif variant == 'invoice':
+        data = InvoiceDB.query\
+            .filter_by(id=idParent)\
+            .join(DODB, InvoiceDB.do_id==DODB.id)\
+            .join(PODB, DODB.po_id==PODB.id)\
+            .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+            .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+            .add_columns(QuotationDB.id,\
+                DODB.do_date,\
+                DODB.do_number,\
+                DODB.do_price,\
+                DODB.do_ppn,\
+                DODB.do_totalprice,\
+                InvoiceDB.do_id,\
+                InvoiceDB.invoice_number,\
+                InvoiceDB.invoice_date,\
+                InvoiceDB.invoice_terms,\
+                KonsumenDB.konsumen_id,\
+                KonsumenDB.konsumen_name,\
+                KonsumenDB.konsumen_address,\
+                KonsumenDB.konsumen_phone\
+            )\
+            .first()
+
+        dataChild = DODetail.query\
+            .filter_by(do_id=data.do_id)\
+            .join(SparepartDB, DODetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(DODetail.id,\
+                DODetail.sparepart_qty,\
+                DODetail.sparepart_price,\
+                DODetail.sparepart_totalprice,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+        
+        for item in dataChild:
+            totqty = totqty + item.sparepart_qty
+            
         templ = 'pdf/invoice.html'
     elif variant == 'quotation':
         data = QuotationDB.query\
@@ -1370,6 +1533,35 @@ def generatePDF(filename,variant,idParent):
             )
 
         templ = 'pdf/quotation.html'
+    elif variant == 'pokeluar':
+        data = POKeluarDB.query\
+            .filter_by(id=idParent)\
+            .join(SupplierDB, POKeluarDB.supplier_id==SupplierDB.id)\
+            .add_columns(POKeluarDB.id,\
+                POKeluarDB.pokeluar_date,\
+                POKeluarDB.pokeluar_number,\
+                POKeluarDB.pokeluar_price,\
+                SupplierDB.supplier_name,\
+                SupplierDB.supplier_alamat,\
+                SupplierDB.supplier_phone\
+            )\
+            .first()
+
+        dataChild = POKeluarDetail.query\
+            .filter_by(pokeluar_id=idParent)\
+            .join(SparepartDB, POKeluarDetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(POKeluarDetail.id,\
+                POKeluarDetail.sparepart_qty,\
+                POKeluarDetail.sparepart_price,\
+                POKeluarDetail.sparepart_totalprice,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+
+        templ = 'pdf/pokeluar.html'
         
     # Make a PDF straight from HTML in a string.
     html = render_template(templ, data=data, dataChild=dataChild, totqty=totqty)

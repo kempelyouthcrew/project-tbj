@@ -33,9 +33,7 @@
         <div class="block-title">
             <div class="block-options pull-right">
                 <div class="btn-group">
-                    {% if invoice[0].quotation_validity != 3 %}
-                    <a href="javascript:void(0)" class="btn btn-primary" onclick="window.print();">PRINT INVOICE</a>
-                    {% endif %}
+                    <a href="/download/invoice/{{ invoice[0].invoice_number }}" target="_blank" class="btn btn-primary">PDF</a>
                 </div>
             </div>
             <h2><i class="fa fa-file-text-o"></i> {{ invoice[0].invoice_number }}</h2>
@@ -91,7 +89,7 @@
                     <tr>
                         <td class="text-center">1</td>
                         <td>
-                            <h4>{{ object.sparepart_name }}</h4>
+                            <h4>{{ object.sparepart_number }} | {{ object.sparepart_name }} | {{ object.sparepart_brand }}</h4>
                         </td>
                         <td class="text-center"><span class="badge">{{ object.sparepart_qty }}</span></td>
                         <td class="text-center"><span class="label label-default">Rp. {{ object.sparepart_price }}</span></td>

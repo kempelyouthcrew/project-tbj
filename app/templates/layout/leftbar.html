@@ -11,7 +11,15 @@
         <div class="sidebar-left-scroll">
             <!-- Sidebar Navigation -->
             <ul class="sidebar-nav">
-                {% for item in nav.leftbar %}
+                
+                {% if session['level'] == '1' %}
+                {% set leftbar = nav.leftbar1 %}
+                {% elif session['level'] == '2' %}
+                {% set leftbar = nav.leftbar2 %}
+                {% elif session['level'] == '3' %}
+                {% set leftbar = nav.leftbar3 %}
+                {% endif %}
+                {% for item in leftbar %}
                 <li>
                     <h2 class="sidebar-header">{{ item.label }}</h2>
                 </li>

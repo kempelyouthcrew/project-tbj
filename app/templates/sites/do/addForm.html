@@ -55,13 +55,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="po_id">Quotation</label>
-            <div class="col-md-3">
-                <input type="text" id="quotation_id" name="quotation_id" class="form-control" placeholder="" value="" style="display: none;">
-                <input type="text" id="quotation" name="quotation" class="form-control" placeholder="" value="" readonly>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="col-md-2 control-label" for="do_terms">Term</label>
             <div class="col-md-3">
                 <input type="text" id="do_terms" name="do_terms" class="form-control" placeholder="do_terms" value="">
@@ -175,19 +168,10 @@
         $('#po_id').change(function(){ 
             let html = ""
             let po_id = $('#po_id').val()
-
-            for (i = 0; i < podbData.length; i++) {
-                if(podbData[i].poid == po_id){
-                    $('#quotation_id').val(podbData[i].quotation_id)
-                    $('#quotation').val(podbData[i].quotation_number)
-                }
-            }
-
-            let quot_id = $('#quotation_id').val()
             
             $.ajax({
             type:"GET",
-            url:"http://localhost:5000/master/quotationdetail/" + quot_id,
+            url:"http://localhost:5000/master/podetail/" + po_id,
             success: function(data) {
                 $(".sparepart-form").empty(); // clear boxes.
                 $(".sparepart-summary").empty();
@@ -219,10 +203,10 @@
                 }
 
                 let elementSummary = '<div>'
-                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].quotation_price +'" style="visibility:hidden">'
-                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].quotation_ppn +'" style="visibility:hidden">'
-                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].quotation_materai +'" style="visibility:hidden">'
-                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].quotation_totalprice +'" style="visibility:hidden">'
+                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].po_price +'" style="visibility:hidden">'
+                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].po_ppn +'" style="visibility:hidden">'
+                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].po_materai +'" style="visibility:hidden">'
+                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].po_totalprice +'" style="visibility:hidden">'
                 +'            </div>'
 
                 

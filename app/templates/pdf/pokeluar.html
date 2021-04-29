@@ -23,7 +23,7 @@
         <table cellpadding="0" cellspacing="0" class="">
             <tr>
                 <td>
-                    <p class="showdate">{{ data.po_date.strftime('%d %B %Y') }}</p>
+                    <p class="showdate">{{ data.pokeluar_date.strftime('%d %B %Y') }}</p>
                 </td>
             </tr>
         </table>
@@ -43,7 +43,7 @@
                         <tr>
                             <td class="quodetail-head">PO Number</td>
                             <td>:</td>
-                            <td>{{ data.po_number }}</td>
+                            <td>{{ data.pokeluar_number }}</td>
                         </tr>
                         <tr>
                             <td class="quodetail-head">Costumer ID</td>
@@ -123,19 +123,19 @@
                         <td class="quototal-head">Sub Total</td>
                         <td class="quototal-tidua">:</td>
                         <td class="quototal-rp">Rp.</td>
-                        <td class="quototal-val">{{ data.po_price }}</td>
+                        <td class="quototal-val">{{ data.pokeluar_price }}</td>
                     </tr>
                     <tr>
                         <td class="quototal-head">Tax 10%</td>
                         <td class="quototal-tidua">:</td>
                         <td class="quototal-rp">Rp.</td>
-                        <td class="quototal-val">{{ data.po_ppn }}</td>
+                        <td class="quototal-val">{{ data.pokeluar_ppn }}</td>
                     </tr>
                     <tr>
                         <td class="quototal-head">Grand Total</td>
                         <td class="quototal-tidua">:</td>
                         <td class="quototal-rp">Rp.</td>
-                        <td class="quototal-val val-gt">{{ data.po_totalprice }}</td>
+                        <td class="quototal-val val-gt">{{ data.pokeluar_totalprice }}</td>
                     </tr>
                 </table>
             </td>

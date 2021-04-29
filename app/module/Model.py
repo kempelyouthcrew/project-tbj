@@ -132,13 +132,31 @@ class InvoiceDB(db.Model, Serializer):
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
 
-
-class PODB(db.Model, Serializer):
+class PODB(db.Model,Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
-    quotation_id = db.Column(db.String(255), nullable=False)
-    po_date = db.Column(db.DateTime, nullable=False)
+    quotation_id = db.Column(db.String(255), nullable=True)
     seller_name = db.Column(db.String(255), nullable=False)
+    po_date = db.Column(db.DateTime, nullable=False)
     po_number = db.Column(db.String(255), nullable=False)
+    po_validity = db.Column(db.Integer, nullable=False)
+    konsumen_id = db.Column(db.Integer, nullable=False)
+    po_price = db.Column(db.Integer, nullable=False)
+    po_ppn = db.Column(db.Integer, nullable=False)
+    po_materai = db.Column(db.Integer, nullable=False)
+    po_totalprice = db.Column(db.Integer, nullable=False)
+    created_by = db.Column(db.String(255), nullable=True)
+    updated_by = db.Column(db.String(255), nullable=True)
+    created_add = db.Column(db.DateTime, nullable=True)
+    updated_add = db.Column(db.DateTime, nullable=True)
+
+class PODetail(db.Model,Serializer):
+    id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    po_id = db.Column(db.String(255), nullable=False)
+    sparepart_number = db.Column(db.String(255), nullable=False)
+    sparepart_qty = db.Column(db.Integer, nullable=False)
+    sparepart_price = db.Column(db.Integer, nullable=False)
+    sparepart_totalprice = db.Column(db.Integer, nullable=False)
+    sparepart_description = db.Column(db.String(255), nullable=False)
     created_by = db.Column(db.String(255), nullable=True)
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)

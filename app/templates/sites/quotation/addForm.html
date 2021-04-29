@@ -119,6 +119,9 @@
                     <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="0" readonly>
                 </div>
                 <div class="col-sm-1">
+                    <label class="switch switch-warning">
+                        <input name="ppnswitcher" id="ppnswitcher" type="checkbox" checked=""><span></span>
+                    </label>
                 </div>
             </div>
         </div>
@@ -172,9 +175,12 @@
     let max_fields      = 10; //maximum input boxes allowed
     let index = 1;
     let sparePartData
+    let ppn = 10
     getKonsumen()
     getSparepart(1)
     actionFormDynamic(index)
+    setPPN()
+    setFinalPrice()
 
     function validateForm() {
         var x = document.forms["form"]["konsumen_id"].value;
@@ -293,7 +299,6 @@
         });
         $("#sum_price").val(sum);
         let fp = parseInt($("#sum_price").val())
-        let ppn = 10
         let materai = parseInt($("#materai").val())
         let ppn_due = fp * (ppn/100);
         let grandprice = fp + ppn_due + materai
@@ -301,6 +306,17 @@
         $("#ppn").val(ppn_due);
         $("#grandprice").val(grandprice);
 
+    }
+
+    function setPPN() {
+        $('#ppnswitcher').change(function(){ 
+            if ($(this).is(":checked")) {
+                ppn = 10
+            } else {
+                ppn = 0
+            }
+            setFinalPrice()
+        });
     }
     
     $(".sparepart-form").on("click",".remove-form-button", function(e){ //user click on remove text
