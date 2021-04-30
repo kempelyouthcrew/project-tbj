@@ -1503,6 +1503,7 @@ def generatePDF(filename,variant,idParent):
                 DODB.do_ppn,\
                 DODB.do_totalprice,\
                 DODB.do_terms,\
+                PODB.po_number,\
                 KonsumenDB.konsumen_id,\
                 KonsumenDB.konsumen_name,\
                 KonsumenDB.konsumen_address,\
