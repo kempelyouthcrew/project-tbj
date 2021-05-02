@@ -2,7 +2,7 @@ import os
 from flask import render_template, request, redirect, session, flash, make_response, url_for, send_file
 from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, DODetail, PODB, PODetail, UserManagementDB, POKeluarDB, POKeluarDetail, InvoiceDB
+from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, DODetail, PODB, PODetail, UserManagementDB, POKeluarDB, POKeluarDetail, InvoiceDB, InvoiceSupplierDB
 from flask_navigation import Navigation
 import bcrypt
 import json
@@ -21,6 +21,7 @@ nav.Bar('leftbar1', [
     nav.Item('Purchasing', 'data', items=[
         nav.Item('Quotation', 'quotation'),
         nav.Item('PO Masuk', 'pokonsumen'),
+        nav.Item('Invoice Supplier', 'invoiceSupplier'),
         nav.Item('Delivery Order', 'do'),
         nav.Item('Invoice', 'invoice'),
         nav.Item('PO Keluar', 'pokeluar'),
@@ -665,7 +666,7 @@ def quotationEdit():
 @login_required
 def quotationDelete(id):
     try:
-        quotation = quotationDB.query.filter_by(id=id).first()
+        quotation = QuotationDB.query.filter_by(id=id).first()
         db.session.delete(quotation)
         db.session.commit()
     except Exception as e:
@@ -1314,6 +1315,42 @@ def invoiceInfo(id):
     print(invoice)
     return render_template("sites/invoice/info.html", invoice=invoice)
 
+# Invoice Supplier
+@app.route('/invoiceSupplier', methods=['GET'])
+@login_required
+def invoiceSupplier():
+    listInvoiceSupplier = InvoiceSupplierDB.query.all()
+    return render_template("sites/invoiceSupplier/index.html", listInvoiceSupplier=enumerate(listInvoiceSupplier))
+
+@app.route('/invoiceSupplier/add', methods=['GET'])
+@login_required
+def invoiceSupplierAddForm():
+    return render_template("sites/invoiceSupplier/addForm.html")
+
+@app.route('/invoiceSupplier/add', methods=['POST'])
+@login_required
+def invoiceSupplierAdd():
+    dateNow = datetime.datetime.now()
+    invoiceSupplier_date = dateNow
+    invoiceSupplier_number = request.form['invoiceSupplier_number']
+    po_id = request.form['po_id']
+
+    try:
+        invoiceSupplier = InvoiceSupplierDB(invoiceSupplier_number=invoiceSupplier_number,
+                    invoiceSupplier_date=invoiceSupplier_date)
+        db.session.add(invoiceSupplier)
+        db.session.commit()
+        db.session.flush()  
+        idParent = invoiceSupplier.id
+        
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+
+    generatePDF(invoiceSupplier_number,'invoiceSupplier',idParent)
+    numIdParent = str(idParent)
+    return redirect("/invoiceSupplier/info/" + numIdParent)
+
 # Master json
 @app.route('/master/konsumen', methods=['GET'])
 @login_required
@@ -1404,6 +1441,7 @@ def poMaster():
 def supplierMaster():
     supplier = SupplierDB.query.all()
     return json.dumps(SupplierDB.serialize_list(supplier))
+
 @app.route('/master/do', methods=['GET'])
 @login_required
 def doMaster():

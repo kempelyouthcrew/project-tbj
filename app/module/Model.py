@@ -185,6 +185,16 @@ class POKeluarDetail(db.Model, Serializer):
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
+
+class InvoiceSupplierDB(db.Model, Serializer):
+    id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    pokeluar_id = db.Column(db.String(255), nullable=False)
+    invoiceSupplier_number = db.Column(db.String(255), nullable=False)
+    invoiceSupplier_date = db.Column(db.DateTime, nullable=False)
+    created_by = db.Column(db.String(255), nullable=True)
+    updated_by = db.Column(db.String(255), nullable=True)
+    created_add = db.Column(db.DateTime, nullable=True)
+    updated_add = db.Column(db.DateTime, nullable=True)
     
 
 class UserManagementDB(db.Model, Serializer):
