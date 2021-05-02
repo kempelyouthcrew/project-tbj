@@ -32,7 +32,7 @@
         <table cellpadding="0" cellspacing="0" class="">
             <tr>
                 <td class="quot-address">
-                    <p>PO to</p>
+                    <p>Invoice to</p>
                     <p class="ptname">{{ data.konsumen_name }}</p>
                     <p>Bu Novi Sehat</p>
                     <p>{{ data.konsumen_address }}</p>
@@ -41,7 +41,7 @@
                 <td class="quot-detail">
                     <table class="table-quodetail">
                         <tr>
-                            <td class="quodetail-head">PO Number</td>
+                            <td class="quodetail-head">DO Number</td>
                             <td>:</td>
                             <td>{{ data.do_number }}</td>
                         </tr>
@@ -58,7 +58,7 @@
                         <tr>
                             <td class="quodetail-head">Subject</td>
                             <td>:</td>
-                            <td>-</td>
+                            <td>{{ data.po_number }}</td>
                         </tr>
                     </table>
                 </td>
@@ -104,11 +104,6 @@
                         <td class="quoterm-head">- Payment Term</td>
                         <td>:</td>
                         <td>7 Days</td>
-                    </tr>
-                    <tr>
-                        <td class="quoterm-head">- Delivery Point</td>
-                        <td>:</td>
-                        <td>-</td>
                     </tr>
                     <tr>
                         <td class="quoterm-head">- Bank Number</td>

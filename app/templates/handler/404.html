@@ -1,0 +1,41 @@
+{% extends "layout/layout.html" %}
+
+{% block head_css %}
+
+{% endblock %}
+
+{% block head_js %}
+{% endblock %}
+
+{% block body_content %}
+
+<div class="block-header">
+    <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
+    <a href="" class="header-title-link">
+        <h1>
+            <i class="fa fa-times-circle-o animation-expandUp"></i>404 Error<br><small>Errors may happen but we are prepared!</small>
+        </h1>
+    </a>
+</div>
+<ul class="breadcrumb breadcrumb-top">
+    <li><a href="/dashboard">Back to Dashboard</a></li>
+    <li>404 Error</li>
+</ul>
+<!-- END 404 Error Header -->
+
+<!-- Error Content -->
+<div class="row gutter30 error-container animation-fadeIn">
+    <div class="col-xs-6 text-right">
+        <i class="fa fa-times text-danger"></i>
+    </div>
+    <div class="col-xs-6 text-left">
+        <h1>404</h1>
+        <small>Page not found.. :-(</small>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block body_js %}
+
+{% endblock %}

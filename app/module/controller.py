@@ -65,6 +65,11 @@ nav.Bar('leftbar3', [
     ]),
 ])
 
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template("handler/404.html"), 404
+
 #alchemyEncoder for json
 def alchemyencoder(obj):
     """JSON encoder function for SQLAlchemy special classes."""
@@ -620,22 +625,19 @@ def quotationInfo(id):
 def quotationEditForm(id):
     # quotation = quotationDB.query.filter_by(id=id).first()
     listQuotation = QuotationDB.query.all()
-    listPo = PODB.query.all()
-    quotation = quotationDB.query\
+    quotation = QuotationDB.query\
         .filter_by(id=id)\
-        .join(PODB, quotationDB.po_id==PODB.id)\
-        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
         .add_columns(\
             QuotationDB.quotation_number\
-            ,quotationDB.id\
-            ,quotationDB.quotation_number\
-            ,quotationDB.po_id\
-            ,quotationDB.quotation_terms\
-            ,PODB.po_number\
+            ,QuotationDB.id\
+            ,QuotationDB.quotation_number\
+            ,KonsumenDB.konsumen_name\
+            ,KonsumenDB.konsumen_id\
         )\
         .first()
 
-    return render_template("sites/quotation/editForm.html", data=quotation, listQuotation=enumerate(listQuotation), listPo=enumerate(listPo))
+    return render_template("sites/quotation/editForm.html", data=quotation)
 
 @app.route('/quotation/edit', methods=['POST'])
 @login_required
@@ -1542,6 +1544,7 @@ def generatePDF(filename,variant,idParent):
                 DODB.do_price,\
                 DODB.do_ppn,\
                 DODB.do_totalprice,\
+                PODB.po_number,\
                 InvoiceDB.do_id,\
                 InvoiceDB.invoice_number,\
                 InvoiceDB.invoice_date,\
