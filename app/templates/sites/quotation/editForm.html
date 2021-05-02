@@ -41,13 +41,21 @@
         <h2>Form Edit Data</h2>
     </div>
     <!-- END Dropzone Title -->
-    <form action="add" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
+    <form action="/quotation/edit" name="form" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return validateForm()">
         <input type="text" id="id" name="id" class="form-control" value="{{ data.id }}" style="display:none;" >
+        <input type="text" id="formCountOld" name="formCountOld" class="form-control" value="1" style="display: none;">
+        <input type="text" id="formCount" name="formCount" class="form-control" value="1" style="display: none;">
         <h4 class="sub-header">Text Inputs</h4>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="quotation">Quotation Number</label>
+            <div class="col-md-3">
+                <input type="text" id="quotation" name="quotation" class="form-control" value="{{ data.quotation_number }}" readonly>
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-md-2 control-label" for="konsumen_id">ID Konsumen</label>
             <div class="col-md-3">
-                <input type="text" id="konsumen_id" name="konsumen_id" class="form-control" value="{{ data.konsumen_id }} - {{ data.konsumen_name }}" >
+                <input type="text" id="konsumen_id" name="konsumen_id" class="form-control" value="{{ data.konsumen_id }} - {{ data.konsumen_name }}" readonly>
             </div>
         </div>
         <div class="form-group">
@@ -68,7 +76,7 @@
                     <label class="head-dyn" for="sum_price">Total Price:</label>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="0" readonly>
+                    <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="{{ data.quotation_price }}" readonly>
                 </div>
                 <div class="col-sm-1">
                 </div>
@@ -84,11 +92,15 @@
                     <label class="head-dyn" for="ppn">PPN 10%:</label>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="0" readonly>
+                    <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="{{ data.quotation_ppn }}" readonly>
                 </div>
                 <div class="col-sm-1">
                     <label class="switch switch-warning">
-                        <input name="ppnswitcher" id="ppnswitcher" type="checkbox" checked=""><span></span>
+                        {% if data.quotation_ppn == 0 %}
+                            <input name="ppnswitcher" id="ppnswitcher" type="checkbox"><span></span>
+                        {% else %}
+                            <input name="ppnswitcher" id="ppnswitcher" type="checkbox" checked=""><span></span>
+                        {% endif %}
                     </label>
                 </div>
             </div>
@@ -103,7 +115,7 @@
                     <label class="head-dyn" for="materai">Materai:</label>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="10000" readonly>
+                    <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="{{ data.quotation_materai }}" readonly>
                 </div>
                 <div class="col-sm-1">
                 </div>
@@ -119,7 +131,7 @@
                     <label class="head-dyn" for="grandprice">Grand Price:</label>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="0" readonly>
+                    <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="{{ data.quotation_totalprice }}" readonly>
                 </div>
                 <div class="col-sm-1">
                 </div>
@@ -141,13 +153,19 @@
 
 <script>
     let max_fields      = 10; //maximum input boxes allowed
+    let index_old = 0;
     let index = 0;
     let sparePartData
     let ppn = 10
+    if ($("#ppnswitcher").is(":checked")) {
+        ppn = 10
+    } else {
+        ppn = 0
+    }
+
     getSparepart(1)
     actionFormDynamic(index)
     setPPN()
-    setFinalPrice()
     setDetailQuotation()
 
     function validateForm() {
@@ -180,29 +198,27 @@
             success: function(data) {
                 let detailHtml =""
                 for (i = 0; i < data.length; i++) { 
-                    index++
+                    index_old++
                     detailHtml =""
                     detailHtml = '<div class="form-group">'
                         +'<label class="col-md-2 control-label" for="sparepart_number">-</label><div class="col-md-10">'
-                        +'<div class="col-sm-2">'
-                        +'<select id="sparepart_'+ index +'" name="sparepart_'+ index +'" class="sparepart_1 select-select2" data-placeholder="Choose one.." style="width: 250px;"><option></option></select>'
+                        +'<div class="col-sm-3">'
+                        +'    <input type="text" id="sparepart_name_old'+ index_old +'" name="sparepart_name_old'+ index_old +'" class="form-control" placeholder="sparepart" value ="'+ data[i].sparepart_name +'" readonly>'
+                        +'    <input type="text" id="sparepart_old'+ index_old +'" name="sparepart_old'+ index_old +'" class="form-control" placeholder="sparepart" value ="'+ data[i].spid +'" style="display: none;">'
                         +'</div>'
                         +'<div class="col-sm-1">'
-                        +'</div>'
-                        +'<div class="col-sm-1">'
-                        +'    <input type="number" id="qty_'+ index +'" name="qty_'+ index +'" class="form-control" placeholder="qty" min="1" value ="99">'
+                        +'    <input type="number" id="qty_old'+ index_old +'" name="qty_old'+ index_old +'" class="form-control" placeholder="qty" min="1" value ="'+ data[i].sparepart_qty +'">'
                         +'</div>'
                         +'<div class="col-sm-2">'
-                        +'    <input type="text" id="price_'+ index +'" name="price_'+ index +'" class="form-control money-format" placeholder="price" value="0">'
+                        +'    <input type="text" id="price_old'+ index_old +'" name="price_old'+ index_old +'" class="form-control money-format" placeholder="price" value="'+ data[i].sparepart_price +'">'
                         +'</div>'
                         +'<div class="col-sm-2">'
-                        +'    <input type="text" id="total_price_'+ index +'" name="total_price_'+ index +'" class="form-control money-format prc" placeholder="total price" value="0" readonly>'
+                        +'    <input type="text" id="total_price_old'+ index_old +'" name="total_price_old'+ index_old +'" class="form-control money-format prc" placeholder="total price" value="'+ data[i].sparepart_totalprice +'" readonly>'
                         +'</div>'
                         +'<div class="col-sm-3">'
-                        +'    <input type="text" id="description_'+ index +'" name="description_'+ index +'" class="form-control" placeholder="description" value="-" readonly>'
+                        +'    <input type="text" id="description_old'+ index_old +'" name="description_old'+ index_old +'" class="form-control" placeholder="description" value="'+ data[i].sparepart_description +'" readonly>'
                         +'</div>'
                         +'<div class="col-sm-1">'
-                        +'    <button type="button" class="btn btn-default remove-form-button"><i class="gi gi-circle_remove"></i></button>'
                         +'</div>'
                         +'</div>'
                         +'</div>'
@@ -213,10 +229,11 @@
                     // let html = setOption()
                     // $('#sparepart_' + index).append(html);
                         
-                    let formCount = parseInt($('#formCount').val())
-                    formCount++
-                    $('#formCount').val(formCount)
-                    actionFormDynamic(index)
+                    let formCountOld = parseInt($('#formCountOld').val())
+                    formCountOld++
+                    $('#formCountOld').val(formCountOld)
+                    actionFormDynamicOld(index_old)
+                    setFinalPrice()
                 }
             },
             dataType: 'json',
@@ -306,6 +323,32 @@
             let total_price = price * qty
             console.log('fe',total_price)
             $('#total_price_'+ index).val(total_price)
+            setFinalPrice()
+        });
+    }
+
+    function actionFormDynamicOld(index) {        
+        $('#qty_old'+ index).change(function(){ 
+            let qty = parseInt($('#qty_old'+ index).val())
+            let price = parseInt($('#price_old'+ index).val())
+            let total_price = price * qty
+            console.log('fe',total_price)
+            $('#total_price_old'+ index).val(total_price)
+        });
+        $('#qty_old'+ index).change(function(){ 
+            var sum = 0;
+            $(".prc").each(function(){
+                sum += +$(this).val();
+            });
+            $("#sum_price").val(sum);
+            setFinalPrice()
+        });
+        $('#price_old'+ index).change(function(){ 
+            let qty = parseInt($('#qty_old'+ index).val())
+            let price = parseInt($('#price_old'+ index).val())
+            let total_price = price * qty
+            console.log('fe',total_price)
+            $('#total_price_old'+ index).val(total_price)
             setFinalPrice()
         });
     }

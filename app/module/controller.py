@@ -631,7 +631,10 @@ def quotationEditForm(id):
         .add_columns(\
             QuotationDB.quotation_number\
             ,QuotationDB.id\
-            ,QuotationDB.quotation_number\
+            ,QuotationDB.quotation_price\
+            ,QuotationDB.quotation_ppn\
+            ,QuotationDB.quotation_materai\
+            ,QuotationDB.quotation_totalprice\
             ,KonsumenDB.konsumen_name\
             ,KonsumenDB.konsumen_id\
         )\
@@ -642,24 +645,55 @@ def quotationEditForm(id):
 @app.route('/quotation/edit', methods=['POST'])
 @login_required
 def quotationEdit():
-    if request.method == 'POST':
-        id = request.form['id']
-        dateNow = datetime.datetime.now()
-        po_date = dateNow
-        quotation_id = request.form['quotation']
-        seller_name = request.form['seller_name']
-        po_number = request.form['po_number']
-        try:
-            pokonsumen = PODB.query.filter_by(id=id).first()
-            pokonsumen.po_date=po_date
-            pokonsumen.quotation_id=quotation_id
-            pokonsumen.seller_name=seller_name
-            pokonsumen.po_number=po_number
-            db.session.commit()
-        except Exception as e:
-            print("Failed to update data")
-            print(e)
-        return redirect("/quotation")
+    id = request.form['id']
+    dateNow = datetime.datetime.now()
+    formCountOld = request.form['formCountOld']
+    formCount = request.form['formCount']
+    quotation_price = request.form['sum_price']
+    quotation_ppn = request.form['ppn']
+    quotation_materai = request.form['materai']
+    quotation_totalprice = request.form['grandprice']
+    quotation_number = request.form['quotation']
+    idParent = id
+
+    try:
+        quotation = QuotationDB.query.filter_by(id=id).first()
+        quotation.quotation_price=quotation_price
+        quotation.quotation_ppn=quotation_ppn
+        quotation.quotation_materai=quotation_materai
+        quotation.quotation_totalprice=quotation_totalprice
+        db.session.commit()
+        
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+
+    i = 0
+    while i < int(formCount):
+        i = i + 1
+        if 'sparepart_'+ str(i) in request.form:
+            quotation_id = idParent
+            sparepart_number = request.form['sparepart_'+ str(i)]
+            sparepart_qty = request.form['qty_'+ str(i)]
+            sparepart_price = request.form['price_'+ str(i)]
+            sparepart_totalprice = request.form['total_price_'+ str(i)]
+            sparepart_description = request.form['description_'+ str(i)]
+            try:
+                quotationDet = QuotationDetail(quotation_id=quotation_id,
+                                    sparepart_number=sparepart_number,
+                                    sparepart_qty=sparepart_qty,
+                                    sparepart_price=sparepart_price,
+                                    sparepart_totalprice=sparepart_totalprice,
+                                    sparepart_description=sparepart_description)
+                db.session.add(quotationDet)
+                db.session.commit()
+            except Exception as e:
+                print("Failed to add data.")
+                print(e)
+
+    generatePDF(quotation_number,'quotation',idParent)
+    numIdParent = str(idParent)
+    return redirect("/quotation/info/" + numIdParent)
 
 @app.route('/quotation/delete/<int:id>')
 @login_required
@@ -1644,6 +1678,8 @@ def generatePDF(filename,variant,idParent):
     pdf = HTML(string=html).write_pdf()
 
     if os.path.exists(dirname):
+        if os.path.exists(os.path.join(dirname, '../file/'+ variant +'/'+ filename +'.pdf')):
+            os.remove(os.path.join(dirname, '../file/'+ variant +'/'+ filename +'.pdf'))
 
         f = open(os.path.join(dirname, '../file/'+ variant +'/'+ filename +'.pdf'), 'wb')
         f.write(pdf)
