@@ -180,7 +180,7 @@
         let do_id = $('#id').val()
         $.ajax({
         type:"GET",
-        url:"http://localhost:5000/master/dodetail/" + do_id,
+        url:"http://administrator.teknikberlianjaya.com/master/dodetail/" + do_id,
         success: function(data) {
             $(".sparepart-form").empty(); // clear boxes.
             $(".sparepart-summary").empty();

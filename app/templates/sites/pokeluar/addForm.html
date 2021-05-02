@@ -259,7 +259,7 @@
     function getSupplier() {
         $.ajax({
             type:"GET",
-            url:"http://localhost:5000/master/supplier",
+            url:"http://administrator.teknikberlianjaya.com/master/supplier",
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -276,7 +276,7 @@
     function getPo() {
         $.ajax({
             type:"GET",
-            url:"http://localhost:5000/master/po",
+            url:"http://administrator.teknikberlianjaya.com/master/po",
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -293,7 +293,7 @@
     function getSparepart(numberRow) {
         $.ajax({
             type:"GET",
-            url:"http://localhost:5000/master/sparepart",
+            url:"http://administrator.teknikberlianjaya.com/master/sparepart",
             success: function(data) {
                 sparePartData = data
                 html = ""
