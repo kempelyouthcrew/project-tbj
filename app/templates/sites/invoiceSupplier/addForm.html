@@ -47,7 +47,7 @@
         <input type="text" id="formCount" name="formCount" class="form-control" value="1" style="display: none;">
         <h4 class="sub-header">Text Inputs</h4>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="do_id">PO Keluar</label>
+            <label class="col-md-2 control-label" for="pokeluar_id">PO Keluar</label>
             <div class="col-md-10">
                 <select id="pokeluar_id" name="pokeluar_id" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
                     <option></option>
@@ -95,7 +95,7 @@
     let max_fields      = 10; //maximum input boxes allowed
     let index = 1;
     let podbData
-    getDO()
+    getPOKeluar()
 
     function validateForm() {
         var x = document.forms["form"]["konsumen_id"].value;
@@ -144,33 +144,33 @@
         setFinalPrice()
     })
 
-    function getDO() {
+    function getPOKeluar() {
         $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/do",
+            url:"http://localhost:5000/master/pokeluar",
             success: function(data) {
                 dodbData = data
                 html = ""
                 for (i = 0; i < data.length; i++) {
-                    id = data[i].doid
-                    do_number = data[i].do_number
-                    konsumen_name = data[i].konsumen_name
-                    html += "<option value='"+ id +"'>"+ do_number +" | "+ konsumen_name +"</option>"
+                    id = data[i].poid
+                    pokeluar_number = data[i].pokeluar_number
+                    supplier_name = data[i].supplier_name
+                    html += "<option value='"+ id +"'>"+ pokeluar_number +" | "+ supplier_name +"</option>"
                 }
-                $('#do_id').append(html);              
+                $('#pokeluar_id').append(html);              
             },
             dataType: 'json',
           });
-          actionForDO()
+          actionForPOKeluar()
     }
 
-    function actionForDO() {    
-        $('#do_id').change(function(){ 
+    function actionForPOKeluar() {    
+        $('#pokeluar_id').change(function(){ 
             let html = ""
-            let do_id = $('#do_id').val()            
+            let pokeluar_id = $('#pokeluar_id').val()            
             $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/dodetail/" + do_id,
+            url:"http://localhost:5000/master/pokeluardetail/" + pokeluar_id,
             success: function(data) {
                 $(".sparepart-form").empty(); // clear boxes.
                 $(".sparepart-summary").empty();

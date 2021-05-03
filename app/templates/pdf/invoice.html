@@ -23,7 +23,7 @@
         <table cellpadding="0" cellspacing="0" class="">
             <tr>
                 <td>
-                    <p class="showdate">{{ data.do_date.strftime('%d %B %Y') }}</p>
+                    <p class="showdate">{{ data.invoice_date.strftime('%d %B %Y') }}</p>
                 </td>
             </tr>
         </table>
@@ -41,9 +41,9 @@
                 <td class="quot-detail">
                     <table class="table-quodetail">
                         <tr>
-                            <td class="quodetail-head">DO Number</td>
+                            <td class="quodetail-head">Invoice Number</td>
                             <td>:</td>
-                            <td>{{ data.do_number }}</td>
+                            <td>{{ data.invoice_number }}</td>
                         </tr>
                         <tr>
                             <td class="quodetail-head">Costumer ID</td>

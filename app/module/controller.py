@@ -21,10 +21,10 @@ nav.Bar('leftbar1', [
     nav.Item('Purchasing', 'data', items=[
         nav.Item('Quotation', 'quotation'),
         nav.Item('PO Masuk', 'pokonsumen'),
-        nav.Item('Invoice Supplier', 'invoiceSupplier'),
         nav.Item('Delivery Order', 'do'),
         nav.Item('Invoice', 'invoice'),
         nav.Item('PO Keluar', 'pokeluar'),
+        nav.Item('Invoice Supplier', 'invoiceSupplier'),
     ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
@@ -46,6 +46,7 @@ nav.Bar('leftbar2', [
         nav.Item('Delivery Order', 'do'),
         nav.Item('Invoice', 'invoice'),
         nav.Item('PO Keluar', 'pokeluar'),
+        nav.Item('Invoice Supplier', 'invoiceSupplier'),
     ]),
     nav.Item('Data Master', 'data', items=[
         nav.Item('Konsumen', 'konsumen'),
@@ -53,7 +54,6 @@ nav.Bar('leftbar2', [
         nav.Item('Sparepart', 'sparepart'),
         nav.Item('Sparepart Name', 'sparepartName'),
         nav.Item('Sparepart Brand', 'sparepartBrand'),
-        nav.Item('User Management', 'usermanagement'),
     ]),
 ])
 
@@ -1470,6 +1470,38 @@ def poMaster():
     return json.dumps([dict(r) for r in podb], 
     default=alchemyencoder)
 
+@app.route('/master/pokeluar', methods=['GET'])
+@login_required
+def poKeluarMaster():
+    s = text("\
+        SELECT \
+        *\
+        ,pokeluar.id AS poid \
+        ,pokeluar.po_id AS pomasukid \
+        FROM po_keluarDB AS pokeluar \
+        INNER JOIN supplierDB AS sup ON pokeluar.supplier_id = sup.id \
+    ")
+    pokeluardb = db.engine.execute(s).fetchall() 
+    return json.dumps([dict(r) for r in pokeluardb], 
+    default=alchemyencoder)
+
+@app.route('/master/pokeluardetail/<string:po_id>', methods=['GET'])
+@login_required
+def pokeluardetailMaster(po_id):
+    s = text("\
+        SELECT \
+        *\
+        ,sparepart.id as spid\
+        FROM po_keluar_detail as pokeldet \
+        INNER JOIN po_keluarDB as pokeluar ON pokeldet.pokeluar_id = pokeluar.id\
+        INNER JOIN sparepartDB as sparepart ON pokeldet.sparepart_number = sparepart.id\
+        INNER JOIN sparepart_name as sparepartname ON sparepart.sparepart_name = sparepartname.id\
+        WHERE pokeldet.pokeluar_id = :x \
+    ")
+    pokeluardetail = db.engine.execute(s, x=po_id).fetchall() 
+    return json.dumps([dict(r) for r in pokeluardetail], 
+    default=alchemyencoder)
+
 @app.route('/master/supplier', methods=['GET'])
 @login_required
 def supplierMaster():
@@ -1737,3 +1769,189 @@ def download_file(folder, filename):
 	path = "file/" + folder +"/" + filename + ".pdf"
 	#path = "sample.txt"
 	return send_file(path, as_attachment=True)
+
+@app.route('/flat/print/<string:filename>/<string:variant>/<string:idParent>', methods=['GET'])
+@login_required
+def generateFlat(filename,variant,idParent):
+    totqty = 0
+    if variant == 'po':
+        data = PODB.query\
+            .filter_by(id=idParent)\
+            .join(KonsumenDB, PODB.konsumen_id==KonsumenDB.id)\
+            .add_columns(PODB.id,\
+                PODB.po_date,\
+                PODB.po_number,\
+                PODB.po_price,\
+                PODB.po_ppn,\
+                PODB.po_totalprice,\
+                KonsumenDB.konsumen_id,\
+                KonsumenDB.konsumen_name,\
+                KonsumenDB.konsumen_address,\
+                KonsumenDB.konsumen_phone\
+            )\
+            .first()
+
+        dataChild = PODetail.query\
+            .filter_by(po_id=idParent)\
+            .join(SparepartDB, PODetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(PODetail.id,\
+                PODetail.sparepart_qty,\
+                PODetail.sparepart_price,\
+                PODetail.sparepart_totalprice,\
+                PODetail.sparepart_description,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+
+        templ = 'flat/po.html'
+    elif variant == 'do':
+        data = DODB.query\
+            .filter_by(id=idParent)\
+            .join(PODB, DODB.po_id==PODB.id)\
+            .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+            .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+            .add_columns(QuotationDB.id,\
+                DODB.do_date,\
+                DODB.do_number,\
+                DODB.do_price,\
+                DODB.do_ppn,\
+                DODB.do_totalprice,\
+                DODB.do_terms,\
+                PODB.po_number,\
+                KonsumenDB.konsumen_id,\
+                KonsumenDB.konsumen_name,\
+                KonsumenDB.konsumen_address,\
+                KonsumenDB.konsumen_phone\
+            )\
+            .first()
+
+        dataChild = DODetail.query\
+            .filter_by(do_id=idParent)\
+            .join(SparepartDB, DODetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(DODetail.id,\
+                DODetail.sparepart_qty,\
+                DODetail.sparepart_price,\
+                DODetail.sparepart_totalprice,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+        
+        for item in dataChild:
+            totqty = totqty + item.sparepart_qty
+            
+        templ = 'flat/do.html'
+    elif variant == 'invoice':
+        data = InvoiceDB.query\
+            .filter_by(id=idParent)\
+            .join(DODB, InvoiceDB.do_id==DODB.id)\
+            .join(PODB, DODB.po_id==PODB.id)\
+            .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
+            .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+            .add_columns(QuotationDB.id,\
+                DODB.do_date,\
+                DODB.do_number,\
+                DODB.do_price,\
+                DODB.do_ppn,\
+                DODB.do_totalprice,\
+                PODB.po_number,\
+                InvoiceDB.do_id,\
+                InvoiceDB.invoice_number,\
+                InvoiceDB.invoice_date,\
+                InvoiceDB.invoice_terms,\
+                KonsumenDB.konsumen_id,\
+                KonsumenDB.konsumen_name,\
+                KonsumenDB.konsumen_address,\
+                KonsumenDB.konsumen_phone\
+            )\
+            .first()
+
+        dataChild = DODetail.query\
+            .filter_by(do_id=data.do_id)\
+            .join(SparepartDB, DODetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(DODetail.id,\
+                DODetail.sparepart_qty,\
+                DODetail.sparepart_price,\
+                DODetail.sparepart_totalprice,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+        
+        for item in dataChild:
+            totqty = totqty + item.sparepart_qty
+            
+        templ = 'flat/invoice.html'
+    elif variant == 'quotation':
+        data = QuotationDB.query\
+            .filter_by(id=idParent)\
+            .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+            .add_columns(QuotationDB.id,\
+                QuotationDB.quotation_date,\
+                QuotationDB.quotation_number,\
+                QuotationDB.quotation_price,\
+                QuotationDB.quotation_ppn,\
+                QuotationDB.quotation_totalprice,\
+                KonsumenDB.konsumen_id,\
+                KonsumenDB.konsumen_name,\
+                KonsumenDB.konsumen_address,\
+                KonsumenDB.konsumen_phone,\
+                QuotationDB.quotation_validity\
+            )\
+            .first()
+
+        dataChild = QuotationDetail.query\
+            .filter_by(quotation_id=idParent)\
+            .join(SparepartDB, QuotationDetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(QuotationDetail.id,\
+                QuotationDetail.sparepart_qty,\
+                QuotationDetail.sparepart_price,\
+                QuotationDetail.sparepart_totalprice,\
+                QuotationDetail.sparepart_description,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+
+        templ = 'flat/quotation.html'
+    elif variant == 'pokeluar':
+        data = POKeluarDB.query\
+            .filter_by(id=idParent)\
+            .join(SupplierDB, POKeluarDB.supplier_id==SupplierDB.id)\
+            .add_columns(POKeluarDB.id,\
+                POKeluarDB.pokeluar_date,\
+                POKeluarDB.pokeluar_number,\
+                POKeluarDB.pokeluar_price,\
+                SupplierDB.supplier_name,\
+                SupplierDB.supplier_alamat,\
+                SupplierDB.supplier_phone\
+            )\
+            .first()
+
+        dataChild = POKeluarDetail.query\
+            .filter_by(pokeluar_id=idParent)\
+            .join(SparepartDB, POKeluarDetail.sparepart_number==SparepartDB.id)\
+            .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+            .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+            .add_columns(POKeluarDetail.id,\
+                POKeluarDetail.sparepart_qty,\
+                POKeluarDetail.sparepart_price,\
+                POKeluarDetail.sparepart_totalprice,\
+                SparepartDB.sparepart_number,\
+                SparepartName.sparepart_name,\
+                SparepartBrand.sparepart_brand\
+            )
+
+        templ = 'flat/pokeluar.html'
+        
+    # Make a PDF straight from HTML in a string. 
+    return render_template(templ, data=data, dataChild=dataChild, totqty=totqty)
