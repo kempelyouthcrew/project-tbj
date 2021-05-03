@@ -147,7 +147,7 @@
     function getPO() {
         $.ajax({
             type:"GET",
-            url:"http://localhost:5000/master/po",
+            url:"http://administrator.teknikberlianjaya.com/master/po",
             success: function(data) {
                 podbData = data
                 html = ""
@@ -171,7 +171,7 @@
             
             $.ajax({
             type:"GET",
-            url:"http://localhost:5000/master/podetail/" + po_id,
+            url:"http://administrator.teknikberlianjaya.com/master/podetail/" + po_id,
             success: function(data) {
                 $(".sparepart-form").empty(); // clear boxes.
                 $(".sparepart-summary").empty();

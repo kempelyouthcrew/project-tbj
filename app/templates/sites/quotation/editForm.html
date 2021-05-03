@@ -194,7 +194,7 @@
     function setDetailQuotation() {
         $.ajax({
             type:"GET",
-            url:"http://localhost:5000/master/quotationdetail/" + $('#id').val(),
+            url:"http://administrator.teknikberlianjaya.com/master/quotationdetail/" + $('#id').val(),
             success: function(data) {
                 let detailHtml =""
                 for (i = 0; i < data.length; i++) { 
@@ -219,6 +219,7 @@
                         +'    <input type="text" id="description_old'+ index_old +'" name="description_old'+ index_old +'" class="form-control" placeholder="description" value="'+ data[i].sparepart_description +'" readonly>'
                         +'</div>'
                         +'<div class="col-sm-1">'
+                        +'    <button type="button" class="btn btn-default remove-form-button-old"><i class="gi gi-circle_remove"></i></button>'
                         +'</div>'
                         +'</div>'
                         +'</div>'
@@ -385,6 +386,11 @@
         setFinalPrice()
     })
 
+    $(".sparepart-form").on("click",".remove-form-button-old", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').parent('div').parent('div').remove();
+        setFinalPrice()
+    })
+
     function setOption() {
         let html = ""
         for (i = 0; i < sparePartData.length; i++) {
@@ -401,7 +407,7 @@
     function getSparepart(numberRow) {
         $.ajax({
             type:"GET",
-            url:"http://localhost:5000/master/sparepart",
+            url:"http://administrator.teknikberlianjaya.com/master/sparepart",
             success: function(data) {
                 sparePartData = data
                 html = ""

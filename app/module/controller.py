@@ -669,6 +669,36 @@ def quotationEdit():
         print("Failed to add data.")
         print(e)
 
+    try:
+        quotationdetaildelete = QuotationDetail.query.filter_by(quotation_id=idParent).delete()
+        db.session.delete(quotationdetaildelete)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    i = 0
+    while i < int(formCountOld):
+        i = i + 1
+        if 'sparepart_old'+ str(i) in request.form:
+            quotation_id = idParent
+            sparepart_number = request.form['sparepart_old'+ str(i)]
+            sparepart_qty = request.form['qty_old'+ str(i)]
+            sparepart_price = request.form['price_old'+ str(i)]
+            sparepart_totalprice = request.form['total_price_old'+ str(i)]
+            sparepart_description = request.form['description_old'+ str(i)]
+            try:
+                quotationDet = QuotationDetail(quotation_id=quotation_id,
+                                    sparepart_number=sparepart_number,
+                                    sparepart_qty=sparepart_qty,
+                                    sparepart_price=sparepart_price,
+                                    sparepart_totalprice=sparepart_totalprice,
+                                    sparepart_description=sparepart_description)
+                db.session.add(quotationDet)
+                db.session.commit()
+            except Exception as e:
+                print("Failed to add data.")
+                print(e)
+
     i = 0
     while i < int(formCount):
         i = i + 1
