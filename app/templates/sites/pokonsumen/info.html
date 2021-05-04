@@ -109,7 +109,7 @@
                     </tr> -->
                     <tr class="active">
                         <td colspan="4" class="text-right">SUBTOTAL</td>
-                        <td class="text-right">Rp. {{ pokonsumen[0].quotation_price }}</td>
+                        <td class="text-right">Rp. {{ pokonsumen[0].po_price }}</td>
                     </tr>
                     <tr class="active">
                         <td colspan="4" class="text-right">VAT RATE</td>
@@ -117,15 +117,15 @@
                     </tr>
                     <tr class="active">
                         <td colspan="4" class="text-right">VAT DUE</td>
-                        <td class="text-right">Rp. {{ pokonsumen[0].quotation_ppn }}</td>
+                        <td class="text-right">Rp. {{ pokonsumen[0].po_ppn }}</td>
                     </tr>
                     <tr class="active">
                         <td colspan="4" class="text-right">MATERAI</td>
-                        <td class="text-right">Rp. {{ pokonsumen[0].quotation_materai }}</td>
+                        <td class="text-right">Rp. {{ pokonsumen[0].po_materai }}</td>
                     </tr>
                     <tr class="success">
                         <td colspan="4" class="text-right"><strong>TOTAL DUE</strong></td>
-                        <td class="text-right"><span class="label label-success">Rp. {{ pokonsumen[0].quotation_totalprice }}</span></td>
+                        <td class="text-right"><span class="label label-success">Rp. {{ pokonsumen[0].po_totalprice }}</span></td>
                     </tr>
                 </tbody>
             </table>

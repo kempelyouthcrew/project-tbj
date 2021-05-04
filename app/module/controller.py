@@ -39,6 +39,7 @@ nav.Bar('leftbar1', [
 nav.Bar('leftbar2', [
     nav.Item('Welcome', 'welcome', items=[
         nav.Item('Dashboard', 'dashboard'),
+        nav.Item('Webmail', 'webmail'),
     ]),
     nav.Item('Purchasing', 'data', items=[
         nav.Item('Quotation', 'quotation'),
@@ -54,15 +55,26 @@ nav.Bar('leftbar2', [
         nav.Item('Sparepart', 'sparepart'),
         nav.Item('Sparepart Name', 'sparepartName'),
         nav.Item('Sparepart Brand', 'sparepartBrand'),
+        nav.Item('User Management', 'usermanagement'),
     ]),
 ])
 
 nav.Bar('leftbar3', [
     nav.Item('Welcome', 'welcome', items=[
         nav.Item('Dashboard', 'dashboard'),
+        nav.Item('Webmail', 'webmail'),
     ]),
     nav.Item('Purchasing', 'data', items=[
+        nav.Item('Quotation', 'quotation'),
+        nav.Item('PO Masuk', 'pokonsumen'),
         nav.Item('PO Keluar', 'pokeluar'),
+    ]),
+    nav.Item('Data Master', 'data', items=[
+        nav.Item('Konsumen', 'konsumen'),
+        nav.Item('Supplier', 'supplier'),
+        nav.Item('Sparepart', 'sparepart'),
+        nav.Item('Sparepart Name', 'sparepartName'),
+        nav.Item('Sparepart Brand', 'sparepartBrand'),
     ]),
 ])
 
@@ -752,7 +764,7 @@ def pokeluar():
                         POKeluarDB.pokeluar_number,\
                         PODB.po_number,\
                         SupplierDB.supplier_name,\
-                        )
+                        )\
     
     return render_template("sites/pokeluar/index.html", listPOKeluar=enumerate(listPOKeluar))
 

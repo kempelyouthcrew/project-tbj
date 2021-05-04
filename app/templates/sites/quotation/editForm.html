@@ -118,6 +118,13 @@
                     <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="{{ data.quotation_materai }}" readonly>
                 </div>
                 <div class="col-sm-1">
+                    <label class="switch switch-warning">
+                        {% if data.quotation_materai == 0 %}
+                            <input name="materaiswitcher" id="materaiswitcher" type="checkbox"><span></span>
+                        {% else %}
+                            <input name="materaiswitcher" id="materaiswitcher" type="checkbox" checked=""><span></span>
+                        {% endif %}
+                    </label>
                 </div>
             </div>
         </div>
@@ -157,15 +164,23 @@
     let index = 0;
     let sparePartData
     let ppn = 10
+    let materai = 10000
     if ($("#ppnswitcher").is(":checked")) {
         ppn = 10
     } else {
         ppn = 0
     }
 
+    if ($("#materaiswitcher").is(":checked")) {
+        materai = 10000
+    } else {
+        materai = 0
+    }
+
     getSparepart(1)
     actionFormDynamic(index)
     setPPN()
+    setMaterai()
     setDetailQuotation()
 
     function validateForm() {
@@ -194,7 +209,7 @@
     function setDetailQuotation() {
         $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/quotationdetail/" + $('#id').val(),
+            url:"http://127.0.0.1:5000/master/quotationdetail/" + $('#id').val(),
             success: function(data) {
                 let detailHtml =""
                 for (i = 0; i < data.length; i++) { 
@@ -361,10 +376,10 @@
         });
         $("#sum_price").val(sum);
         let fp = parseInt($("#sum_price").val())
-        let materai = parseInt($("#materai").val())
         let ppn_due = fp * (ppn/100);
         let grandprice = fp + ppn_due + materai
 
+        $("#materai").val(materai);
         $("#ppn").val(ppn_due);
         $("#grandprice").val(grandprice);
 
@@ -376,6 +391,17 @@
                 ppn = 10
             } else {
                 ppn = 0
+            }
+            setFinalPrice()
+        });
+    }
+
+    function setMaterai() {
+        $('#materaiswitcher').change(function(){ 
+            if ($(this).is(":checked")) {
+                materai = 10000
+            } else {
+                materai = 0
             }
             setFinalPrice()
         });
@@ -407,7 +433,7 @@
     function getSparepart(numberRow) {
         $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/sparepart",
+            url:"http://127.0.0.1:5000/master/sparepart",
             success: function(data) {
                 sparePartData = data
                 html = ""
