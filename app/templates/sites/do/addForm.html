@@ -147,7 +147,11 @@
     function getPO() {
         $.ajax({
             type:"GET",
+<<<<<<< HEAD
             url:"http://localhost:5000/master/po",
+=======
+            url:"http://127.0.0.1:5000/master/po",
+>>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 podbData = data
                 html = ""
@@ -171,7 +175,11 @@
             
             $.ajax({
             type:"GET",
+<<<<<<< HEAD
             url:"http://localhost:5000/master/podetail/" + po_id,
+=======
+            url:"http://127.0.0.1:5000/master/podetail/" + po_id,
+>>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 $(".sparepart-form").empty(); // clear boxes.
                 $(".sparepart-summary").empty();

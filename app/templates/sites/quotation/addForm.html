@@ -136,9 +136,12 @@
                     <label class="head-dyn" for="materai">Materai:</label>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="10000" readonly>
+                    <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="0" readonly>
                 </div>
                 <div class="col-sm-1">
+                    <label class="switch switch-warning">
+                        <input name="materaiswitcher" id="materaiswitcher" type="checkbox" checked=""><span></span>
+                    </label>
                 </div>
             </div>
         </div>
@@ -177,10 +180,12 @@
     let index = 1;
     let sparePartData
     let ppn = 10
+    let materai = 10000
     getKonsumen()
     getSparepart(1)
     actionFormDynamic(index)
     setPPN()
+    setMaterai()
     setFinalPrice()
 
     function validateForm() {
@@ -300,10 +305,10 @@
         });
         $("#sum_price").val(sum);
         let fp = parseInt($("#sum_price").val())
-        let materai = parseInt($("#materai").val())
         let ppn_due = fp * (ppn/100);
         let grandprice = fp + ppn_due + materai
 
+        $("#materai").val(materai);
         $("#ppn").val(ppn_due);
         $("#grandprice").val(grandprice);
 
@@ -315,6 +320,17 @@
                 ppn = 10
             } else {
                 ppn = 0
+            }
+            setFinalPrice()
+        });
+    }
+
+    function setMaterai() {
+        $('#materaiswitcher').change(function(){ 
+            if ($(this).is(":checked")) {
+                materai = 10000
+            } else {
+                materai = 0
             }
             setFinalPrice()
         });
@@ -341,7 +357,11 @@
     function getKonsumen() {
         $.ajax({
             type:"GET",
+<<<<<<< HEAD
             url:"http://localhost:5000/master/konsumen",
+=======
+            url:"http://127.0.0.1:5000/master/konsumen",
+>>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -358,7 +378,11 @@
     function getSparepart(numberRow) {
         $.ajax({
             type:"GET",
+<<<<<<< HEAD
             url:"http://localhost:5000/master/sparepart",
+=======
+            url:"http://127.0.0.1:5000/master/sparepart",
+>>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 sparePartData = data
                 html = ""
