@@ -99,7 +99,7 @@ class DODB(db.Model, Serializer):
     po_id = db.Column(db.String(255), nullable=False)
     do_date = db.Column(db.DateTime, nullable=False)
     do_number = db.Column(db.String(255), nullable=False)
-    do_terms = db.Column(db.String(255), nullable=False)
+    do_terms = db.Column(db.String(255), nullable=True)
     do_price = db.Column(db.Integer, nullable=False)
     do_ppn = db.Column(db.Integer, nullable=False)
     do_materai = db.Column(db.Integer, nullable=False)

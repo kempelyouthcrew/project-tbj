@@ -176,11 +176,7 @@
     function getQuotation() {
         $.ajax({
             type:"GET",
-<<<<<<< HEAD
-            url:"http://localhost:5000/master/quotation/1",
-=======
             url:"http://127.0.0.1:5000/master/quotation/1",
->>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -201,11 +197,7 @@
             
             $.ajax({
             type:"GET",
-<<<<<<< HEAD
-            url:"http://localhost:5000/master/quotationdetail/" + quot_id,
-=======
             url:"http://127.0.0.1:5000/master/quotationdetail/" + quot_id,
->>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 $(".sparepart-form").empty(); // clear boxes.
                 $(".sparepart-summary").empty();

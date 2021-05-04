@@ -55,12 +55,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="do_terms">Term</label>
-            <div class="col-md-3">
-                <input type="text" id="do_terms" name="do_terms" class="form-control" placeholder="do_terms" value="">
-            </div>
-        </div>
-        <div class="form-group">
             <label class="col-md-2 control-label" for="sparepart_number">Sparepart</label>
             <div class="col-md-10">
                 <div class="col-sm-2">
@@ -147,11 +141,7 @@
     function getPO() {
         $.ajax({
             type:"GET",
-<<<<<<< HEAD
-            url:"http://localhost:5000/master/po",
-=======
             url:"http://127.0.0.1:5000/master/po",
->>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 podbData = data
                 html = ""
@@ -175,11 +165,7 @@
             
             $.ajax({
             type:"GET",
-<<<<<<< HEAD
-            url:"http://localhost:5000/master/podetail/" + po_id,
-=======
             url:"http://127.0.0.1:5000/master/podetail/" + po_id,
->>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 $(".sparepart-form").empty(); // clear boxes.
                 $(".sparepart-summary").empty();

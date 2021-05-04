@@ -1144,7 +1144,6 @@ def doAdd():
     dateNow = datetime.datetime.now()
     do_date = dateNow
     po_id = request.form['po_id']
-    do_terms = request.form['do_terms']
     
     do_price = request.form['sum_price']
     do_ppn = request.form['ppn']
@@ -1169,8 +1168,7 @@ def doAdd():
                     do_price=do_price,
                     do_ppn=do_ppn,
                     do_materai=do_materai,
-                    do_totalprice=do_totalprice,
-                    do_terms=do_terms)
+                    do_totalprice=do_totalprice)
         db.session.add(do)
         db.session.commit()
         db.session.flush()  
@@ -1220,7 +1218,6 @@ def doInfo(id):
             DODB.id,\
             DODB.do_date,\
             DODB.do_number,\
-            DODB.do_terms,\
             DODB.do_price,\
             DODB.do_ppn,\
             DODB.do_materai,\
@@ -1255,7 +1252,6 @@ def doEditForm(id):
             ,DODB.id\
             ,DODB.do_number\
             ,DODB.po_id\
-            ,DODB.do_terms\
             ,PODB.po_number\
         )\
         .first()
@@ -1402,7 +1398,6 @@ def invoiceInfo(id):
             InvoiceDB.invoice_number,\
             DODB.do_date,\
             DODB.do_number,\
-            DODB.do_terms,\
             DODB.do_price,\
             DODB.do_ppn,\
             DODB.do_materai,\
@@ -1677,7 +1672,6 @@ def generatePDF(filename,variant,idParent):
                 DODB.do_price,\
                 DODB.do_ppn,\
                 DODB.do_totalprice,\
-                DODB.do_terms,\
                 PODB.po_number,\
                 KonsumenDB.konsumen_id,\
                 KonsumenDB.konsumen_name,\
@@ -1891,7 +1885,6 @@ def generateFlat(filename,variant,idParent):
                 DODB.do_price,\
                 DODB.do_ppn,\
                 DODB.do_totalprice,\
-                DODB.do_terms,\
                 PODB.po_number,\
                 KonsumenDB.konsumen_id,\
                 KonsumenDB.konsumen_name,\

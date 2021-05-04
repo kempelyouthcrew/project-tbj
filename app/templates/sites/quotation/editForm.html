@@ -209,11 +209,7 @@
     function setDetailQuotation() {
         $.ajax({
             type:"GET",
-<<<<<<< HEAD
-            url:"http://localhost:5000/master/quotationdetail/" + $('#id').val(),
-=======
             url:"http://127.0.0.1:5000/master/quotationdetail/" + $('#id').val(),
->>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 let detailHtml =""
                 for (i = 0; i < data.length; i++) { 
@@ -437,11 +433,7 @@
     function getSparepart(numberRow) {
         $.ajax({
             type:"GET",
-<<<<<<< HEAD
-            url:"http://localhost:5000/master/sparepart",
-=======
             url:"http://127.0.0.1:5000/master/sparepart",
->>>>>>> 1888104eebeeee20b6dff80c02d5c16402699d45
             success: function(data) {
                 sparePartData = data
                 html = ""
