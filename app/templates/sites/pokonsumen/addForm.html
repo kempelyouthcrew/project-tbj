@@ -356,7 +356,7 @@
     function getQuotation() {
         $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/quotation/1",
+            url:"http://localhost:5000/master/quotation/1",
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -373,7 +373,7 @@
     function getKonsumen() {
         $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/konsumen",
+            url:"http://localhost:5000/master/konsumen",
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -390,7 +390,7 @@
     function getSparepart(numberRow) {
         $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/sparepart",
+            url:"http://localhost:5000/master/sparepart",
             success: function(data) {
                 sparePartData = data
                 html = ""

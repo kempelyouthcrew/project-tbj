@@ -2,7 +2,7 @@ import os
 from flask import render_template, request, redirect, session, flash, make_response, url_for, send_file
 from functools import wraps
 from app import app
-from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, DODetail, PODB, PODetail, UserManagementDB, POKeluarDB, POKeluarDetail, InvoiceDB, InvoiceSupplierDB
+from .Model import db, SupplierDB, SparepartName, SparepartBrand, SparepartDB, QuotationDB, QuotationDetail, KonsumenDB, DODB, DODetail, PODB, PODetail, UserManagementDB, POKeluarDB, POKeluarDetail, InvoiceDB, InvoiceSupplierDB, numberCount
 from flask_navigation import Navigation
 import bcrypt
 import json
@@ -533,7 +533,6 @@ def quotationAddForm():
 def quotationAdd():
     dateNow = datetime.datetime.now()
     quotation_date = dateNow
-    quotation_number = 'QUO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     quotation_validity = 1
     formCount = request.form['formCount']
     konsumen_id = request.form['konsumen_id']
@@ -542,6 +541,14 @@ def quotationAdd():
     quotation_materai = request.form['materai']
     quotation_totalprice = request.form['grandprice']
     idParent = ""
+    
+    if quotation_ppn == 0:
+        flag = 'TBJ'
+    else: 
+        flag = 'TBP'
+        
+    numberSeq = getNumberCount('quotation',flag)
+    quotation_number = 'QUO.'+ flag +'-' + dateNow.strftime("%d%m%y") +'.' + str(numberSeq).zfill(4)
 
     try:
         quotation = QuotationDB(quotation_date=quotation_date,
@@ -560,6 +567,8 @@ def quotationAdd():
     except Exception as e:
         print("Failed to add data.")
         print(e)
+    
+    insertNumber = insertNumberCount(idParent, 'quotation', flag, numberSeq)
 
     i = 0
     while i < int(formCount):
@@ -946,7 +955,6 @@ def pokonsumenAddForm():
 def pokonsumenAdd():
     dateNow = datetime.datetime.now()
     po_date = dateNow
-    po_number = 'POK.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     po_validity = 1
     formCount = request.form['formCount']
     quotation_id = request.form['quotation']
@@ -958,6 +966,14 @@ def pokonsumenAdd():
     po_materai = request.form['materai']
     po_totalprice = request.form['grandprice']
     idParent = ""
+
+    if po_ppn == 0:
+        flag = 'TBJ'
+    else: 
+        flag = 'TBP'
+        
+    numberSeq = getNumberCount('pokonsumen',flag)
+    po_number = 'POK.'+ flag +'-' + dateNow.strftime("%d%m%y") +'.' + str(numberSeq).zfill(4)
 
     try:
         po = PODB(po_date=po_date,
@@ -978,6 +994,8 @@ def pokonsumenAdd():
     except Exception as e:
         print("Failed to add data.")
         print(e)
+
+    insertNumber = insertNumberCount(idParent, 'pokonsumen', flag, numberSeq)
 
     i = 0
     while i < int(formCount):
@@ -1113,7 +1131,6 @@ def doAddForm():
 def doAdd():
     dateNow = datetime.datetime.now()
     do_date = dateNow
-    do_number = 'DO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     po_id = request.form['po_id']
     do_terms = request.form['do_terms']
     
@@ -1124,6 +1141,14 @@ def doAdd():
 
     formCount = request.form['formCount']
     idParent = ""
+
+    if do_ppn == 0:
+        flag = 'TBJ'
+    else: 
+        flag = 'TBP'
+        
+    numberSeq = getNumberCount('do',flag)
+    do_number = 'DO.'+ flag +'-' + dateNow.strftime("%d%m%y") +'.' + str(numberSeq).zfill(4)
 
     try:
         do = DODB(po_id=po_id,
@@ -1142,6 +1167,8 @@ def doAdd():
     except Exception as e:
         print("Failed to add data.")
         print(e)
+
+    insertNumber = insertNumberCount(idParent, 'do', flag, numberSeq)
 
     i = 0
     while i < int(formCount):
@@ -1750,6 +1777,9 @@ def generatePDF(filename,variant,idParent):
                 POKeluarDB.pokeluar_date,\
                 POKeluarDB.pokeluar_number,\
                 POKeluarDB.pokeluar_price,\
+                POKeluarDB.pokeluar_ppn,\
+                POKeluarDB.pokeluar_materai,\
+                POKeluarDB.pokeluar_totalprice,\
                 SupplierDB.supplier_name,\
                 SupplierDB.supplier_alamat,\
                 SupplierDB.supplier_phone\
@@ -1985,3 +2015,35 @@ def generateFlat(filename,variant,idParent):
         
     # Make a PDF straight from HTML in a string. 
     return render_template(templ, data=data, dataChild=dataChild, totqty=totqty)
+
+@app.route('/master/count/<string:channel>/<string:flag>', methods=['GET'])
+def getNumberCount(channel, flag):
+    # now = datetime.datetime.now()
+    # nowIn = now.year + '-' + now.month + '-01'
+    # nowUp = now.year + '-' + now.month + 1 + '-01'
+    dataNumber = numberCount.query.filter_by(channel=channel, flag=flag).order_by(numberCount.number.desc()).first()
+    if dataNumber:
+        result = dataNumber.number + 1
+    else:
+        result = 1
+
+    return result 
+
+def insertNumberCount(idParent, channel, flag, number):
+    now = datetime.datetime.now()
+    try:
+        quotation = numberCount(idParent=idParent,
+                                channel=channel,
+                                flag=flag,
+                                number=number,
+                                created_at=now)
+        db.session.add(quotation)
+        db.session.commit()
+        db.session.flush()  
+        idParent = quotation.id
+        
+    except Exception as e:
+        print("Failed to add data.")
+        print(e)
+    
+    return 'success'

@@ -147,7 +147,7 @@
     function getDO() {
         $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/do",
+            url:"http://localhost:5000/master/do",
             success: function(data) {
                 dodbData = data
                 html = ""
@@ -170,7 +170,7 @@
             let do_id = $('#do_id').val()            
             $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/dodetail/" + do_id,
+            url:"http://localhost:5000/master/dodetail/" + do_id,
             success: function(data) {
                 $(".sparepart-form").empty(); // clear boxes.
                 $(".sparepart-summary").empty();

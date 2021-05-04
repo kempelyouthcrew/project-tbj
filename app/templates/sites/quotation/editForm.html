@@ -194,7 +194,7 @@
     function setDetailQuotation() {
         $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/quotationdetail/" + $('#id').val(),
+            url:"http://localhost:5000/master/quotationdetail/" + $('#id').val(),
             success: function(data) {
                 let detailHtml =""
                 for (i = 0; i < data.length; i++) { 
@@ -407,7 +407,7 @@
     function getSparepart(numberRow) {
         $.ajax({
             type:"GET",
-            url:"http://administrator.teknikberlianjaya.com/master/sparepart",
+            url:"http://localhost:5000/master/sparepart",
             success: function(data) {
                 sparePartData = data
                 html = ""

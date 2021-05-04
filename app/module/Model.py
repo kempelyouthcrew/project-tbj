@@ -169,6 +169,9 @@ class POKeluarDB(db.Model, Serializer):
     pokeluar_number = db.Column(db.String(255), nullable=False)
     pokeluar_date = db.Column(db.DateTime, nullable=False)
     pokeluar_price = db.Column(db.Integer, nullable=False)
+    pokeluar_ppn = db.Column(db.Integer, nullable=False)
+    pokeluar_materai = db.Column(db.Integer, nullable=False)
+    pokeluar_totalprice = db.Column(db.Integer, nullable=False)
     created_by = db.Column(db.String(255), nullable=True)
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)
@@ -207,3 +210,11 @@ class UserManagementDB(db.Model, Serializer):
     updated_by = db.Column(db.String(255), nullable=True)
     created_add = db.Column(db.DateTime, nullable=True)
     updated_add = db.Column(db.DateTime, nullable=True)
+
+class numberCount(db.Model, Serializer):
+    id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
+    channel = db.Column(db.String(255), nullable=False)
+    idParent = db.Column(db.String(255), nullable=False)
+    flag = db.Column(db.String(255), nullable=False)
+    number = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=True)

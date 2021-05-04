@@ -9,7 +9,11 @@
         <table cellpadding="0" cellspacing="0">
             <tr>
                 <td class="logomain">
-                    <img src="{{ url_for('static', filename='img/tbj/logo_side_text.png') }}" class="logo-doc" alt="logo-doc">
+                    {% if  data.quotation_ppn == 0 %}
+                        <img src="{{ url_for('static', filename='img/tbj/logo_side_text_jaya.png') }}" class="logo-doc" alt="logo-doc">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='img/tbj/logo_side_text.png') }}" class="logo-doc" alt="logo-doc">
+                    {% endif %}
                 </td>
                 <td>
                     <!-- <div class="boxvariant"> -->
