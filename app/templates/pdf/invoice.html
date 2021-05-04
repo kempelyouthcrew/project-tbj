@@ -2,7 +2,7 @@
 <page size="A4">
     <div class="pagepadding">
         <header>
-            <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="headbar">
+            <!-- <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="headbar"> -->
         </header>
     </div>
     <div class="col-md-12 pagepadding-variant">
@@ -49,11 +49,6 @@
                             <td class="quodetail-head">Costumer ID</td>
                             <td>:</td>
                             <td>{{ data.konsumen_id }}</td>
-                        </tr>
-                        <tr>
-                            <td class="quodetail-head">Due Date</td>
-                            <td>:</td>
-                            <td>7 Day</td>
                         </tr>
                         <tr>
                             <td class="quodetail-head">Subject</td>
@@ -103,7 +98,7 @@
                     <tr>
                         <td class="quoterm-head">- Payment Term</td>
                         <td>:</td>
-                        <td>7 Days</td>
+                        <td>{{ data.invoice_terms }} days</td>
                     </tr>
                     <tr>
                         <td class="quoterm-head">- Bank Number</td>
@@ -151,7 +146,7 @@
     </div>
     <div class="pagepadding">
         <footer>
-            <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="footbar">
+            <!-- <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="footbar"> -->
         </footer>
     </div>
 </page>

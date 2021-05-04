@@ -32,7 +32,6 @@
             <tr>
                 <th>name</th>
                 <th>email</th>
-                <th>Level</th>
                 <th>action</th>
             </tr>
         </thead>
@@ -41,7 +40,6 @@
                 <tr>
                     <td>{{ x.user_name }}</td>
                     <td>{{ x.user_email }}</td>
-                    <td>{{ x.user_level }}</td>
                     <td class="text-center">
                         <div class="btn-group">
                             <a href="usermanagement/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
@@ -66,7 +64,7 @@
 
         /* Initialize Datatables */
         $('#example-datatable').dataTable({
-            columnDefs: [{orderable: false, targets: [3]}],
+            columnDefs: [{orderable: false, targets: [2]}],
             pageLength: 15,
             lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
         });

@@ -250,8 +250,7 @@
         let html = ""
         for (i = 0; i < sparePartData.length; i++) {
             id = sparePartData[i].id
-            sparepart_number = sparePartData[i].sparepart_number
-            html += "<option value='"+ id +"'>"+ sparepart_number +"</option>"
+            html += "<option value='"+ id +"'>"+ sparePartData[i].sparepart_name + " | " + sparePartData[i].sparepart_number + " | " + sparePartData[i].sparepart_brand + "</option>"
         }
         return html
     }

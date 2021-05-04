@@ -533,7 +533,7 @@ def quotationAddForm():
 def quotationAdd():
     dateNow = datetime.datetime.now()
     quotation_date = dateNow
-    quotation_number = 'QUO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
+    quotation_number = 'QUO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     quotation_validity = 1
     formCount = request.form['formCount']
     konsumen_id = request.form['konsumen_id']
@@ -769,7 +769,7 @@ def pokeluarAddForm():
 def pokeluarAdd():
     dateNow = datetime.datetime.now()
     pokeluar_date = dateNow
-    pokeluar_number = 'PO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
+    pokeluar_number = 'PO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     formCount = request.form['formCount']
     supplier_id = request.form['supplier_name']
     po_id = request.form['po_number']
@@ -946,7 +946,7 @@ def pokonsumenAddForm():
 def pokonsumenAdd():
     dateNow = datetime.datetime.now()
     po_date = dateNow
-    po_number = 'POK.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
+    po_number = 'POK.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     po_validity = 1
     formCount = request.form['formCount']
     quotation_id = request.form['quotation']
@@ -1113,7 +1113,7 @@ def doAddForm():
 def doAdd():
     dateNow = datetime.datetime.now()
     do_date = dateNow
-    do_number = 'DO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
+    do_number = 'DO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     po_id = request.form['po_id']
     do_terms = request.form['do_terms']
     
@@ -1286,7 +1286,7 @@ def invoiceAddForm():
 def invoiceAdd():
     dateNow = datetime.datetime.now()
     invoice_date = dateNow
-    invoice_number = 'INV.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(10, 99))
+    invoice_number = 'INV.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     do_id = request.form['do_id']
     invoice_terms = request.form['invoice_terms']
 

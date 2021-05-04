@@ -2,7 +2,7 @@
 <page size="A4">
     <div class="pagepadding">
         <header>
-            <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="headbar">
+            <!-- <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="headbar"> -->
         </header>
     </div>
     <div class="col-md-12 pagepadding-variant">
@@ -53,7 +53,7 @@
                         <tr>
                             <td class="quodetail-head">Due Date</td>
                             <td>:</td>
-                            <td>7 Day</td>
+                            <td>{{ data.do_terms }} Day</td>
                         </tr>
                         <tr>
                             <td class="quodetail-head">Subject</td>
@@ -144,7 +144,7 @@
     </div>
     <div class="pagepadding">
         <footer>
-            <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="footbar">
+            <!-- <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="footbar"> -->
         </footer>
     </div>
 </page>
