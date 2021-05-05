@@ -213,13 +213,11 @@ def konsumenEditForm(id):
 @login_required
 def konsumenEdit():
     id = request.form['id']
-    konsumen_id = request.form['konsumen_id']
     konsumen_name = request.form['konsumen_name']
     konsumen_address = request.form['konsumen_address']
     konsumen_phone = request.form['konsumen_phone']
     try:
         konsumen = KonsumenDB.query.filter_by(id=id).first()
-        konsumen.konsumen_id=konsumen_id
         konsumen.konsumen_name=konsumen_name
         konsumen.konsumen_address=konsumen_address
         konsumen.konsumen_phone=konsumen_phone
