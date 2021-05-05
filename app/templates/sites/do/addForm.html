@@ -141,7 +141,7 @@
     function getPO() {
         $.ajax({
             type:"GET",
-            url:"http://127.0.0.1:5000/master/po",
+            url:"http://localhost:5000/master/po",
             success: function(data) {
                 podbData = data
                 html = ""
@@ -165,7 +165,7 @@
             
             $.ajax({
             type:"GET",
-            url:"http://127.0.0.1:5000/master/podetail/" + po_id,
+            url:"http://localhost:5000/master/podetail/" + po_id,
             success: function(data) {
                 $(".sparepart-form").empty(); // clear boxes.
                 $(".sparepart-summary").empty();
@@ -196,12 +196,69 @@
                     actionFormDynamic(index + 1)
                 }
 
-                let elementSummary = '<div>'
-                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].po_price +'" style="visibility:hidden">'
-                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].po_ppn +'" style="visibility:hidden">'
-                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].po_materai +'" style="visibility:hidden">'
-                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].po_totalprice +'" style="visibility:hidden">'
-                +'            </div>'
+                let elementSummary = '<div class="form-group">'
+                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                +'    <div class="col-md-10">'
+                +'        <div class="col-sm-5">'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'            <label class="head-dyn" for="sum_price">Total Price:</label>'
+                +'        </div>'
+                +'        <div class="col-sm-2">'
+                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].po_price +'" readonly>'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'        </div>'
+                +'    </div>'
+                +'</div>'
+                +'<div class="form-group">'
+                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                +'    <div class="col-md-10">'
+                +'        <div class="col-sm-5">'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'            <label class="head-dyn" for="ppn">PPN 10%:</label>'
+                +'        </div>'
+                +'        <div class="col-sm-2">'
+                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].po_ppn +'" readonly>'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'        </div>'
+                +'    </div>'
+                +'</div>'
+                +'<div class="form-group">'
+                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                +'    <div class="col-md-10">'
+                +'        <div class="col-sm-5">'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'            <label class="head-dyn" for="materai">Materai:</label>'
+                +'        </div>'
+                +'        <div class="col-sm-2">'
+                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].po_materai +'" readonly>'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'        </div>'
+                +'    </div>'
+                +'</div>'
+                +'<div class="form-group">'
+                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                +'    <div class="col-md-10">'
+                +'        <div class="col-sm-5">'
+                +'        '
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'            <label class="head-dyn" for="grandprice">Grand Price:</label>'
+                +'        </div>'
+                +'        <div class="col-sm-2">'
+                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].po_totalprice +'" readonly>'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'        </div>'
+                +'    </div>'
+                +'</div>'
+                
+                $(".sparepart-summary").append(elementSummary);
 
                 
                 $(".sparepart-summary").append(elementSummary);

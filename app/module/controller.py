@@ -765,13 +765,11 @@ def quotationDelete(id):
 @login_required
 def pokeluar():
     listPOKeluar = POKeluarDB.query\
-                    .join(PODB, PODB.id==POKeluarDB.po_id)\
                     .join(SupplierDB, SupplierDB.id==POKeluarDB.supplier_id)\
                     .add_columns(\
                         POKeluarDB.id,\
                         POKeluarDB.pokeluar_date,\
                         POKeluarDB.pokeluar_number,\
-                        PODB.po_number,\
                         SupplierDB.supplier_name,\
                         )\
     
@@ -790,19 +788,32 @@ def pokeluarAddForm():
 def pokeluarAdd():
     dateNow = datetime.datetime.now()
     pokeluar_date = dateNow
-    pokeluar_number = 'PO.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     formCount = request.form['formCount']
     supplier_id = request.form['supplier_name']
     po_id = request.form['po_number']
     pokeluar_price = request.form['sum_price']
+    pokeluar_ppn = request.form['ppn']
+    pokeluar_materai = request.form['materai']
+    pokeluar_totalprice = request.form['grandprice']
     idParent = ""
+
+    if pokeluar_ppn == 0:
+        flag = 'TBJ'
+    else: 
+        flag = 'TBP'
+        
+    numberSeq = getNumberCount('pokeluar',flag)
+    pokeluar_number = 'POK.'+ flag +'-' + dateNow.strftime("%d%m%y") +'.' + str(numberSeq).zfill(4)
 
     try:
         pokeluar = POKeluarDB(pokeluar_number=pokeluar_number,
                             pokeluar_date=pokeluar_date,
                             supplier_id=supplier_id,
                             po_id=po_id,
-                            pokeluar_price=pokeluar_price)
+                            pokeluar_price=pokeluar_price,
+                            pokeluar_ppn=pokeluar_ppn,
+                            pokeluar_materai=pokeluar_materai,
+                            pokeluar_totalprice=pokeluar_totalprice)
         db.session.add(pokeluar)
         db.session.commit()
         db.session.flush()  
@@ -811,6 +822,8 @@ def pokeluarAdd():
     except Exception as e:
         print("Failed to add data.")
         print(e)
+
+    insertNumber = insertNumberCount(idParent, 'pokeluar', flag, numberSeq)
 
     i = 0
     while i < int(formCount):
@@ -977,15 +990,8 @@ def pokonsumenAdd():
     po_ppn = request.form['ppn']
     po_materai = request.form['materai']
     po_totalprice = request.form['grandprice']
+    po_number = request.form['po_number']
     idParent = ""
-
-    if po_ppn == 0:
-        flag = 'TBJ'
-    else: 
-        flag = 'TBP'
-        
-    numberSeq = getNumberCount('pokonsumen',flag)
-    po_number = 'POK.'+ flag +'-' + dateNow.strftime("%d%m%y") +'.' + str(numberSeq).zfill(4)
 
     try:
         po = PODB(po_date=po_date,
@@ -1006,8 +1012,6 @@ def pokonsumenAdd():
     except Exception as e:
         print("Failed to add data.")
         print(e)
-
-    insertNumber = insertNumberCount(idParent, 'pokonsumen', flag, numberSeq)
 
     i = 0
     while i < int(formCount):
@@ -1321,9 +1325,18 @@ def invoiceAddForm():
 def invoiceAdd():
     dateNow = datetime.datetime.now()
     invoice_date = dateNow
-    invoice_number = 'INV.TBJ-' + dateNow.strftime("%d%m%y") +'.' + str(random.randint(1000, 9999))
     do_id = request.form['do_id']
     invoice_terms = request.form['invoice_terms']
+    invoice_ppn = request.form['ppn']
+    idParent = ""
+
+    if invoice_ppn == 0:
+        flag = 'TBJ'
+    else: 
+        flag = 'TBP'
+        
+    numberSeq = getNumberCount('invoice',flag)
+    invoice_number = 'INV.'+ flag +'-' + dateNow.strftime("%d%m%y") +'.' + str(numberSeq).zfill(4)
 
     try:
         invoice = InvoiceDB(do_id=do_id,
@@ -1338,6 +1351,8 @@ def invoiceAdd():
     except Exception as e:
         print("Failed to add data.")
         print(e)
+
+    insertNumber = insertNumberCount(idParent, 'invoice', flag, numberSeq)
 
     generatePDF(invoice_number,'invoice',idParent)
     numIdParent = str(idParent)
@@ -1431,10 +1446,12 @@ def invoiceSupplierAdd():
     dateNow = datetime.datetime.now()
     invoiceSupplier_date = dateNow
     invoiceSupplier_number = request.form['invoiceSupplier_number']
-    po_id = request.form['po_id']
+    pokeluar_id = request.form['pokeluar_id']
+    idParent = ""
 
     try:
         invoiceSupplier = InvoiceSupplierDB(invoiceSupplier_number=invoiceSupplier_number,
+                    pokeluar_id=pokeluar_id,
                     invoiceSupplier_date=invoiceSupplier_date)
         db.session.add(invoiceSupplier)
         db.session.commit()
@@ -1445,9 +1462,8 @@ def invoiceSupplierAdd():
         print("Failed to add data.")
         print(e)
 
-    generatePDF(invoiceSupplier_number,'invoiceSupplier',idParent)
     numIdParent = str(idParent)
-    return redirect("/invoiceSupplier/info/" + numIdParent)
+    return redirect("/invoiceSupplier")
 
 # Master json
 @app.route('/master/konsumen', methods=['GET'])
@@ -1596,6 +1612,7 @@ def dodetailMaster(do_id):
         *\
         ,sparepart.id as spid\
         FROM do_detail as dodet \
+        INNER JOIN DODB as dodb ON dodet.do_id = dodb.id\
         INNER JOIN sparepartDB as sparepart ON dodet.sparepart_number = sparepart.id\
         INNER JOIN sparepart_name as sparepartname ON sparepart.sparepart_name = sparepartname.id\
         WHERE dodet.do_id = :x \
@@ -1825,7 +1842,7 @@ def generatePDF(filename,variant,idParent):
 @app.route('/previewdoc/<string:filename>', methods=['GET'])
 @login_required
 def setdoc(filename):
-    return generatePDF('do_number','do','10')
+    return generatePDF('do_number','invoice','29')
 
 @app.route('/download/<string:folder>/<string:filename>')
 @login_required
@@ -2023,10 +2040,17 @@ def generateFlat(filename,variant,idParent):
 
 @app.route('/master/count/<string:channel>/<string:flag>', methods=['GET'])
 def getNumberCount(channel, flag):
-    # now = datetime.datetime.now()
-    # nowIn = now.year + '-' + now.month + '-01'
-    # nowUp = now.year + '-' + now.month + 1 + '-01'
-    dataNumber = numberCount.query.filter_by(channel=channel, flag=flag).order_by(numberCount.number.desc()).first()
+    now = datetime.datetime.now()
+    yearNow = now.strftime("%Y")
+    monthNow = now.strftime("%m")
+    monthNext = int(monthNow) + 1
+    monthNext = str(monthNext)
+    dataNumber = numberCount.query\
+        .filter_by(channel=channel, flag=flag)\
+        .filter(numberCount.created_at <= yearNow + '-'+ monthNext + '-01')\
+        .filter(numberCount.created_at >= yearNow + '-'+ monthNow + '-01')\
+        .order_by(numberCount.number.desc())\
+        .first()
     if dataNumber:
         result = dataNumber.number + 1
     else:

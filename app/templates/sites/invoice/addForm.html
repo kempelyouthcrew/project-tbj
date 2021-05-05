@@ -6,9 +6,6 @@
     .sparepart_row{
         margin-top: 30px;
     }
-    .sparepart-summary {
-        content-visibility: hidden;
-    }
 </style>
 
 {% endblock %}
@@ -55,9 +52,12 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="invoice_terms">Term</label>
-            <div class="col-md-3">
-                <input type="text" id="invoice_terms" name="invoice_terms" class="form-control" placeholder="invoice_terms" value="">
+            <label class="col-md-2 control-label" for="user_pass">Terms</label>
+            <div class="col-sm-2">
+                <select id="invoice_terms" name="invoice_terms" class="form-control" size="1">
+                    <option value="Cash">Cash</option>
+                    <option value="Credit">Credit</option>
+                </select>
             </div>
         </div>
         <div class="form-group">
@@ -198,13 +198,67 @@
                     actionFormDynamic(index)
                 }
 
-                let elementSummary = '<div>'
-                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].quotation_price +'" style="visibility:hidden">'
-                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].quotation_ppn +'" style="visibility:hidden">'
-                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].quotation_materai +'" style="visibility:hidden">'
-                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].quotation_totalprice +'" style="visibility:hidden">'
-                +'            </div>'
-
+                let elementSummary = '<div class="form-group">'
+                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                +'    <div class="col-md-10">'
+                +'        <div class="col-sm-5">'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'            <label class="head-dyn" for="sum_price">Total Price:</label>'
+                +'        </div>'
+                +'        <div class="col-sm-2">'
+                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].do_price +'" readonly>'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'        </div>'
+                +'    </div>'
+                +'</div>'
+                +'<div class="form-group">'
+                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                +'    <div class="col-md-10">'
+                +'        <div class="col-sm-5">'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'            <label class="head-dyn" for="ppn">PPN 10%:</label>'
+                +'        </div>'
+                +'        <div class="col-sm-2">'
+                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].do_ppn +'" readonly>'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'        </div>'
+                +'    </div>'
+                +'</div>'
+                +'<div class="form-group">'
+                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                +'    <div class="col-md-10">'
+                +'        <div class="col-sm-5">'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'            <label class="head-dyn" for="materai">Materai:</label>'
+                +'        </div>'
+                +'        <div class="col-sm-2">'
+                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].do_materai +'" readonly>'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'        </div>'
+                +'    </div>'
+                +'</div>'
+                +'<div class="form-group">'
+                +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                +'    <div class="col-md-10">'
+                +'        <div class="col-sm-5">'
+                +'        '
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'            <label class="head-dyn" for="grandprice">Grand Price:</label>'
+                +'        </div>'
+                +'        <div class="col-sm-2">'
+                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].do_totalprice +'" readonly>'
+                +'        </div>'
+                +'        <div class="col-sm-1">'
+                +'        </div>'
+                +'    </div>'
+                +'</div>'
                 
                 $(".sparepart-summary").append(elementSummary);
                           

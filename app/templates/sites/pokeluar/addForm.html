@@ -353,7 +353,7 @@
     function getSupplier() {
         $.ajax({
             type:"GET",
-            url:"http://127.0.0.1:5000/master/supplier",
+            url:"http://localhost:5000/master/supplier",
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -370,7 +370,7 @@
     function getPo() {
         $.ajax({
             type:"GET",
-            url:"http://127.0.0.1:5000/master/po",
+            url:"http://localhost:5000/master/po",
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -387,12 +387,12 @@
     function getSparepart(numberRow) {
         $.ajax({
             type:"GET",
-            url:"http://127.0.0.1:5000/master/sparepart",
+            url:"http://localhost:5000/master/sparepart",
             success: function(data) {
                 sparePartData = data
                 html = ""
                 for (i = 0; i < data.length; i++) {
-                    id = data[i].id
+                    id = data[i].spid
                     html += "<option value='"+ id +"'>"+ data[i].sparepart_name + " | " + data[i].sparepart_number + " | " + data[i].sparepart_brand + "</option>"
                 }
                 $('#sparepart_' + numberRow).append(html);               

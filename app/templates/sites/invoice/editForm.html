@@ -63,9 +63,12 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="invoice_terms">Term</label>
-            <div class="col-md-3">
-                <input type="text" id="invoice_terms" name="invoice_terms" class="form-control" value="{{ data.invoice_terms }}" >
+            <label class="col-md-2 control-label" for="user_pass">Terms</label>
+            <div class="col-sm-2">
+                <select id="invoice_terms" name="invoice_terms" class="form-control" size="1">
+                    <option value="Cash" {% if data.invoice_terms=='Cash' %} selected="selected"{% endif %} >Cash</option>
+                    <option value="Credit" {% if data.invoice_terms=='Credit' %} selected="selected"{% endif %}>Credit</option>
+                </select>
             </div>
         </div>
         <div class="form-group">

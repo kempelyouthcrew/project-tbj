@@ -32,7 +32,6 @@
             <tr>
                 <th>Date</th>
                 <th>PO Number</th>
-                <th>PO Reference Number</th>
                 <th>Supplier</th>
                 <th>action</th>
             </tr>
@@ -42,7 +41,6 @@
                 <tr>
                     <td>{{ x.pokeluar_date }}</td>
                     <td>{{ x.pokeluar_number }}</td>
-                    <td>{{ x.po_number }}</td>
                     <td>{{ x.supplier_name }}</td>
                     <td class="text-center">
                         <div class="btn-group">
@@ -67,7 +65,7 @@
 
         /* Initialize Datatables */
         $('#example-datatable').dataTable({
-            columnDefs: [{orderable: false, targets: [4]}],
+            columnDefs: [{orderable: false, targets: [3]}],
             pageLength: 15,
             lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
         });

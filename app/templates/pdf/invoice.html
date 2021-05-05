@@ -12,7 +12,7 @@
                     {% if  data.po_ppn == 0 %}
                     <img src="{{ url_for('static', filename='img/tbj/logo_side_text_jaya.png') }}" class="logo-doc" alt="logo-doc">
                     {% else %}
-                        <img src="{{ url_for('static', filename='img/tbj/logo_side_text.png') }}" class="logo-doc" alt="logo-doc">
+                        <img src="{{ url_for('static', filename='img/tbj/logo_side_text_part.png') }}" class="logo-doc" alt="logo-doc">
                     {% endif %}</td>
                 <td>
                     <!-- <div class="boxvariant"> -->
@@ -101,12 +101,17 @@
                     <tr>
                         <td class="quoterm-head">- Payment Term</td>
                         <td>:</td>
-                        <td>{{ data.invoice_terms }} days</td>
+                        <td>{{ data.invoice_terms }}</td>
                     </tr>
                     <tr>
                         <td class="quoterm-head">- Bank Number</td>
                         <td>:</td>
-                        <td>-</td>
+                        <td>BCA - 0901879388</td>
+                    </tr>
+                    <tr>
+                        <td class="quoterm-head"></td>
+                        <td></td>
+                        <td>Teknik Berlian Part</td>
                     </tr>
                 </table>
             </td>

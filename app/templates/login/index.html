@@ -1,7 +1,14 @@
 {% extends "login/layout.html" %}
 
 {% block head_css %}
-
+<style>
+    .logo-image {
+        width: 100%;
+    }
+    .header-section {
+        padding: 0px 20px !important;
+    }
+</style>
 {% endblock %}
 
 {% block head_js %}
@@ -16,7 +23,7 @@
         <!-- Login Title -->
         <div class="block-header">
             <div class="header-section">
-                <h1 class="text-center">TEKNIK BERLIAN JAYA<br><small>Please Login</small></h1>
+                <img src="{{ url_for('static', filename='img/tbj/logorun2.gif') }}" class="logo-image" alt="FreshUI">
             </div>
         </div>
         <!-- END Login Title -->

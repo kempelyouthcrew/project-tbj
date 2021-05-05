@@ -33,6 +33,7 @@ header {
     color: white;
     font-size: 70px;
     margin-top: 0px;
+    padding: 5px;
 }
 
 .detail-section {
@@ -135,7 +136,7 @@ header {
 }
 
 .table-quoterm {
-    width: 50%;
+    width: 67%;
     margin-left: 20px;
     font-size: 13px;
 }

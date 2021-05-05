@@ -67,6 +67,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-md-2 control-label" for="reference">PO Reference</label>
+            <div class="col-md-3">
+                <input type="text" id="po_number" name="po_number" class="form-control" value="" >
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-md-2 control-label" for="sparepart_number">Sparepart</label>
             <div class="col-md-10">
                 <button type="button" class="btn btn-default add-form-button"><i class="gi gi-circle_plus"></i> Tambah Sparepart</button>
@@ -372,7 +378,7 @@
     function getQuotation() {
         $.ajax({
             type:"GET",
-            url:"http://127.0.0.1:5000/master/quotation/1",
+            url:"http://localhost:5000/master/quotation/1",
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -389,7 +395,7 @@
     function getKonsumen() {
         $.ajax({
             type:"GET",
-            url:"http://127.0.0.1:5000/master/konsumen",
+            url:"http://localhost:5000/master/konsumen",
             success: function(data) {
                 html = ""
                 for (i = 0; i < data.length; i++) {
@@ -406,7 +412,7 @@
     function getSparepart(numberRow) {
         $.ajax({
             type:"GET",
-            url:"http://127.0.0.1:5000/master/sparepart",
+            url:"http://localhost:5000/master/sparepart",
             success: function(data) {
                 sparePartData = data
                 html = ""
