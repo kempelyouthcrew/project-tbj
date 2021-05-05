@@ -44,30 +44,26 @@
         <!-- 2 Column grid -->
         <div class="row gutter30 block-section">
             <!-- Company Info -->
-            <div class="col-sm-6">
-                <h3 class="sub-header"><i class="fa fa-suitcase"></i> PT TEKNIK BERLIAN JAYA</h3>
-                <address>
-                    <strong>Name</strong><br>
-                    Address<br>
-                    Town/City<br>
-                    Region, Zip/Postal Code<br><br>
-                    <i class="fa fa-phone"></i> (000) 000-0000<br>
-                    <i class="fa fa-envelope"></i> <a href="javascript:void(0)">example@example.com</a>
+            <div class="col-sm-12">
+                <h3 class="sub-header"><i class="fa fa-user"></i> {{ quotation[0].konsumen_name }}</h3>
+                <address class="col-sm-3">
+                    <strong>{{ quotation[0].konsumen_name }}</strong><br>
+                    {{ quotation[0].konsumen_address }}<br><br>
+                    <i class="fa fa-phone"></i> {{ quotation[0].konsumen_phone }}<br>
                 </address>
             </div>
             <!-- END Company Info -->
 
             <!-- Client Info -->
-            <div class="col-sm-6">
-                <h3 class="sub-header text-right">{{ pokonsumen[0].konsumen_name }} <i class="fa fa-user"></i></h3>
+            <!-- <div class="col-sm-6">
+                <h3 class="sub-header text-right">{{ quotation[0].konsumen_name }} <i class="fa fa-user"></i></h3>
                 <address class="text-right">
-                    <strong><i class="fa fa-suitcase"></i> {{ pokonsumen[0].konsumen_name }}</strong><br>
+                    <strong><i class="fa fa-suitcase"></i> {{ quotation[0].konsumen_name }}</strong><br>
                     Address<br>
-                    {{ pokonsumen[0].konsumen_address }}
-                    {{ pokonsumen[0].konsumen_phone }} <i class="fa fa-phone"></i><br>
-                    <a href="javascript:void(0)">example@example.com</a> <i class="fa fa-envelope"></i>
+                    {{ quotation[0].konsumen_address }}<br>
+                    {{ quotation[0].konsumen_phone }} <i class="fa fa-phone"></i><br>
                 </address>
-            </div>
+            </div> -->
             <!-- END Client Info -->
         </div>
         <!-- END 2 Column grid -->
