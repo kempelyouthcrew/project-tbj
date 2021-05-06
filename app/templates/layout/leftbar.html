@@ -2,9 +2,6 @@
     <!-- Sidebar Content -->
     <div class="sidebar-content">
         <!-- Search Form -->
-        <form action="page_ready_search_results.html" method="post" class="sidebar-search">
-            <input type="text" id="sidebar-search-term" name="sidebar-search-term" placeholder="Search..">
-        </form>
         <!-- END Search Form -->
 
         <!-- Wrapper for scrolling functionality -->
@@ -26,7 +23,7 @@
                 {% if item.items %}
                 {% for child in item.items %}
                 <li>
-                    <a href="{{ child.url }}" class="{{ 'active' if child.is_active else '' }}"><i class="fa fa-coffee"></i>{{ child.label }}</i></a>
+                    <a href="{{ child.url }}" class="{{ 'active' if child.is_active else '' }}"></i>{{ child.label }}</i></a>
                 </li>
                 {% endfor %}
                 {% endif %}

@@ -36,7 +36,7 @@
                     <a href="/download/do/{{ do[0].do_number }}" target="_blank" class="btn btn-primary">PDF</a>
                 </div>
             </div>
-            <h2><i class="fa fa-file-text-o"></i> {{ do.do_number }}</h2>
+            <h2><i class="fa fa-file-text-o"></i> {{ do[0].do_number }}</h2>
         </div>
         <!-- END Invoice Title -->
 
@@ -45,23 +45,23 @@
         <div class="row gutter30 block-section">
             <!-- Company Info -->
             <div class="col-sm-12">
-                <h3 class="sub-header"><i class="fa fa-user"></i> {{ quotation[0].konsumen_name }}</h3>
+                <h3 class="sub-header"><i class="fa fa-user"></i> {{ do[0].konsumen_name }}</h3>
                 <address class="col-sm-3">
-                    <strong>{{ quotation[0].konsumen_name }}</strong><br>
-                    {{ quotation[0].konsumen_address }}<br><br>
-                    <i class="fa fa-phone"></i> {{ quotation[0].konsumen_phone }}<br>
+                    <strong>{{ do[0].konsumen_name }}</strong><br>
+                    {{ do[0].konsumen_address }}<br><br>
+                    <i class="fa fa-phone"></i> {{ do[0].konsumen_phone }}<br>
                 </address>
             </div>
             <!-- END Company Info -->
 
             <!-- Client Info -->
             <!-- <div class="col-sm-6">
-                <h3 class="sub-header text-right">{{ quotation[0].konsumen_name }} <i class="fa fa-user"></i></h3>
+                <h3 class="sub-header text-right">{{ do[0].konsumen_name }} <i class="fa fa-user"></i></h3>
                 <address class="text-right">
-                    <strong><i class="fa fa-suitcase"></i> {{ quotation[0].konsumen_name }}</strong><br>
+                    <strong><i class="fa fa-suitcase"></i> {{ do[0].konsumen_name }}</strong><br>
                     Address<br>
-                    {{ quotation[0].konsumen_address }}<br>
-                    {{ quotation[0].konsumen_phone }} <i class="fa fa-phone"></i><br>
+                    {{ do[0].konsumen_address }}<br>
+                    {{ do[0].konsumen_phone }} <i class="fa fa-phone"></i><br>
                 </address>
             </div> -->
             <!-- END Client Info -->

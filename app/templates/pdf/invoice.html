@@ -35,11 +35,20 @@
         <table cellpadding="0" cellspacing="0" class="">
             <tr>
                 <td class="quot-address">
-                    <p>Invoice to</p>
-                    <p class="ptname">{{ data.konsumen_name }}</p>
-                    <p>Bu Novi Sehat</p>
-                    <p>{{ data.konsumen_address }}</p>
-                    <p>{{ data.konsumen_phone }}</p>
+                    <table class="table-quoaddress">
+                        <tr>
+                            <td class="quoaddress-head">Quotation to</td>
+                        </tr>
+                        <tr>
+                            <td class="quoaddress-head ptname">{{ data.konsumen_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="quoaddress-head">{{ data.konsumen_address }}</td>
+                        </tr>
+                        <tr>
+                            <td class="quoaddress-head">{{ data.konsumen_phone }}</td>
+                        </tr>
+                    </table>
                 </td>
                 <td class="quot-detail">
                     <table class="table-quodetail">

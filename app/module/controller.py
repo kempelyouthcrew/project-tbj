@@ -1068,7 +1068,8 @@ def pokonsumenInfo(id):
             PODetail.sparepart_totalprice,\
             PODB.po_number,\
             KonsumenDB.konsumen_address,\
-            KonsumenDB.konsumen_name\
+            KonsumenDB.konsumen_name,\
+            KonsumenDB.konsumen_phone\
         )\
         .all()
     print(quotation)
@@ -1213,6 +1214,8 @@ def doInfo(id):
     do = DODetail.query\
         .join(DODB, DODB.id==DODetail.do_id)\
         .filter_by(id=id)\
+        .join(PODB, DODB.po_id==PODB.id)\
+        .join(KonsumenDB, PODB.konsumen_id==KonsumenDB.id)\
         .join(SparepartDB, DODetail.sparepart_number==SparepartDB.id)\
         .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
         .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
@@ -1230,6 +1233,9 @@ def doInfo(id):
             DODetail.sparepart_qty,\
             DODetail.sparepart_price,\
             DODetail.sparepart_totalprice,\
+            KonsumenDB.konsumen_name,\
+            KonsumenDB.konsumen_address,\
+            KonsumenDB.konsumen_phone,\
         )\
         .all()
 
@@ -1840,7 +1846,7 @@ def generatePDF(filename,variant,idParent):
 @app.route('/previewdoc/<string:filename>', methods=['GET'])
 @login_required
 def setdoc(filename):
-    return generatePDF('do_number','invoice','29')
+    return generatePDF('do_number','quotation','144')
 
 @app.route('/download/<string:folder>/<string:filename>')
 @login_required

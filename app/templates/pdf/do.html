@@ -36,16 +36,25 @@
         <table cellpadding="0" cellspacing="0" class="">
             <tr>
                 <td class="quot-address">
-                    <p>Quotation to</p>
-                    <p class="ptname">{{ data.konsumen_name }}</p>
-                    <p>Bu Novi Sehat</p>
-                    <p>{{ data.konsumen_address }}</p>
-                    <p>{{ data.konsumen_phone }}</p>
+                    <table class="table-quoaddress">
+                        <tr>
+                            <td class="quoaddress-head">DO to</td>
+                        </tr>
+                        <tr>
+                            <td class="quoaddress-head ptname">{{ data.konsumen_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="quoaddress-head">{{ data.konsumen_address }}</td>
+                        </tr>
+                        <tr>
+                            <td class="quoaddress-head">{{ data.konsumen_phone }}</td>
+                        </tr>
+                    </table>
                 </td>
                 <td class="quot-detail">
                     <table class="table-quodetail">
                         <tr>
-                            <td class="quodetail-head">Quotation Number</td>
+                            <td class="quodetail-head">DO Number</td>
                             <td>:</td>
                             <td>{{ data.do_number }}</td>
                         </tr>
@@ -53,11 +62,6 @@
                             <td class="quodetail-head">Costumer ID</td>
                             <td>:</td>
                             <td>{{ data.konsumen_id }}</td>
-                        </tr>
-                        <tr>
-                            <td class="quodetail-head">Due Date</td>
-                            <td>:</td>
-                            <td>{{ data.do_terms }} Day</td>
                         </tr>
                         <tr>
                             <td class="quodetail-head">Subject</td>
@@ -143,7 +147,7 @@
     <div class="pagepadding thankyou-wrap">
         <p class="thankyou">Thank You</p>
         <div class="contactus">
-            <p>If you have any questions about this price quotation, please contact us : 081234567789</p>
+            <p>If you have any questions about this price DO, please contact us : 081234567789</p>
         </div>
     </div>
     <div class="pagepadding">
