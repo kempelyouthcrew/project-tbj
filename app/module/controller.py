@@ -548,7 +548,7 @@ def quotationAdd():
     quotation_totalprice = request.form['grandprice']
     idParent = ""
     
-    if quotation_ppn == 0:
+    if quotation_ppn == '0':
         flag = 'TBJ'
     else: 
         flag = 'TBP'
@@ -791,7 +791,7 @@ def pokeluarAdd():
     pokeluar_totalprice = request.form['grandprice']
     idParent = ""
 
-    if pokeluar_ppn == 0:
+    if pokeluar_ppn == '0':
         flag = 'TBJ'
     else: 
         flag = 'TBP'
@@ -1152,7 +1152,7 @@ def doAdd():
     formCount = request.form['formCount']
     idParent = ""
 
-    if do_ppn == 0:
+    if do_ppn == '0':
         flag = 'TBJ'
     else: 
         flag = 'TBP'
@@ -1330,7 +1330,7 @@ def invoiceAdd():
     invoice_ppn = request.form['ppn']
     idParent = ""
 
-    if invoice_ppn == 0:
+    if invoice_ppn == '0':
         flag = 'TBJ'
     else: 
         flag = 'TBP'
@@ -1842,7 +1842,7 @@ def generatePDF(filename,variant,idParent):
 @app.route('/previewdoc/<string:filename>', methods=['GET'])
 @login_required
 def setdoc(filename):
-    return generatePDF('do_number','quotation','144')
+    return generatePDF('do_number','do','89')
 
 @app.route('/download/<string:folder>/<string:filename>')
 @login_required

@@ -1,3 +1,22 @@
+<style>
+    .tabek {
+        width: 80px;
+    }
+    .tabek-space {
+        width: 180px;
+    }
+    .tabek-top {
+        margin-top: 100px;
+    }
+    .sigblocks {
+        width: 300px;
+        font-size: 10px;
+        font-weight: bold;
+    }
+    .centering-sign {
+        text-align: center;
+    }
+</style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pdfdoc.css') }}">
 <page size="A4">
     <div class="pagepadding">
@@ -87,7 +106,7 @@
             <tbody>
                 {% for object in dataChild %}
                     <tr>
-                        <td style="text-align: center;">{{loop.index}}</td>
+                        <td style="text-align: center; width: 30px;">{{loop.index}}</td>
                         <td>{{ object.sparepart_number }}</td>
                         <td>{{ object.sparepart_name }}</td>
                         <td>{{ object.sparepart_brand }}</td>
@@ -109,19 +128,13 @@
             <td class="quot-address">
                 <table class="table-quoterm">
                     <tr>
-                        <td class="quoterm-head">- Dikirim Oleh</td>
-                        <td>:</td>
-                        <td>.....</td>
+                        <td class="quoterm-head"></td>
                     </tr>
                     <tr>
-                        <td class="quoterm-head">- Diterima Oleh</td>
-                        <td>:</td>
-                        <td>.....</td>
+                        <td class="quoterm-head"></td>
                     </tr>
                     <tr>
-                        <td class="quoterm-head">- Delivery Point</td>
-                        <td>:</td>
-                        <td>.....</td>
+                        <td class="quoterm-head"></td>
                     </tr>
                 </table>
             </td>
@@ -137,19 +150,37 @@
             </td>
         </table>
     </div>
-    <div class="pagepadding signspace-wrap">
-        <table class="table-signspace">
-            <tr>
-                <td class="signspace">( user login )</td>
-            </tr>
-        </table>
-    </div>
-    <div class="pagepadding thankyou-wrap">
+    <table cellpadding="0" cellspacing="0" class="centering-sign">
+        <tr>
+            <td class="sigblocks">
+                Diterima Oleh
+            </td>
+            <td class="sigblocks">
+                Dikirim oleh
+            </td>
+        </tr>
+    </table>
+    <table cellpadding="0" cellspacing="0" class="centering-sign tabek-top">
+        <tr>
+            <td class="sigblocks">
+                <!-- ( PT. NUSANTARA GRAHA UTAMA ) -->
+                ( {{ data.konsumen_name }} )
+            </td>
+            <td class="sigblocks">
+                {% if  data.do_ppn == 0 %}
+                    ( Teknik Berlian Jaya )
+                {% else %}
+                    ( Teknik Berlian Part )
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <!-- <div class="pagepadding thankyou-wrap">
         <p class="thankyou">Thank You</p>
         <div class="contactus">
             <p>If you have any questions about this price DO, please contact us : 081234567789</p>
         </div>
-    </div>
+    </div> -->
     <div class="pagepadding">
         <footer>
             <!-- <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="footbar"> -->
