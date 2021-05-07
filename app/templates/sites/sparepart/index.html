@@ -33,7 +33,6 @@
                 <th>Nama Sparepart</th>
                 <th>Sparepart Number</th>
                 <th>Sparepart Brand</th>
-                <th>Supplier</th>
                 <th>action</th>
             </tr>
         </thead>
@@ -43,7 +42,6 @@
                     <td>{{ x.sparepart_name }}</td>
                     <td>{{ x.sparepart_number }}</td>
                     <td>{{ x.sparepart_name }}</td>
-                    <td>{{ x.supplier_name }}</td>
                     <td class="text-center">
                         <div class="btn-group">
                             <a href="sparepart/edit/{{ x.id }}" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
@@ -68,7 +66,7 @@
 
         /* Initialize Datatables */
         $('#example-datatable').dataTable({
-            columnDefs: [{orderable: false, targets: [4]}],
+            columnDefs: [{orderable: false, targets: [3]}],
             pageLength: 15,
             lengthMenu: [[15, 30, 50, -1], [15, 30, 50, "All"]]
         });

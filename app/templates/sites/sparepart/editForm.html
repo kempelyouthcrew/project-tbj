@@ -70,22 +70,6 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="supplier_id">Nama Supplier</label>
-            <div class="col-md-10">
-                <select id="supplier_id" name="supplier_id" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
-                    <option></option>
-                    {% for no, x in listSupplier %}
-                        {% set number = data.supplier_id | int %}
-                        {% if number == x.id %}
-                            <option selected value="{{ x.id }}">{{ x.supplier_name }}</option>
-                        {% else %}
-                            <option value="{{ x.id }}">{{ x.supplier_name }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
             <label class="col-md-2 control-label" for="sparepart_number">Sparepart Number</label>
             <div class="col-md-3">
                 <input type="text" id="sparepart_number" name="sparepart_number" class="form-control" value="{{ data.sparepart_number }}" >
@@ -116,11 +100,6 @@
         var x = document.forms["form"]["sparepart_name"].value;
         if (x == "") {
           alert("Form nama konsumen tidak boleh kosong");
-          return false;
-        }
-        var x = document.forms["form"]["supplier_id"].value;
-        if (x == "") {
-          alert("Form alamat konsumen tidak boleh kosong");
           return false;
         }
         var x = document.forms["form"]["sparepart_number"].value;

@@ -316,12 +316,10 @@ def sparepart():
     listSparepart = SparepartDB.query\
         .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
         .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
-        .join(SupplierDB, SparepartDB.supplier_id==SupplierDB.id)\
         .add_columns(SparepartDB.id,\
             SparepartDB.sparepart_number,\
             SparepartName.sparepart_name,\
-            SparepartBrand.sparepart_brand,\
-            SupplierDB.supplier_name\
+            SparepartBrand.sparepart_brand\
         )
     return render_template("sites/sparepart/index.html", data=enumerate(listSparepart,1))
 
@@ -329,17 +327,16 @@ def sparepart():
 @login_required
 def sparepartAddForm():
     listSparepartName = SparepartName.query.all()
-    listSupplier = SupplierDB.query.all()
     listSparepartBrand = SparepartBrand.query.all()
     
-    return render_template("sites/sparepart/addForm.html", listSparepartName=enumerate(listSparepartName), listSupplier=enumerate(listSupplier), listSparepartBrand=enumerate(listSparepartBrand))
+    return render_template("sites/sparepart/addForm.html", listSparepartName=enumerate(listSparepartName), listSparepartBrand=enumerate(listSparepartBrand))
 
 @app.route('/sparepart/add', methods=['POST'])
 @login_required
 def sparepartAdd():
     if request.method == 'POST':
         sparepart_name = request.form['sparepart_name']
-        supplier_id = request.form['supplier_id']
+        supplier_id = '0'
         sparepart_number = request.form['sparepart_number']
         sparepart_brand = request.form['sparepart_brand']
         sparepart_price = request.form['sparepart_price']
@@ -362,9 +359,8 @@ def sparepartAdd():
 def sparepartEditForm(id):
     sparepart = SparepartDB.query.filter_by(id=id).first()
     listSparepartName = SparepartName.query.all()
-    listSupplier = SupplierDB.query.all()
     listSparepartBrand = SparepartBrand.query.all()
-    return render_template("sites/sparepart/editForm.html", data=sparepart, listSparepartName=enumerate(listSparepartName), listSupplier=enumerate(listSupplier), listSparepartBrand=enumerate(listSparepartBrand))
+    return render_template("sites/sparepart/editForm.html", data=sparepart, listSparepartName=enumerate(listSparepartName), listSparepartBrand=enumerate(listSparepartBrand))
 
 @app.route('/sparepart/edit', methods=['POST'])
 @login_required
