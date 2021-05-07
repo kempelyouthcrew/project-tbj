@@ -1405,6 +1405,8 @@ def invoiceInfo(id):
         .join(DODB, DODB.id==DODetail.do_id)\
         .join(InvoiceDB, InvoiceDB.do_id==DODB.id)\
         .filter_by(id=id)\
+        .join(PODB, DODB.po_id==PODB.id)\
+        .join(KonsumenDB, PODB.konsumen_id==KonsumenDB.id)\
         .join(SparepartDB, DODetail.sparepart_number==SparepartDB.id)\
         .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
         .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
@@ -1423,6 +1425,9 @@ def invoiceInfo(id):
             DODetail.sparepart_qty,\
             DODetail.sparepart_price,\
             DODetail.sparepart_totalprice,\
+            KonsumenDB.konsumen_name,\
+            KonsumenDB.konsumen_address,\
+            KonsumenDB.konsumen_phone,\
         )\
         .all()
     print(invoice)
