@@ -104,7 +104,23 @@
                     </tr> -->
                     <tr class="active">
                         <td colspan="4" class="text-right">SUBTOTAL</td>
-                        <td class="text-right">Rp. {{ pokeluar[0].sparepart_totalprice }}</td>
+                        <td class="text-right">Rp. {{ pokeluar[0].pokeluar_price }}</td>
+                    </tr>
+                    <tr class="active">
+                        <td colspan="4" class="text-right">VAT RATE</td>
+                        <td class="text-right">10%</td>
+                    </tr>
+                    <tr class="active">
+                        <td colspan="4" class="text-right">VAT DUE</td>
+                        <td class="text-right">Rp. {{ pokeluar[0].pokeluar_ppn }}</td>
+                    </tr>
+                    <tr class="active">
+                        <td colspan="4" class="text-right">MATERAI</td>
+                        <td class="text-right">Rp. {{ pokeluar[0].pokeluar_materai }}</td>
+                    </tr>
+                    <tr class="success">
+                        <td colspan="4" class="text-right"><strong>TOTAL DUE</strong></td>
+                        <td class="text-right"><span class="label label-success">Rp. {{ pokeluar[0].pokeluar_totalprice }}</span></td>
                     </tr>
                 </tbody>
             </table>

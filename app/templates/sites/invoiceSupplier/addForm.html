@@ -6,9 +6,6 @@
     .sparepart_row{
         margin-top: 30px;
     }
-    .sparepart-summary {
-        content-visibility: hidden;
-    }
 </style>
 
 {% endblock %}
@@ -95,8 +92,10 @@
     let max_fields      = 10; //maximum input boxes allowed
     let index = 1;
     let podbData
+    let ppn = 10
+    let materai = 10000
     getPOKeluar()
-
+    
     function validateForm() {
         var x = document.forms["form"]["konsumen_id"].value;
         if (x == "") {
@@ -129,14 +128,35 @@
         });
         $("#sum_price").val(sum);
         let fp = parseInt($("#sum_price").val())
-        let ppn = 10
-        let materai = parseInt($("#materai").val())
         let ppn_due = fp * (ppn/100);
         let grandprice = fp + ppn_due + materai
 
+        $("#materai").val(materai);
         $("#ppn").val(ppn_due);
         $("#grandprice").val(grandprice);
 
+    }
+
+    function setPPN() {
+        $('#ppnswitcher').change(function(){ 
+            if ($(this).is(":checked")) {
+                ppn = 10
+            } else {
+                ppn = 0
+            }
+            setFinalPrice()
+        });
+    }
+
+    function setMaterai() {
+        $('#materaiswitcher').change(function(){ 
+            if ($(this).is(":checked")) {
+                materai = 10000
+            } else {
+                materai = 0
+            }
+            setFinalPrice()
+        });
     }
     
     $(".sparepart-form").on("click",".remove-form-button", function(e){ //user click on remove text
@@ -198,15 +218,81 @@
                     actionFormDynamic(index)
                 }
 
-                let elementSummary = '<div>'
-                +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].quotation_price +'" style="visibility:hidden">'
-                +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].quotation_ppn +'" style="visibility:hidden">'
-                +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].quotation_materai +'" style="visibility:hidden">'
-                +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].quotation_totalprice +'" style="visibility:hidden">'
-                +'            </div>'
+                let elementSummary = '<div class="form-group">'
+                    +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                    +'    <div class="col-md-10">'
+                    +'        <div class="col-sm-5">'
+                    +'        </div>'
+                    +'        <div class="col-sm-1">'
+                    +'            <label class="head-dyn" for="sum_price">Total Price:</label>'
+                    +'        </div>'
+                    +'        <div class="col-sm-2">'
+                    +'            <input type="text" id="sum_price" name="sum_price" class="form-control money-format" placeholder="final price" value="'+ data[0].pokeluar_price +'" readonly>'
+                    +'        </div>'
+                    +'        <div class="col-sm-1">'
+                    +'        </div>'
+                    +'    </div>'
+                    +'</div>'
+                    +'<div class="form-group">'
+                    +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                    +'    <div class="col-md-10">'
+                    +'        <div class="col-sm-5">'
+                    +'        </div>'
+                    +'        <div class="col-sm-1">'
+                    +'            <label class="head-dyn" for="ppn">PPN 10%:</label>'
+                    +'        </div>'
+                    +'        <div class="col-sm-2">'
+                    +'            <input type="text" id="ppn" name="ppn" class="form-control money-format" placeholder="ppn" value="'+ data[0].pokeluar_ppn +'" readonly>'
+                    +'        </div>'
+                    +'        <div class="col-sm-1">'
+                    +'              <label class="switch switch-warning">'
+                    +'                  <input name="ppnswitcher" id="ppnswitcher" type="checkbox" checked=""><span></span>'
+                    +'              </label>'
+                    +'        </div>'
+                    +'    </div>'
+                    +'</div>'
+                    +'<div class="form-group">'
+                    +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                    +'    <div class="col-md-10">'
+                    +'        <div class="col-sm-5">'
+                    +'        </div>'
+                    +'        <div class="col-sm-1">'
+                    +'            <label class="head-dyn" for="materai">Materai:</label>'
+                    +'        </div>'
+                    +'        <div class="col-sm-2">'
+                    +'            <input type="text" id="materai" name="materai" class="form-control money-format" placeholder="Materai" value="'+ data[0].pokeluar_materai +'" readonly>'
+                    +'        </div>'
+                    +'        <div class="col-sm-1">'
+                    +'              <label class="switch switch-warning">'
+                    +'                  <input name="materaiswitcher" id="materaiswitcher" type="checkbox" checked=""><span></span>'
+                    +'              </label>'
+                    +'        </div>'
+                    +'        </div>'
+                    +'    </div>'
+                    +'</div>'
+                    +'<div class="form-group">'
+                    +'    <label class="col-md-2 control-label sparepart_row" for="sparepart_number"></label>'
+                    +'    <div class="col-md-10">'
+                    +'        <div class="col-sm-5">'
+                    +'        '
+                    +'        </div>'
+                    +'        <div class="col-sm-1">'
+                    +'            <label class="head-dyn" for="grandprice">Grand Price:</label>'
+                    +'        </div>'
+                    +'        <div class="col-sm-2">'
+                    +'            <input type="text" id="grandprice" name="grandprice" class="form-control money-format" placeholder="Grand Price" value="'+ data[0].pokeluar_totalprice +'" readonly>'
+                    +'        </div>'
+                    +'        <div class="col-sm-1">'
+                    +'        </div>'
+                    +'    </div>'
+                    +'</div>'
 
                 
                 $(".sparepart-summary").append(elementSummary);
+
+                setFinalPrice()
+                setPPN()
+                setMaterai()
                           
             },
                 dataType: 'json',

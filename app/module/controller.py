@@ -860,6 +860,9 @@ def pokeluarInfo(id):
             POKeluarDB.pokeluar_date,\
             POKeluarDB.pokeluar_number,\
             POKeluarDB.pokeluar_price,\
+            POKeluarDB.pokeluar_ppn,\
+            POKeluarDB.pokeluar_materai,\
+            POKeluarDB.pokeluar_totalprice,\
             SparepartDB.sparepart_number,\
             SparepartName.sparepart_name,\
             SparepartBrand.sparepart_brand,\
@@ -1452,11 +1455,19 @@ def invoiceSupplierAdd():
     invoiceSupplier_date = dateNow
     invoiceSupplier_number = request.form['invoiceSupplier_number']
     pokeluar_id = request.form['pokeluar_id']
+    invoiceSupplier_price = request.form['sum_price']
+    invoiceSupplier_ppn = request.form['ppn']
+    invoiceSupplier_materai = request.form['materai']
+    invoiceSupplier_totalprice = request.form['grandprice']
     idParent = ""
 
     try:
         invoiceSupplier = InvoiceSupplierDB(invoiceSupplier_number=invoiceSupplier_number,
                     pokeluar_id=pokeluar_id,
+                    invoiceSupplier_price=invoiceSupplier_price,
+                    invoiceSupplier_ppn=invoiceSupplier_ppn,
+                    invoiceSupplier_materai=invoiceSupplier_materai,
+                    invoiceSupplier_totalprice=invoiceSupplier_totalprice,
                     invoiceSupplier_date=invoiceSupplier_date)
         db.session.add(invoiceSupplier)
         db.session.commit()
