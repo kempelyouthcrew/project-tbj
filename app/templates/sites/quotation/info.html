@@ -32,7 +32,7 @@
         <div class="block-title">
             <div class="block-options pull-right">
                 <div class="btn-group">
-                    <a href="/download/quotation/{{ quotation[0].quotation_number }}" target="_blank" class="btn btn-primary">PDF</a>
+                    <a href="/print/quotation/{{ quotation[0].id }}" target="_blank" class="btn btn-primary">Print</a>
                 </div>
             </div>
             <h2><i class="fa fa-file-text-o"></i> {{ quotation[0].quotation_number }}</h2>
@@ -106,6 +106,8 @@
                         <td colspan="4" class="text-right">SUBTOTAL</td>
                         <td class="text-right">Rp. {{ quotation[0].quotation_price }}</td>
                     </tr>
+                    
+                    {% if  quotation[0].quotation_ppn != 0 %}
                     <tr class="active">
                         <td colspan="4" class="text-right">VAT RATE</td>
                         <td class="text-right">10%</td>
@@ -114,6 +116,8 @@
                         <td colspan="4" class="text-right">VAT DUE</td>
                         <td class="text-right">Rp. {{ quotation[0].quotation_ppn }}</td>
                     </tr>
+                    {% endif %}
+
                     <tr class="active">
                         <td colspan="4" class="text-right">MATERAI</td>
                         <td class="text-right">Rp. {{ quotation[0].quotation_materai }}</td>

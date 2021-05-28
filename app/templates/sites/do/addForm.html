@@ -89,6 +89,9 @@
     let max_fields      = 10; //maximum input boxes allowed
     let index = 1;
     let podbData
+    let ppn = 0
+    let ppn_due = 0;
+    let grandprice = 0;
     getPO()
 
     function validateForm() {
@@ -123,10 +126,17 @@
         });
         $("#sum_price").val(sum);
         let fp = parseInt($("#sum_price").val())
-        let ppn = 10
         let materai = parseInt($("#materai").val())
-        let ppn_due = fp * (ppn/100);
-        let grandprice = fp + ppn_due + materai
+        if($("#ppn").val() == 0) {
+            ppn = 0
+            ppn_due = 0;
+            grandprice = fp + ppn_due + materai
+        } else {
+            ppn = 10
+            ppn_due = fp * (ppn/100);
+            grandprice = fp + ppn_due + materai
+        }
+        
 
         $("#ppn").val(ppn_due);
         $("#grandprice").val(grandprice);
@@ -181,7 +191,7 @@
                         +'    <input type="number" id="qty_'+ (parseInt(index) + 1) +'" name="qty_'+ (parseInt(index) + 1) +'" class="form-control" placeholder="qty" min="1" value ="0">'
                         +'</div>'
                         +'<div class="col-sm-2">'
-                        +'    <input type="text" id="price_'+ (parseInt(index) + 1) +'" name="price_'+ (parseInt(index) + 1) +'" class="form-control money-format" placeholder="price" value="'+ data[index].sparepart_price +'" style="display: none;">'
+                        +'    <input type="text" id="price_'+ (parseInt(index) + 1) +'" name="price_'+ (parseInt(index) + 1) +'" class="form-control money-format" placeholder="price" value="'+ data[index].podet_price +'" style="display: none;">'
                         +'</div>'
                         +'<div class="col-sm-2">'
                         +'    <input type="text" id="total_price_'+ (parseInt(index) + 1) +'" name="total_price_'+ (parseInt(index) + 1) +'" class="form-control money-format prc" placeholder="total price" value="0" style="display: none;">'
@@ -258,9 +268,7 @@
                 +'    </div>'
                 +'</div>'
                 
-                $(".sparepart-summary").append(elementSummary);
-
-                
+                $(".sparepart-summary").empty();
                 $(".sparepart-summary").append(elementSummary);
                           
             },

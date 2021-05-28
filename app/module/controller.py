@@ -301,8 +301,8 @@ def supplierEdit():
 @login_required
 def supplierDelete(id):
     try:
-        konsumen = KonsumenDB.query.filter_by(id=id).first()
-        db.session.delete(konsumen)
+        supplier = SupplierDB.query.filter_by(id=id).first()
+        db.session.delete(supplier)
         db.session.commit()
     except Exception as e:
         print("Failed to delete data")
@@ -574,7 +574,7 @@ def quotationAdd():
         print("Failed to add data.")
         print(e)
     
-    insertNumber = insertNumberCount(idParent, 'quotation', flag, numberSeq)
+    insertNumber = insertNumberCount(idParent, 'quotation', flag, numberSeq, '-')
 
     i = 0
     while i < int(formCount):
@@ -599,7 +599,6 @@ def quotationAdd():
                 print("Failed to add data.")
                 print(e)
 
-    generatePDF(quotation_number,'quotation',idParent)
     numIdParent = str(idParent)
     return redirect("/quotation/info/" + numIdParent)
 
@@ -737,7 +736,6 @@ def quotationEdit():
                 print("Failed to add data.")
                 print(e)
 
-    generatePDF(quotation_number,'quotation',idParent)
     numIdParent = str(idParent)
     return redirect("/quotation/info/" + numIdParent)
 
@@ -817,7 +815,7 @@ def pokeluarAdd():
         print("Failed to add data.")
         print(e)
 
-    insertNumber = insertNumberCount(idParent, 'pokeluar', flag, numberSeq)
+    insertNumber = insertNumberCount(idParent, 'pokeluar', flag, numberSeq, '-')
 
     i = 0
     while i < int(formCount):
@@ -840,7 +838,6 @@ def pokeluarAdd():
                 print("Failed to add data.")
                 print(e)
 
-    generatePDF(pokeluar_number,'pokeluar',idParent)
     numIdParent = str(idParent)
     return redirect("/pokeluar/info/" + numIdParent)
 
@@ -876,6 +873,18 @@ def pokeluarInfo(id):
         .all()
     print(pokeluar)
     return render_template("sites/pokeluar/info.html", pokeluar=pokeluar)
+
+@app.route('/pokeluar/delete/<int:id>')
+@login_required
+def pokeluarDelete(id):
+    try:
+        pokeluar = POKeluarDB.query.filter_by(id=id).first()
+        db.session.delete(pokeluar)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/pokeluar")
 
 
 
@@ -958,8 +967,7 @@ def deleteusermanagement(id):
 @login_required
 def pokonsumen():
     listPOKonsumen = PODB.query\
-        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
-        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+        .join(KonsumenDB, PODB.konsumen_id==KonsumenDB.id)\
         .add_columns(PODB.id, PODB.po_date, PODB.po_number, KonsumenDB.konsumen_name, PODB.po_number)
 
     print(listPOKonsumen)
@@ -990,6 +998,13 @@ def pokonsumenAdd():
     po_number = request.form['po_number']
     idParent = ""
 
+    if po_ppn == '0':
+        flag = 'TBJ'
+    else: 
+        flag = 'TBP'
+        
+    numberSeq = getNumberCount('pokonsumen',flag)
+
     try:
         po = PODB(po_date=po_date,
                                 po_number=po_number,
@@ -1009,6 +1024,8 @@ def pokonsumenAdd():
     except Exception as e:
         print("Failed to add data.")
         print(e)
+
+    insertNumber = insertNumberCount(idParent, 'pokonsumen', flag, numberSeq, '-')
 
     i = 0
     while i < int(formCount):
@@ -1033,7 +1050,6 @@ def pokonsumenAdd():
                 print("Failed to add data.")
                 print(e)
 
-    generatePDF(po_number,'po',idParent)
     numIdParent = str(idParent)
     return redirect("/pokonsumen/info/" + numIdParent)
 
@@ -1160,8 +1176,9 @@ def doAdd():
     else: 
         flag = 'TBP'
         
-    numberSeq = getNumberCount('do',flag)
-    do_number = 'DO.'+ flag +'-' + dateNow.strftime("%d%m%y") +'.' + str(numberSeq).zfill(4)
+    numberStack = getNumberStack('pokonsumen',flag, str(po_id))
+    numberSeq = getNumberCountDO('do',flag, str(po_id))
+    do_number = 'DO.'+ flag +'-' + dateNow.strftime("%d%m%y") + '.' + str(numberStack).zfill(4) + '.' + str(numberSeq).zfill(4)
 
     try:
         do = DODB(po_id=po_id,
@@ -1180,7 +1197,7 @@ def doAdd():
         print("Failed to add data.")
         print(e)
 
-    insertNumber = insertNumberCount(idParent, 'do', flag, numberSeq)
+    insertNumber = insertNumberCount(idParent, 'do', flag, numberSeq, str(po_id))
 
     i = 0
     while i < int(formCount):
@@ -1203,7 +1220,6 @@ def doAdd():
                 print("Failed to add data.")
                 print(e)
 
-    generatePDF(do_number,'do',idParent)
     numIdParent = str(idParent)
     return redirect("/do/info/" + numIdParent)
 
@@ -1307,8 +1323,7 @@ def invoice():
     listInvoice = InvoiceDB.query\
         .join(DODB, InvoiceDB.do_id==DODB.id)\
         .join(PODB, DODB.po_id==PODB.id)\
-        .join(QuotationDB, PODB.quotation_id==QuotationDB.id)\
-        .join(KonsumenDB, QuotationDB.konsumen_id==KonsumenDB.id)\
+        .join(KonsumenDB, PODB.konsumen_id==KonsumenDB.id)\
         .add_columns(\
             InvoiceDB.id\
             ,InvoiceDB.invoice_date\
@@ -1355,9 +1370,8 @@ def invoiceAdd():
         print("Failed to add data.")
         print(e)
 
-    insertNumber = insertNumberCount(idParent, 'invoice', flag, numberSeq)
+    insertNumber = insertNumberCount(idParent, 'invoice', flag, numberSeq, '-')
 
-    generatePDF(invoice_number,'invoice',idParent)
     numIdParent = str(idParent)
     return redirect("/invoice/info/" + numIdParent)
 
@@ -1481,6 +1495,51 @@ def invoiceSupplierAdd():
     numIdParent = str(idParent)
     return redirect("/invoiceSupplier")
 
+@app.route('/invoiceSupplier/delete/<int:id>')
+@login_required
+def deleteinvoiceSupplier(id):
+    try:
+        InvoiceSupplier = InvoiceSupplierDB.query.filter_by(id=id).first()
+        db.session.delete(InvoiceSupplier)
+        db.session.commit()
+    except Exception as e:
+        print("Failed to delete data")
+        print(e)
+    return redirect("/invoiceSupplier")
+
+@app.route('/invoiceSupplier/info/<int:id>', methods=['GET'])
+@login_required
+def invoiceSupplierinfo(id):
+    invkeluar = POKeluarDetail.query\
+        .join(POKeluarDB, POKeluarDB.id==POKeluarDetail.pokeluar_id)\
+        .join(InvoiceSupplierDB, InvoiceSupplierDB.pokeluar_id==POKeluarDB.id)\
+        .filter_by(id=id)\
+        .join(SupplierDB, POKeluarDB.supplier_id==SupplierDB.id)\
+        .join(SparepartDB, POKeluarDetail.sparepart_number==SparepartDB.id)\
+        .join(SparepartName, SparepartDB.sparepart_name==SparepartName.id)\
+        .join(SparepartBrand, SparepartDB.sparepart_brand==SparepartBrand.id)\
+        .add_columns(\
+            InvoiceSupplierDB.id,\
+            InvoiceSupplierDB.invoiceSupplier_date,\
+            InvoiceSupplierDB.invoiceSupplier_number,\
+            InvoiceSupplierDB.invoiceSupplier_price,\
+            InvoiceSupplierDB.invoiceSupplier_ppn,\
+            InvoiceSupplierDB.invoiceSupplier_materai,\
+            InvoiceSupplierDB.invoiceSupplier_totalprice,\
+            SparepartDB.sparepart_number,\
+            SparepartName.sparepart_name,\
+            SparepartBrand.sparepart_brand,\
+            POKeluarDetail.sparepart_qty,\
+            POKeluarDetail.sparepart_price,\
+            POKeluarDetail.sparepart_totalprice,\
+            POKeluarDB.po_id,\
+            SupplierDB.supplier_alamat,\
+            SupplierDB.supplier_name\
+        )\
+        .all()
+    print(invkeluar)
+    return render_template("sites/invoiceSupplier/info.html", invkeluar=invkeluar)
+
 # Master json
 @app.route('/master/konsumen', methods=['GET'])
 @login_required
@@ -1524,8 +1583,10 @@ def quotationdetailMaster(quotation_id):
         SELECT \
         *\
         ,sparepart.id as spid\
+        ,kon.id as konid\
         FROM quotation_detail as quodet \
         INNER JOIN quotationDB as quo ON quodet.quotation_id = quo.id\
+        INNER JOIN konsumenDB as kon ON quo.konsumen_id = kon.id\
         INNER JOIN sparepartDB as sparepart ON quodet.sparepart_number = sparepart.id\
         INNER JOIN sparepart_name as sparepartname ON sparepart.sparepart_name = sparepartname.id\
         WHERE quodet.quotation_id = :x \
@@ -1541,6 +1602,7 @@ def podetailMaster(po_id):
         SELECT \
         *\
         ,sparepart.id as spid\
+        ,podet.sparepart_price as podet_price\
         FROM po_detail as podet \
         INNER JOIN PODB as po ON podet.po_id = po.id\
         INNER JOIN sparepartDB as sparepart ON podet.sparepart_number = sparepart.id\
@@ -1559,8 +1621,7 @@ def poMaster():
         *\
         ,po.id AS poid \
         FROM PODB AS po \
-        INNER JOIN quotationDB AS quo ON po.quotation_id = quo.id \
-        INNER JOIN konsumenDB AS kon ON quo.konsumen_id = kon.id \
+        INNER JOIN konsumenDB AS kon ON po.konsumen_id = kon.id \
     ")
     podb = db.engine.execute(s).fetchall() 
     return json.dumps([dict(r) for r in podb], 
@@ -1588,6 +1649,7 @@ def pokeluardetailMaster(po_id):
         SELECT \
         *\
         ,sparepart.id as spid\
+        ,pokeldet.sparepart_price as pokeldet_price\
         FROM po_keluar_detail as pokeldet \
         INNER JOIN po_keluarDB as pokeluar ON pokeldet.pokeluar_id = pokeluar.id\
         INNER JOIN sparepartDB as sparepart ON pokeldet.sparepart_number = sparepart.id\
@@ -1614,7 +1676,7 @@ def doMaster():
         FROM DODB AS do \
         INNER JOIN PODB AS po ON do.po_id = po.id \
         INNER JOIN quotationDB AS quo ON po.quotation_id = quo.id \
-        INNER JOIN konsumenDB AS kon ON quo.konsumen_id = kon.id \
+        INNER JOIN konsumenDB AS kon ON po.konsumen_id = kon.id \
     ")
     dodb = db.engine.execute(s).fetchall() 
     return json.dumps([dict(r) for r in dodb], 
@@ -1627,6 +1689,7 @@ def dodetailMaster(do_id):
         SELECT \
         *\
         ,sparepart.id as spid\
+        ,dodet.sparepart_price as dodet_price\
         FROM do_detail as dodet \
         INNER JOIN DODB as dodb ON dodet.do_id = dodb.id\
         INNER JOIN sparepartDB as sparepart ON dodet.sparepart_number = sparepart.id\
@@ -1656,9 +1719,10 @@ def invoiceMaster(invoice_id):
 
 dirname = os.path.dirname(__file__)
 
-# generate pdf
+@app.route('/print/<string:variant>/<string:idParent>', methods=['GET'])
+# generate print
 @login_required
-def generatePDF(filename,variant,idParent):
+def printView(variant,idParent):
     totqty = 0
     if variant == 'po':
         data = PODB.query\
@@ -1669,6 +1733,7 @@ def generatePDF(filename,variant,idParent):
                 PODB.po_number,\
                 PODB.po_price,\
                 PODB.po_ppn,\
+                PODB.po_materai,\
                 PODB.po_totalprice,\
                 KonsumenDB.konsumen_id,\
                 KonsumenDB.konsumen_name,\
@@ -1704,6 +1769,7 @@ def generatePDF(filename,variant,idParent):
                 DODB.do_number,\
                 DODB.do_price,\
                 DODB.do_ppn,\
+                DODB.do_materai,\
                 DODB.do_totalprice,\
                 PODB.po_number,\
                 KonsumenDB.konsumen_id,\
@@ -1742,6 +1808,7 @@ def generatePDF(filename,variant,idParent):
                 DODB.do_date,\
                 DODB.do_number,\
                 DODB.do_price,\
+                DODB.do_materai,\
                 DODB.do_ppn,\
                 DODB.do_totalprice,\
                 PODB.po_number,\
@@ -1783,6 +1850,7 @@ def generatePDF(filename,variant,idParent):
                 QuotationDB.quotation_number,\
                 QuotationDB.quotation_price,\
                 QuotationDB.quotation_ppn,\
+                QuotationDB.quotation_materai,\
                 QuotationDB.quotation_totalprice,\
                 KonsumenDB.konsumen_id,\
                 KonsumenDB.konsumen_name,\
@@ -1840,25 +1908,14 @@ def generatePDF(filename,variant,idParent):
             )
 
         templ = 'pdf/pokeluar.html'
-        
-    # Make a PDF straight from HTML in a string.
-    html = render_template(templ, data=data, dataChild=dataChild, totqty=totqty)
-
-    pdf = HTML(string=html).write_pdf()
-
-    if os.path.exists(dirname):
-        if os.path.exists(os.path.join(dirname, '../file/'+ variant +'/'+ filename +'.pdf')):
-            os.remove(os.path.join(dirname, '../file/'+ variant +'/'+ filename +'.pdf'))
-
-        f = open(os.path.join(dirname, '../file/'+ variant +'/'+ filename +'.pdf'), 'wb')
-        f.write(pdf)
     
     return render_template(templ, data=data, dataChild=dataChild, totqty=totqty)
+
 
 @app.route('/previewdoc/<string:filename>', methods=['GET'])
 @login_required
 def setdoc(filename):
-    return generatePDF('do_number','do','89')
+        return render_template("pdf/sample.html")
 
 @app.route('/download/<string:folder>/<string:filename>')
 @login_required
@@ -2053,6 +2110,19 @@ def generateFlat(filename,variant,idParent):
         
     # Make a PDF straight from HTML in a string. 
     return render_template(templ, data=data, dataChild=dataChild, totqty=totqty)
+    
+@app.route('/master/stack/<string:channel>/<string:flag>/<string:idParent>', methods=['GET'])
+def getNumberStack(channel, flag, idParent):
+    dataNumber = numberCount.query\
+        .filter_by(channel=channel, flag=flag, idParent=idParent)\
+        .order_by(numberCount.number.desc())\
+        .first()
+    if dataNumber:
+        result = dataNumber.number
+    else:
+        result = 1
+
+    return result 
 
 @app.route('/master/count/<string:channel>/<string:flag>', methods=['GET'])
 def getNumberCount(channel, flag):
@@ -2074,18 +2144,39 @@ def getNumberCount(channel, flag):
 
     return result 
 
-def insertNumberCount(idParent, channel, flag, number):
+@app.route('/master/count/<string:channel>/<string:flag>', methods=['GET'])
+def getNumberCountDO(channel, flag, idGrandpa):
+    now = datetime.datetime.now()
+    yearNow = now.strftime("%Y")
+    monthNow = now.strftime("%m")
+    monthNext = int(monthNow) + 1
+    monthNext = str(monthNext)
+    dataNumber = numberCount.query\
+        .filter_by(channel=channel, flag=flag, idGrandpa=idGrandpa)\
+        .filter(numberCount.created_at <= yearNow + '-'+ monthNext + '-01')\
+        .filter(numberCount.created_at >= yearNow + '-'+ monthNow + '-01')\
+        .order_by(numberCount.number.desc())\
+        .first()
+    if dataNumber:
+        result = dataNumber.number + 1
+    else:
+        result = 1
+
+    return result 
+
+def insertNumberCount(idParent, channel, flag, number, idGrandpa):
     now = datetime.datetime.now()
     try:
-        quotation = numberCount(idParent=idParent,
+        insertnumb = numberCount(idParent=idParent,
+                                idGrandpa=idGrandpa,
                                 channel=channel,
                                 flag=flag,
                                 number=number,
                                 created_at=now)
-        db.session.add(quotation)
+        db.session.add(insertnumb)
         db.session.commit()
         db.session.flush()  
-        idParent = quotation.id
+        idParent = insertnumb.id
         
     except Exception as e:
         print("Failed to add data.")

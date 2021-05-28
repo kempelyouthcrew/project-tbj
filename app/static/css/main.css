@@ -132,34 +132,34 @@ header.navbar .navbar-brand {
     background-color: white;
 }
 
-header.navbar .navbar-brand > img {
+/* header.navbar .navbar-brand > img {
     display: inline-block;
 }
 
 header.navbar-fixed-bottom .navbar-brand {
     margin-top: 5px;
-}
+} */
 
-header.navbar .navbar-brand:hover,
+/* header.navbar .navbar-brand:hover,
 header.navbar .navbar-brand:focus {
     background-color: #f39c12;
     color: #ffffff;
     width: 90px;
     padding: 0 10px;
     outline: 0;
-}
+} */
 
-header.navbar .navbar-brand:hover img {
+/* header.navbar .navbar-brand:hover img {
     display: none;
-}
+} */
 
 header.navbar .navbar-brand span {
     display: none;
 }
 
-header.navbar .navbar-brand:hover span {
+/* header.navbar .navbar-brand:hover span {
     display: inline;
-}
+} */
 
 /* Custom Header Navigation */
 .header-nav {

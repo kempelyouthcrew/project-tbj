@@ -54,10 +54,11 @@
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label" for="konsumen_id">Konsumen</label>
-            <div class="col-md-10">
-                <select id="konsumen_id" name="konsumen_id" class="select-select2" data-placeholder="Choose one.." style="width: 250px;">
-                    <option></option>
-                </select>
+            <div class="col-md-3">
+                <input type="text" id="konsumen_name" name="konsumen_name" class="form-control" placeholder="konsumen_name" value="" readonly>
+            </div>
+            <div class="col-md-3">
+                <input type="text" id="konsumen_id" name="konsumen_id" class="form-control" placeholder="konsumen_id" value="" style="visibility: hidden;">
             </div>
         </div>
         <div class="form-group">
@@ -390,6 +391,7 @@
             },
             dataType: 'json',
           });
+          actionForQuotation()
     }
 
     function getKonsumen() {
@@ -425,6 +427,22 @@
             dataType: 'json',
           });
     }
+
+    function actionForQuotation() {
+        $('#quotation').change(function(){ 
+            let quot_id = $('#quotation').val()
+            
+            $.ajax({
+            type:"GET",
+            url:"http://administrator.teknikberlianjaya.com/master/quotationdetail/" + quot_id,
+            success: function(data) {
+                $("#konsumen_id").val(data[0].konid);
+                $("#konsumen_name").val(data[0].konsumen_name);
+            },
+                dataType: 'json',
+            });
+        });
+    }    
 
 </script>
 

@@ -129,14 +129,18 @@
 						<table>
 							<tr>
 								<td class="title">
+									{% if  data.do_ppn == 0 %}
+									<img src="{{ url_for('static', filename='img/tbj/logo_side_text_jaya.png') }}" alt="Company logo" style="width: 100%; max-width: 300px" />
+									{% else %}
 									<img src="{{ url_for('static', filename='img/tbj/logo_side_text_part.png') }}" alt="Company logo" style="width: 100%; max-width: 300px" />
+									{% endif %}</td>
                                     <!-- <p>Teknik Berlian Jaya</p> -->
 								</td>
 
 								<td class="pull-right">
 									Invoice #: {{ data.invoice_number }}<br />
 									Created: {{ data.invoice_date.strftime('%d %B %Y') }}<br />
-									Due: {{ data.invoice_terms }} Days
+									Terms: {{ data.invoice_terms }}
 								</td>
 							</tr>
 						</table>
@@ -155,7 +159,7 @@
 								</td>
 
                                 <td class="pull-right">
-									PT Teknik Berlian Jaya<br />
+									
 								</td>
 							</tr>
 						</table>

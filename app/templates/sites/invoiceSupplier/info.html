@@ -16,28 +16,28 @@
         <!-- If you do not want a link in the header, instead of .header-title-link you can use a div with the class .header-section -->
         <a href="" class="header-title-link">
             <h1>
-                <i class="fa fa-dollar animation-expandUp"></i>PO Keluar<br>
+                <i class="fa fa-dollar animation-expandUp"></i>Invoice Supplier<br>
             </h1>
         </a>
     </div>
     <ul class="breadcrumb breadcrumb-top">
         <li><i class="fa fa-file-o"></i></li>
         <li>Pages</li>
-        <li><a href="#">PO Keluar</a></li>
+        <li><a href="#">Invoice Supplier</a></li>
     </ul>
     
-    <a class="btn btn-primary" style="margin-bottom: 14px;" href="/pokeluar"><i class="fa fa-arrow-left"></i> Kembali</a>
+    <a class="btn btn-primary" style="margin-bottom: 14px;" href="/invoiceSupplier"><i class="fa fa-arrow-left"></i> Kembali</a>
     <!-- Invoice Block -->
     <div class="block full">
         <!-- Invoice Title -->
         <div class="block-title">
             <div class="block-options pull-right">
                 <div class="btn-group">
-                    <!-- <a href="/excel/print/{{ pokeluar[0].pokeluar_number }}/pokeluar/{{ pokeluar[0].id }}" target="_blank" class="btn btn-primary">Excel</a> -->
-                    <a href="/print/pokeluar/{{ pokeluar[0].id }}" target="_blank" class="btn btn-primary">Print</a>
+                    <!-- <a href="/excel/print/{{ invkeluar[0].invoiceSupplier_number }}/invoiceSupplier/{{ invkeluar[0].id }}" target="_blank" class="btn btn-primary">Excel</a> -->
+                    <!-- <a href="/print/invoiceSupplier/{{ invkeluar[0].id }}" target="_blank" class="btn btn-primary">Print</a> -->
                 </div>
             </div>
-            <h2><i class="fa fa-file-text-o"></i> {{ pokeluar[0].pokeluar_number }}</h2>
+            <h2><i class="fa fa-file-text-o"></i> {{ invkeluar[0].invoiceSupplier_number }}</h2>
         </div>
         <!-- END Invoice Title -->
 
@@ -46,22 +46,22 @@
         <div class="row gutter30 block-section">
             <!-- Company Info -->
             <div class="col-sm-12">
-                <h3 class="sub-header"><i class="fa fa-user"></i> {{ pokeluar[0].supplier_name }}</h3>
+                <h3 class="sub-header"><i class="fa fa-user"></i> {{ invkeluar[0].supplier_name }}</h3>
                 <address class="col-sm-3">
-                    <strong>{{ pokeluar[0].supplier_name }}</strong><br>
-                    {{ pokeluar[0].supplier_alamat }}<br><br>
+                    <strong>{{ invkeluar[0].supplier_name }}</strong><br>
+                    {{ invkeluar[0].supplier_alamat }}<br><br>
                 </address>
             </div>
             <!-- END Company Info -->
 
             <!-- Client Info -->
             <!-- <div class="col-sm-6">
-                <h3 class="sub-header text-right">{{ pokeluar[0].supplier_name }} <i class="fa fa-user"></i></h3>
+                <h3 class="sub-header text-right">{{ invkeluar[0].supplier_name }} <i class="fa fa-user"></i></h3>
                 <address class="text-right">
-                    <strong><i class="fa fa-suitcase"></i> {{ pokeluar[0].supplier_name }}</strong><br>
+                    <strong><i class="fa fa-suitcase"></i> {{ invkeluar[0].supplier_name }}</strong><br>
                     Address<br>
-                    {{ pokeluar[0].supplier_address }}<br>
-                    {{ pokeluar[0].supplier_phone }} <i class="fa fa-phone"></i><br>
+                    {{ invkeluar[0].supplier_address }}<br>
+                    {{ invkeluar[0].supplier_phone }} <i class="fa fa-phone"></i><br>
                 </address>
             </div> -->
             <!-- END Client Info -->
@@ -81,7 +81,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for object in pokeluar %}
+                    {% for object in invkeluar %}
                     <tr>
                         <td class="text-center">1</td>
                         <td>
@@ -105,27 +105,27 @@
                     </tr> -->
                     <tr class="active">
                         <td colspan="4" class="text-right">SUBTOTAL</td>
-                        <td class="text-right">Rp. {{ pokeluar[0].pokeluar_price }}</td>
+                        <td class="text-right">Rp. {{ invkeluar[0].invoiceSupplier_price }}</td>
                     </tr>
 
-                    {% if  pokeluar[0].pokeluar_ppn != 0 %}
+                    {% if  invkeluar[0].invoiceSupplier_ppn != 0 %}
                     <tr class="active">
                         <td colspan="4" class="text-right">VAT RATE</td>
                         <td class="text-right">10%</td>
                     </tr>
                     <tr class="active">
                         <td colspan="4" class="text-right">VAT DUE</td>
-                        <td class="text-right">Rp. {{ pokeluar[0].pokeluar_ppn }}</td>
+                        <td class="text-right">Rp. {{ invkeluar[0].invoiceSupplier_ppn }}</td>
                     </tr>
                     {% endif %}
 
                     <tr class="active">
                         <td colspan="4" class="text-right">MATERAI</td>
-                        <td class="text-right">Rp. {{ pokeluar[0].pokeluar_materai }}</td>
+                        <td class="text-right">Rp. {{ invkeluar[0].invoiceSupplier_materai }}</td>
                     </tr>
                     <tr class="success">
                         <td colspan="4" class="text-right"><strong>TOTAL DUE</strong></td>
-                        <td class="text-right"><span class="label label-success">Rp. {{ pokeluar[0].pokeluar_totalprice }}</span></td>
+                        <td class="text-right"><span class="label label-success">Rp. {{ invkeluar[0].invoiceSupplier_totalprice }}</span></td>
                     </tr>
                 </tbody>
             </table>

@@ -1,20 +1,67 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/pdfdoc.css') }}"><script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<style>
+    .logo-doc {
+        width: 363px;
+    }
+    .block-variant {
+        padding-top: 25px;
+    }
+    .wrap-date {
+        font-size: 26px;
+        font-weight: 500;
+        text-align: -webkit-center;
+    }
+    .box-date {
+        margin-top: -85px;
+        width: 200px;
+        border-bottom: 7px solid #3333a3;
+    }
+    .row {
+        margin-top: 25px;
+    }
+    .blankspace {
+        margin-top: 100px;
+    }
+    .thankyou {
+        font-size: xx-large;
+    }
+    .contactus {
+        margin-top: -15px !important;
+    }
+    .bt-none {
+        border-top: none !important;
+    }
+    .fl-right {
+        float: right;
+    }
+    .extra-logo {
+        padding-bottom: 80px;
+    }
+    .container {
+        max-width: 1300px;
+    }
 
+    @media print {
+        #printPageButton {
+            display: none;
+        }
+    }
+</style>
 <button id="printPageButton" onclick="window.print()">Print this page</button>
     <div class="container">
         <div class="row">
             <div class="col-sm">
-                {% if  data.do_ppn == 0 %}
+                {% if  data.po_ppn == 0 %}
                     <img src="{{ url_for('static', filename='img/tbj/logo_side_text_jaya.png') }}" class="logo-doc extra-logo" alt="logo-doc">
                 {% else %}
                     <img src="{{ url_for('static', filename='img/tbj/logo_side_text_part.png') }}" class="logo-doc" alt="logo-doc">
                 {% endif %}
             </div>
             <div class="col-sm text-right">
-                <img src="{{ url_for('static', filename='img/tbj/pr-block/DO.png') }}" class="logo-doc block-variant" alt="logo-doc">
+                <img src="{{ url_for('static', filename='img/tbj/pr-block/quotation.png') }}" class="logo-doc block-variant" alt="logo-doc">
             </div>
         </div>
         <div class="row">
@@ -24,7 +71,7 @@
             </div>
             <div class="col-sm wrap-date">
                 <div class="box-date">
-                    {{ data.do_date.strftime('%d %B %Y') }}
+                    {{ data.po_date.strftime('%d %B %Y') }}
                 </div>
             </div>
         </div>
@@ -35,7 +82,7 @@
                         <td class="">
                             <table class="">
                                 <tr>
-                                    <td class="">DO to</td>
+                                    <td class="">Quotation to</td>
                                 </tr>
                                 <tr>
                                     <td class="">{{ data.konsumen_name }}</td>
@@ -54,18 +101,18 @@
             <div class="col-sm">
                 <table class="fl-right">
                     <tr>
-                        <td class="">DO Number</td>
-                        <td class="titik-dua">:</td>
-                        <td>{{ data.do_number }}</td>
+                        <td class="">Quotation Number</td>
+                        <td>:</td>
+                        <td>{{ data.po_number }}</td>
                     </tr>
                     <tr>
                         <td class="">Costumer ID</td>
-                        <td class="titik-dua">:</td>
+                        <td>:</td>
                         <td>{{ data.konsumen_id }}</td>
                     </tr>
                     <tr>
                         <td class="">Subject</td>
-                        <td class="titik-dua">:</td>
+                        <td>:</td>
                         <td>-</td>
                     </tr>
                 </table>
@@ -80,7 +127,10 @@
                             <th scope="col">Part Number</th>
                             <th scope="col">Part Name</th>
                             <th scope="col">Brand</th>
+                            <th scope="col">Unit Price</th>
                             <th scope="col">Qty</th>
+                            <th scope="col">Total Price</th>
+                            <th scope="col">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,68 +140,53 @@
                                 <td>{{ object.sparepart_number }}</td>
                                 <td>{{ object.sparepart_name }}</td>
                                 <td>{{ object.sparepart_brand }}</td>
+                                <td class="text-right" >Rp.{{ object.sparepart_price }}</td>
                                 <td style="text-align: center;">{{ object.sparepart_qty }}</td>
+                                <td class="text-right">Rp.{{ object.sparepart_totalprice }}</td>
+                                <td class="text-center">{{ object.sparepart_description }}</td>
                             </tr>
                         {% endfor %}
                         <!-- total -->
                         <tr>
-                            <td class="text-right" colspan="4">Qty Total : </td>
-                            <td class="text-center font-weight-bold" colspan="1">{{ totqty }}</td>
+                            <td class="text-right" colspan="6">Sub Total : </td>
+                            <td class="text-right font-weight-bold" colspan="1">Rp.{{ data.po_price }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                        {% if  data.po_ppn != 0 %}
+                        <tr>
+                            <td class="text-right bt-none" colspan="6">Tax 10% : </td>
+                            <td class="text-right bt-none font-weight-bold" colspan="1">Rp.{{ data.po_ppn }}</td>
+                            <td class="text-right bt-none"></td>
+                        </tr>
+                        {% endif %}
+                        {% if  data.po_materai != 0 %}
+                        <tr>
+                            <td class="text-right bt-none" colspan="6">Materai : </td>
+                            <td class="text-right bt-none font-weight-bold" colspan="1">Rp.{{ data.po_materai }}</td>
+                            <td class="text-right bt-none"></td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td class="text-right bt-none" colspan="6">Grand Total : </td>
+                            <td class="text-right bt-none font-weight-bold" colspan="1">Rp.{{ data.po_totalprice }}</td>
+                            <td class="text-right bt-none"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <!-- <div class="row">
-            <table class="fl-right">
-                <tr>
-                    <td class="">Diterima Oleh</td>
-                    <td class="titik-dua">:</td>
-                </tr>
-                <tr>
-                    <td class="">Dikirim Oleh</td>
-                    <td class="titik-dua">:</td>
-                </tr>
-            </table>
-        </div> -->
-        <div class="row">
-            <div class="col-sm text-center">
-                <div class="row">
-                    <div class="col-sm-3 text-right"></div>
-                    <div class="col-sm-6">Diterima Oleh</div>
-                    <div class="col-sm-3 text-left"></div>
-                </div>
-            </div>
-            <div class="col-sm text-center">
-                <div class="row">
-                    <div class="col-sm-3 text-right"></div>
-                    <div class="col-sm-6">Dikirim Oleh</div>
-                    <div class="col-sm-3 text-left"></div>
-                </div>
-            </div>
-        </div>
         <div class="blankspace"></div>
         <div class="row">
+            <div class="col-sm"></div>
             <div class="col-sm text-center">
-                <div class="row">
-                    <div class="col-sm-3 text-right">(</div>
-                    <div class="col-sm-6 borderbot-ridge">{{ data.konsumen_name }}</div>
-                    <div class="col-sm-3 text-left">)</div>
-                </div>
-            </div>
-            <div class="col-sm text-center">
-                <div class="row">
-                    <div class="col-sm-3 text-right">(</div>
-                    <div class="col-sm-6 borderbot-ridge">{{ session['name'] }}</div>
-                    <div class="col-sm-3 text-left">)</div>
-                </div>
+                (_________________)
             </div>
         </div>
         <div class="row thankyou">
             <p>Thank You</p>
         </div>
         <div class="row contactus">
-            <p>If you have any questions about this do, please contact us : admin@teknikberlianjaya.com</p>
+            <p>If you have any questions about this price quotation, please contact us : admin@teknikberlianjaya.com</p>
         </div>
     </div>
     <script>

@@ -1,207 +1,49 @@
-page {
-    background: white;
-    display: block;
-    margin: 0 auto;
-    margin-bottom: 0.5cm;
-    box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
-}
-
-page[size="A4"] {
-    size: A4;
-}
-
-header {
-    text-align: center;
-}
-
-.headbar {
-    width: 100%;
-}
-
-.pagepadding-variant {
-    padding-left: 35px;
-    padding-right: 0px;
-    padding-bottom: 0px;
-    padding-top: 15px;
-}
-
-.boxvariant {
-    background-color: #2978b5;
-    height: 100%;
-    width: 100%;
-    border-radius: 10px 0px;
-    color: white;
-    font-size: 70px;
-    margin-top: 0px;
-    padding: 5px;
-}
-
-.detail-section {
-    margin-bottom: 15px;
-}
-
-.detail-section p {
-    margin-bottom: 0px;
-    padding-top: 0px;
-}
-
-.ptname {
-    font-weight: bold;
-}
-
-.showdate {
-    font-size: 25px;
-    border-bottom: 5px solid #2978b5;
-    margin-bottom: 0px;
-}
-
-.wrap-date {
-    text-align: center;
-    width: 100%;
-    padding-bottom: 0px;
-    margin-left: 70%;
-    margin-top: -60px;
-}
-
-.quodetail-head {
-    width: 130px;
-}
-
 .logo-doc {
-    width: 60%;
-    margin-top: -80px;
-
+    width: 363px;
 }
-
-.table-section {
-    padding-top: 0px;
-    margin-bottom: 15px;
+.block-variant {
+    padding-top: 25px;
 }
-
-.table-spare {
-    font-size: 12px;
-    border-color: white !important;
-    width: 100%;
+.wrap-date {
+    font-size: 26px;
+    font-weight: 500;
+    text-align: -webkit-center;
 }
-
-.table-spare thead {
-    color: white;
-    background: #2978b5;
+.box-date {
+    margin-top: -85px;
+    width: 200px;
+    border-bottom: 7px solid #3333a3;
 }
-
-.table-spare th {
-    border-bottom: 0px solid #ddd !important;
-    text-align: center;
+.row {
+    margin-top: 25px;
 }
-
-.table-spare td {
-    border-top: 0px solid #ddd !important;
-    border-bottom: 1px solid black !important;
+.blankspace {
+    margin-top: 150px;
 }
-
-.term-total {
-    padding-top: 0px
-}
-
-.table-quodetail {
-    width: 100%;
-    font-size: 12px;
-}
-
-.table-quototal {
-    font-size: 14px;
-}
-
-.quototal-head {
-    width: 95px;
-    font-weight: bold;
-}
-
-.quototal-tidua {
-    width: 15px;
-}
-
-.quototal-rp {
-    width: 30px;
-}
-
-.quototal-val {
-    width: 125px;
-    text-align: right;
-}
-
-.val-gt {
-    font-weight: bold;
-    height: 65px;
-}
-
-.table-quoterm {
-    width: 67%;
-    margin-left: 20px;
-    font-size: 13px;
-}
-
-.quoterm-head {
-    width: 90px;
-}
-
-.signspace {
-    margin-top: 140px;
-    padding-bottom: 10px;
-    width: 100%;
-}
-
-.table-signspace {
-    text-align: center;
-    border-bottom: 1px solid black !important;
-    margin-left: 500px;
-    padding-top: 30px;
-}
-
-.contactus {
-    font-size: 13px;
-}
-
-.logomain {
-    width: 73%;
-    padding-top: 10px;
-}
-
-.quot-address {
-    width: 70%;
-    font-size: 12px;
-}
-
-.quot-address p {
-    margin-top: 0px;
-}
-
 .thankyou {
-    font-family: Brush Script MT;
-    font-size: 35px;
-    padding-left: 0px;
-    margin-bottom: -10px;
+    font-size: xx-large;
+}
+.contactus {
+    margin-top: -15px !important;
+}
+.bt-none {
+    border-top: none !important;
+}
+.fl-right {
+    float: right;
+}
+.extra-logo {
+    padding-bottom: 80px;
+}
+.container {
+    max-width: 1300px;
+}
+.borderbot-ridge {
+    border-bottom-style: ridge;
 }
 
-.signspace-wrap {
-    padding-top: 80px;
-    padding-bottom: 0px;
-}
-
-.thankyou-wrap {
-    padding-top: 0px;
-    padding-bottom: 0px;
-    margin-top: -25px;
-}
-
-.quot-detail {
-    width: 100%
-}
-
-.sign-table {
-    margin-left: 55%;
-}
-
-.table-quoaddress {
-    width: 55%;
+@media print {
+    #printPageButton {
+        display: none;
+    }
 }

@@ -1,165 +1,152 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/pdfdoc.css') }}">
-<page size="A4">
-    <div class="pagepadding">
-        <header>
-            <!-- <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="headbar"> -->
-        </header>
-    </div>
-    <div class="col-md-12 pagepadding-variant">
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <td class="logomain">
-                    {% if  data.quotation_ppn == 0 %}
-                        <img src="{{ url_for('static', filename='img/tbj/logo_side_text_jaya.png') }}" class="logo-doc" alt="logo-doc">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='img/tbj/logo_side_text_part.png') }}" class="logo-doc" alt="logo-doc">
-                    {% endif %}
-                </td>
-                <td>
-                    <!-- <div class="boxvariant"> -->
-                        <p class="boxvariant">Quotation</p>
-                    <!-- </div> -->
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="pagepadding wrap-date">
-        <table cellpadding="0" cellspacing="0" class="">
-            <tr>
-                <td>
-                    <p class="showdate">{{ data.quotation_date.strftime('%d %B %Y') }}</p>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="pagepadding detail-section">
-        <table cellpadding="0" cellspacing="0" class="">
-            <tr>
-                <td class="quot-address">
-                    <table class="table-quoaddress">
-                        <tr>
-                            <td class="quoaddress-head">Quotation to</td>
-                        </tr>
-                        <tr>
-                            <td class="quoaddress-head ptname">{{ data.konsumen_name }}</td>
-                        </tr>
-                        <tr>
-                            <td class="quoaddress-head">{{ data.konsumen_address }}</td>
-                        </tr>
-                        <tr>
-                            <td class="quoaddress-head">{{ data.konsumen_phone }}</td>
-                        </tr>
-                    </table>
-                </td>
-                <td class="quot-detail">
-                    <table class="table-quodetail">
-                        <tr>
-                            <td class="quodetail-head">Quotation Number</td>
-                            <td>:</td>
-                            <td>{{ data.quotation_number }}</td>
-                        </tr>
-                        <tr>
-                            <td class="quodetail-head">Costumer ID</td>
-                            <td>:</td>
-                            <td>{{ data.konsumen_id }}</td>
-                        </tr>
-                        <tr>
-                            <td class="quodetail-head">Subject</td>
-                            <td>:</td>
-                            <td>-</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="pagepadding table-section">
-        <table class="table table-spare">
-            <thead class="">
-                <tr>
-                <th scope="col">No.</th>
-                <th scope="col">Part Number</th>
-                <th scope="col">Part Name</th>
-                <th scope="col">Brand</th>
-                <th scope="col">Unit Price</th>
-                <th scope="col">Qty</th>
-                <th scope="col">Total Price</th>
-                <th scope="col">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for object in dataChild %}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<button id="printPageButton" onclick="window.print()">Print this page</button>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                {% if  data.quotation_ppn == 0 %}
+                    <img src="{{ url_for('static', filename='img/tbj/logo_side_text_jaya.png') }}" class="logo-doc extra-logo" alt="logo-doc">
+                {% else %}
+                    <img src="{{ url_for('static', filename='img/tbj/logo_side_text_part.png') }}" class="logo-doc" alt="logo-doc">
+                {% endif %}
+            </div>
+            <div class="col-sm text-right">
+                <img src="{{ url_for('static', filename='img/tbj/pr-block/quotation.png') }}" class="logo-doc block-variant" alt="logo-doc">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+            </div>
+            <div class="col-sm">
+            </div>
+            <div class="col-sm wrap-date">
+                <div class="box-date">
+                    {{ data.quotation_date.strftime('%d %B %Y') }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <table cellpadding="0" cellspacing="0" class="">
                     <tr>
-                        <td style="text-align: center;">{{loop.index}}</td>
-                        <td>{{ object.sparepart_number }}</td>
-                        <td>{{ object.sparepart_name }}</td>
-                        <td>{{ object.sparepart_brand }}</td>
-                        <td>{{ object.sparepart_price }}</td>
-                        <td style="text-align: center;">{{ object.sparepart_qty }}</td>
-                        <td>{{ object.sparepart_totalprice }}</td>
-                        <td>{{ object.sparepart_description }}</td>
+                        <td class="">
+                            <table class="">
+                                <tr>
+                                    <td class="">Quotation to</td>
+                                </tr>
+                                <tr>
+                                    <td class="">{{ data.konsumen_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="">{{ data.konsumen_address }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="">{{ data.konsumen_phone }}</td>
+                                </tr>
+                            </table>
+                        </td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="pagepadding term-total">
-        <table cellpadding="0" cellspacing="0">
-            <!-- <td class="quot-address">
-                <p class="term-title">Terms & Condition :</p>
-                <table class="table-quoterm">
+                </table>
+            </div>
+            <div class="col-sm">
+                <table class="fl-right">
                     <tr>
-                        <td class="quoterm-head">- Delivery Point</td>
+                        <td class="">Quotation Number</td>
                         <td>:</td>
-                        <td>-</td>
+                        <td>{{ data.quotation_number }}</td>
                     </tr>
                     <tr>
-                        <td class="quoterm-head">- Bank Number</td>
+                        <td class="">Costumer ID</td>
+                        <td>:</td>
+                        <td>{{ data.konsumen_id }}</td>
+                    </tr>
+                    <tr>
+                        <td class="">Subject</td>
                         <td>:</td>
                         <td>-</td>
                     </tr>
                 </table>
-            </td> -->
-            <td>
-                <table class="table-quototal">
-                    <tr>
-                        <td class="quototal-head">Sub Total</td>
-                        <td class="quototal-tidua">:</td>
-                        <td class="quototal-rp">Rp.</td>
-                        <td class="quototal-val">{{ data.quotation_price }}</td>
-                    </tr>
-                    <tr>
-                        <td class="quototal-head">Tax 10%</td>
-                        <td class="quototal-tidua">:</td>
-                        <td class="quototal-rp">Rp.</td>
-                        <td class="quototal-val">{{ data.quotation_ppn }}</td>
-                    </tr>
-                    <tr>
-                        <td class="quototal-head">Grand Total</td>
-                        <td class="quototal-tidua">:</td>
-                        <td class="quototal-rp">Rp.</td>
-                        <td class="quototal-val val-gt">{{ data.quotation_totalprice }}</td>
-                    </tr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <table class="table table-product">
+                    <thead class="">
+                        <tr>
+                            <th scope="col">No.</th>
+                            <th scope="col">Part Number</th>
+                            <th scope="col">Part Name</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Unit Price</th>
+                            <th scope="col">Qty</th>
+                            <th scope="col">Total Price</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in dataChild %}
+                            <tr>
+                                <td style="text-align: center;">{{loop.index}}</td>
+                                <td>{{ object.sparepart_number }}</td>
+                                <td>{{ object.sparepart_name }}</td>
+                                <td>{{ object.sparepart_brand }}</td>
+                                <td class="text-right" >Rp.{{ object.sparepart_price }}</td>
+                                <td style="text-align: center;">{{ object.sparepart_qty }}</td>
+                                <td class="text-right">Rp.{{ object.sparepart_totalprice }}</td>
+                                <td class="text-center">{{ object.sparepart_description }}</td>
+                            </tr>
+                        {% endfor %}
+                        <!-- total -->
+                        <tr>
+                            <td class="text-right" colspan="6">Sub Total : </td>
+                            <td class="text-right font-weight-bold" colspan="1">Rp.{{ data.quotation_price }}</td>
+                            <td class="text-right"></td>
+                        </tr>
+                        {% if  data.quotation_ppn != 0 %}
+                        <tr>
+                            <td class="text-right bt-none" colspan="6">Tax 10% : </td>
+                            <td class="text-right bt-none font-weight-bold" colspan="1">Rp.{{ data.quotation_ppn }}</td>
+                            <td class="text-right bt-none"></td>
+                        </tr>
+                        {% endif %}
+                        {% if  data.quotation_materai != 0 %}
+                        <tr>
+                            <td class="text-right bt-none" colspan="6">Materai : </td>
+                            <td class="text-right bt-none font-weight-bold" colspan="1">Rp.{{ data.quotation_materai }}</td>
+                            <td class="text-right bt-none"></td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td class="text-right bt-none" colspan="6">Grand Total : </td>
+                            <td class="text-right bt-none font-weight-bold" colspan="1">Rp.{{ data.quotation_totalprice }}</td>
+                            <td class="text-right bt-none"></td>
+                        </tr>
+                    </tbody>
                 </table>
-            </td>
-        </table>
-    </div>
-    <div class="pagepadding signspace-wrap">
-        <table class="table-signspace">
-            <tr>
-                <td class="signspace">( user login )</td>
-            </tr>
-        </table>
-    </div>
-    <div class="pagepadding thankyou-wrap">
-        <p class="thankyou">Thank You</p>
-        <div class="contactus">
+            </div>
+        </div>
+        <div class="blankspace"></div>
+        <div class="row">
+            <div class="col-sm"></div>
+            <div class="col-sm text-center">
+                <div class="row">
+                    <div class="col-sm text-right">(</div>
+                    <div class="col-sm borderbot-ridge">{{ session['name'] }}</div>
+                    <div class="col-sm text-left">)</div>
+                </div>
+            </div>
+        </div>
+        <div class="row thankyou">
+            <p>Thank You</p>
+        </div>
+        <div class="row contactus">
             <p>If you have any questions about this price quotation, please contact us : admin@teknikberlianjaya.com</p>
         </div>
     </div>
-    <div class="pagepadding">
-        <footer>
-            <!-- <img src="{{ url_for('static', filename='img/tbj/headbar.jpg') }}" class="headbar" alt="footbar"> -->
-        </footer>
-    </div>
-</page>
+    <script>
+        window.onload = function() { window.print(); }
+    </script>

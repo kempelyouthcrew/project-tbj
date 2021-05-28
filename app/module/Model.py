@@ -97,7 +97,6 @@ class DODB(db.Model, Serializer):
     po_id = db.Column(db.String(255), nullable=False)
     do_date = db.Column(db.DateTime, nullable=False)
     po_id = db.Column(db.String(255), nullable=False)
-    do_date = db.Column(db.DateTime, nullable=False)
     do_number = db.Column(db.String(255), nullable=False)
     do_terms = db.Column(db.String(255), nullable=True)
     do_price = db.Column(db.Integer, nullable=False)
@@ -218,6 +217,7 @@ class UserManagementDB(db.Model, Serializer):
 class numberCount(db.Model, Serializer):
     id = db.Column(db.Integer, unique=True, primary_key=True, nullable=False)
     channel = db.Column(db.String(255), nullable=False)
+    idGrandpa = db.Column(db.String(255), nullable=True)
     idParent = db.Column(db.String(255), nullable=False)
     flag = db.Column(db.String(255), nullable=False)
     number = db.Column(db.Integer, nullable=False)
